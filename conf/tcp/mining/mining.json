@@ -1,0 +1,55 @@
+{
+    "rules":[
+        {
+            "id":33330001,
+            "type":"xmrig",
+             "msg":"门罗币矿池地址检测",
+             "proto":"tcp",
+             "connType":"tcp",
+             "enable":false,
+             "isAnd":true,
+             "ruleDatas":[
+                 { 
+                    "isBin":false,
+                    "rawData":"\"id\":3333",
+                    "op":"contains",
+                    "preOP":"",
+                    "dataWriter":{
+                    "isBin":false,
+                    "data": "{\"id\":3333,\"jsonrpc\":\"2.0\",\"method\":\"keepalived\",\"params\":{\"id\":\"xmrig\"}}\n\0"
+                    },
+                "dataReader":{
+                    "rop":"readString",
+                    "len":128
+                }
+             }
+            ]
+        },
+        {
+            "id":33330002,
+            "type":"btc",
+             "msg":"比特币矿池地址检测",
+             "proto":"tcp",
+             "connType":"tcp",
+             "enable":false,
+             "isAnd":true,
+             "ruleDatas":[
+                 { 
+                    "isBin":false,
+                    "rawData":"\"id\":3333",
+                    "op":"contains",
+                    "preOP":"",
+                    "dataWriter":{
+                    "isBin":false,
+                    "data": "{\"id\":3333,\"method\":\"mining.subscribe\",\"params\":[]}\n\0"
+                    },
+                "dataReader":{
+                    "rop":"readString",
+                    "len":128
+                }
+             }
+            ]
+        }
+    ]
+}
+

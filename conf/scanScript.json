@@ -1,0 +1,72 @@
+{
+    "threads":50,
+    "solrVelocityScriptConfig":{
+		"isOn":true,
+		"name":"solrVelocity",
+		"type":"scanScriptSolrVelocity",
+		"msg":"Apache Solr RCE via Velocity template",
+		"subject":"please disable sorl velocity template",
+		"code":"ssvid-98097",
+		"refer":"https://www.seebug.org/vuldb/ssvid-98097",
+		"conTimeout":10000,
+		"readTimeout":10000,
+        "isEncode":true,
+        "cmd":"whoami",
+        "resultLenMax":64,
+        "defaultCores":["collection1","core","core1","test"]
+    },
+    "solrDataImportScriptConfig":{
+		"isOn":false,
+		"name":"solrDataImport",
+		"type":"scanScriptSolrDataImport",
+		"msg":"Apache Solr RCE via dataimport url source",
+		"subject":"please disable sorl dataimport functions",
+		"code":"CVE-2019-0193",
+		"refer":"https://www.seebug.org/vuldb/ssvid-98097",
+		"conTimeout":10000,
+		"readTimeout":10000,
+        "isEncode":true,
+        "cmd":"whoami",
+        "resultLenMax":64,
+        "defaultCores":["collection1","core","core1","test"]
+    },
+    "flinkScriptConfig":{
+		"isOn":false,
+		"name":"flink",
+		"type":"scanScriptFlink",
+		"msg":"Apache Fink any jar File upload and exe",
+		"subject":"please disable jar file upload",
+		"code":"ssvid-98097",
+		"refer":"https://www.seebug.org/vuldb/ssvid-98097",
+		"conTimeout":10000,
+		"readTimeout":10000,
+        "useRCE":false,
+        "keywords":"Apache Flink Web Dashboard",
+        "jarFile":"/opt/antell/GBWScanner/conf/Flink.jar",
+        "entryClass":"com.scanner.apache.Flink",
+        "submitJson":"{\"entryClass\":\"com.scanner.apache.Flink\",\"parallelism\":null,\"programArgs\":null,\"savepointPath\":null,\"allowNonRestoredState\":null}"
+    },
+
+    "ms17010ScriptConfig":{
+		"isOn":false,
+		"name":"ms17010",
+		"type":"scanScriptMS17010",
+		"msg":"smbv1 remote code exe by heep leak!",
+		"subject":"please patch package,and disable 445,139 ports",
+		"code":"MS17-010",
+		"refer":"https://www.exploit-db.com/exploits/42030",
+		"conTimeout":10000,
+		"readTimeout":10000
+    },
+    "bluekeepScriptConfig":{
+		"isOn":false,
+		"name":"CVE-2019-0708",
+		"type":"scanScriptBluekeep",
+		"msg":"BlueKeep (CVE-2019-0708) is a vulnerability in the Remote Desktop Protocol (RDP) that can affect the Windows Vista, Windows 7, Windows XP, Server 2003 and Server 2008 operating systems!",
+		"subject":"please patch package,and disable 3389 ports",
+		"code":"CVE-2019-0708",
+		"refer":"https://www.exploit-db.com/exploits/47416",
+		"conTimeout":10000,
+		"readTimeout":10000
+    }
+}

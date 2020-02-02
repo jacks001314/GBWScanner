@@ -1,0 +1,146 @@
+{
+	"stype":"fileLine",
+	"sESConfig":{
+		"esConfig":{
+			"esHosts":["127.0.0.1"],
+			"esPort":9300,
+			"clusterName":"antell-SmartEye-ES"
+        },
+		"tv":60,
+		"statusFile":"GBWScannerES.data",
+		"xmlPath":"/opt/antell/smarteye/conf/assetsDiscoveryConf.xml",
+		"rules":[
+			{
+				"indices":["log_stream_session_tcp_*"],
+				"type":"esdatabase_doc",
+				"ipField":"dstIP",
+				"hostField":"",
+				"portField":"dstPort",
+				"timeField":"reqStartTime",
+				"search":"(phaseState:4 AND dstPort:21)",
+				"scanType":["bruteForceFTP"],
+				"proto":"ftp"
+			}
+		]
+	},
+	"sFileLineConfig":{
+        "sleepTime":60000,
+        "queueLimits":10000,
+		"hostFile":"/opt/data/8983.data",
+        "scanType":["scanScriptSolrVelocity"],
+        "proto":"",
+        "ports":[]
+    },
+	"sShodanConfig":{
+        "sleepTime":60000,
+        "queueLimits":10000,
+		"shodanFile":"/opt/data/shodan.json",
+        "scanType":["scanScriptFlink"],
+        "proto":""
+    },
+	
+    "isOnBruteForce":false,
+	"isOnDetect":false,
+	"isOnWebDetect":false,
+    "isOnScanScript":true,
+
+	"bruteForceConfig":{
+		 "threads":1,
+		 "ftpConfig":{
+			"isOn":true,
+			"userFName":"/opt/scan/GBWScanner/conf/bruteforce/ftp_users.txt",
+			"passwdFName":"/opt/scan/GBWScanner/conf/bruteforce/ftp_passwd.txt",
+			"timeout":1000,
+            "isImplicit":false,
+			"trustmgr":"",
+			"serverType":"",
+			"proxyHost":"",
+			"proxyPort":0,
+			"proxyUser":"",
+			"proxyPasswd":""
+		},
+    	 "mailConfig":{
+			"isOn":false,
+			"userFName":"/opt/scan/GBWScanner/conf/bruteforce/mail_users.txt",
+			"passwdFName":"/opt/scan/GBWScanner/conf/bruteforce/mail_passwd.txt",
+			"timeout":1000
+		},
+
+		 "mySQLConfig":{
+			"isOn":false,
+			"userFName":"/opt/scan/GBWScanner/conf/bruteforce/mysql_users.txt",
+			"passwdFName":"/opt/scan/GBWScanner/conf/bruteforce/mysql_passwd.txt",
+			"timeout":1000,
+			"isSSL":false
+		 },
+
+		 "mssqlConfig":{	
+			"isOn":false,
+			"userFName":"/opt/scan/GBWScanner/conf/bruteforce/mssql_users.txt",
+			"passwdFName":"/opt/scan/GBWScanner/conf/bruteforce/mssql_passwd.txt",
+			"timeout":1000
+		 },
+
+		 "redisConfig":{
+			"isOn":false,
+			"userFName":"/opt/scan/GBWScanner/conf/bruteforce/redis_users.txt",
+			"passwdFName":"/opt/scan/GBWScanner/conf/bruteforce/redis_passwd.txt",
+			"timeout":1000,
+			"isSSL":false
+		},
+		 "sshConfig":{
+			"isOn":false,
+			"userFName":"/opt/scan/GBWScanner/conf/bruteforce/ssh_users.txt",
+			"passwdFName":"/opt/scan/GBWScanner/conf/bruteforce/ssh_passwd.txt",
+            "timeout":1000,
+			"proxyHost":"",
+    		"proxyPort":0,
+    		"proxyUser":"",
+    		"proxyPasswd":""
+		}
+	},
+
+    "detectConfig":{
+        "threads":1,
+		"defaultTimeout":10000,
+		"conTimeout":10000,
+		"readTimeout":10000,
+        "detects":[
+            {"name":"detectTCP","isOn":false,"cpath":"/opt/scan/GBWScanner/conf/detectTCPRules.json"}
+        ]
+    },
+    "webScanConfig":{
+        "threads":1,
+        "ruleCPath":"/opt/scan/GBWScanner/conf/webScanRules.json"
+    },
+    "scanScriptConfig":{
+        "cpath":"/opt/scan/GBWScanner/conf/scanScript.json"
+    },
+    "sinkType":"fileSink",
+
+    "esSinkConfig":{
+        "esHosts":["127.0.0.1"],
+        "esPort":9300,
+        "clusterName":"antell-SmartEye-ES",
+        "clientType":"bulk",
+        "indexTypeName":"time",
+        "bulkSize":1,
+        "threadNum":1,
+        "queueLimits":1000000
+    },
+
+    "fileSinkConfig":{
+
+        "threadNum":1,
+        "rootDir":"/opt/data/GBWScanner",
+        "prefix":"ScanFlinkResult",
+        "type":"spin"
+    },
+
+    "geoIPConfig":{
+
+        "dbType":"maxmind",
+        "dbPath":"/opt/antell/data/lib/GeoLite2-City.mmdb"
+    }
+}
+

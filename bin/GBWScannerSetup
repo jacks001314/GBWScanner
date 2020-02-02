@@ -1,0 +1,4 @@
+#!/bin/bash
+source /etc/profile
+ulimit -n 1000000
+/opt/scan/GBWScanner/bin/GBWScanner run --conf /opt/scan/GBWScanner/conf /opt/scan/GBWScanner/conf/GBWScanner.json 1>/dev/null 2>&1 &

@@ -49,7 +49,7 @@ public class GBWHttpPostRequestBuilder {
 
         String rcontent = content;
         if(isFile)
-            rcontent = Files.readString(Paths.get(content));
+            rcontent = new String(Files.readAllBytes(Paths.get(content)));
 
         StringEntity body = new StringEntity(rcontent,"utf-8");
         post.setEntity(body);

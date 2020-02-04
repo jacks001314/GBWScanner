@@ -3,7 +3,6 @@ package com.gbw.scanner.plugins.scripts.web.citrix;
 import com.gbw.scanner.utils.RandomUtils;
 import com.gbw.scanner.utils.SSLUtils;
 import org.apache.http.HttpEntity;
-
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -14,7 +13,6 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -27,7 +25,7 @@ public class GBWScanCitrixRequestBuilder {
     public static HttpPost makePocRequest(String proto,String host, int port, String randomXML, String cmd, boolean isEncode) throws UnsupportedEncodingException {
 
         if(isEncode)
-            cmd = URLEncoder.encode(cmd, Charset.forName("UTF-8"));
+            cmd = URLEncoder.encode(cmd,"utf-8");
 
         String uri;
         if(port == 80||port ==443)

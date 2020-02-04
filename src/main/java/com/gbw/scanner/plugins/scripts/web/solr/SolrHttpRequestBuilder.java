@@ -8,8 +8,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 
 public class SolrHttpRequestBuilder {
 
@@ -39,8 +39,14 @@ public class SolrHttpRequestBuilder {
     public static String makePayload(String cmd,String core,boolean isEncode){
 
         StringBuffer sb = new StringBuffer("/solr");
-        if(isEncode)
-            cmd = URLEncoder.encode(cmd, Charset.forName("UTF-8"));
+        if(isEncode) {
+            try {
+                String ncmd = URLEncoder.encode(cmd,"UTF-8");
+                cmd = ncmd;
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
 
         if(TextUtils.isEmpty(core))
             sb.append("/select?");
@@ -56,8 +62,13 @@ public class SolrHttpRequestBuilder {
 
     public static String makeDataImportPayload(String cmd,boolean isEncode){
 
-        if(isEncode)
-            cmd = URLEncoder.encode(cmd, Charset.forName("UTF-8"));
+        if(isEncode) {
+            try {
+                String ncmd = URLEncoder.encode(cmd,"UTF-8");
+                cmd = ncmd;
+            } catch (UnsupportedEncodingException e) {
+            }
+        }
 
         String payload = "command=full-import&verbose=false&clean=true&commit=true&debug=true&core=atom&" +
                 "dataConfig=%%3CdataConfig%%3E%%0A++%%3CdataSource+type%%3D%%22URLDataSource%%22%%2F%%3E%%0A++%%3Cscript%%3E%%3C!%%5BCDATA%%5B%%0A++++++++++" +

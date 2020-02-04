@@ -1,8 +1,6 @@
 package com.gbw.scanner.plugins.webscan;
 
-import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.List;
+import com.gbw.scanner.http.GBWHttpResponse;
 
 public class GBWWebVariables {
 
@@ -10,44 +8,23 @@ public class GBWWebVariables {
 
     }
 
-    public static final String getString(HttpResponse response,String target){
+    public static final String getString(GBWHttpResponse response, String target){
 
         if(target.equals("status")){
 
-            return Integer.toString(response.statusCode());
-        }else if(target.equals("version")){
-
-            return response.version().name();
+            return Integer.toString(response.getStatus());
         }else if(target.startsWith("header")){
 
             String name = target.split("\\.")[1];
-            List<String> vars = response.headers().map().get(name);
 
-            if(vars == null||vars.isEmpty())
-                return null;
+            return response.getHeaderMap().get(name);
 
-            return vars.get(0);
         }else if(target.equals("text")){
 
-            return (String) response.body();
+            return response.getContent();
         }
 
         return null;
     }
 
-    public static byte[] getBody(HttpResponse response){
-
-        return (byte[]) response.body();
-    }
-
-    public static void main(String[] args){
-
-        List<String> a = new ArrayList<>();
-        a.add("shage");
-        a.add("aaaa");
-
-        String vv = a.toString();
-
-        System.out.println(vv);
-    }
 }

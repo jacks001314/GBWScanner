@@ -3,7 +3,8 @@ package com.gbw.scanner.plugins.webscan;
 public class GBWWebScanConfig {
 
     private int threads;
-    private long timeout;
+    private int conTimeout;
+    private int readTimeout;
 
     private String ruleCPath;
 
@@ -23,11 +24,20 @@ public class GBWWebScanConfig {
         this.ruleCPath = ruleCPath;
     }
 
-    public long getTimeout() {
-        return timeout;
+
+    public int getConTimeout() {
+        return conTimeout;
     }
 
-    public void setTimeout(long timeout) {
-        this.timeout = timeout;
+    public void setConTimeout(int conTimeout) {
+        this.conTimeout = conTimeout;
+    }
+
+    public int getReadTimeout() {
+        return readTimeout;
+    }
+
+    public void setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
     }
 }

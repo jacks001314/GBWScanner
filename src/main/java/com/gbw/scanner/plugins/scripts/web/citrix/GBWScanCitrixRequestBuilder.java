@@ -80,7 +80,7 @@ public class GBWScanCitrixRequestBuilder {
 
         CloseableHttpClient httpClient = SSLUtils.createClient();
 
-        
+
         CloseableHttpResponse response = (CloseableHttpResponse) httpClient.execute(pocRequest);
 
         response.close();

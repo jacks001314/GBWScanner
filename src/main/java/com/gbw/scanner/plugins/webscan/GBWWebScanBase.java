@@ -1,16 +1,18 @@
 package com.gbw.scanner.plugins.webscan;
 
 import com.gbw.scanner.Host;
+import com.gbw.scanner.http.GBWHttpClientBuilder;
+import com.gbw.scanner.http.GBWHttpResponse;
 import com.gbw.scanner.sink.SinkQueue;
 import com.gbw.scanner.utils.GBWOPUtils;
 import com.gbw.scanner.utils.GsonUtils;
+import com.gbw.scanner.utils.HttpUtils;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.List;
 
 public class GBWWebScanBase implements GBWWebScan{
@@ -28,14 +30,14 @@ public class GBWWebScanBase implements GBWWebScan{
             this.scanRuleConfig = null;
     }
 
-    private boolean isMatch(HttpResponse response,GBWWebScanRule scanRule,GBWWebScanRuleData ruleData){
+    private boolean isMatch(GBWHttpResponse response,GBWWebScanRule scanRule,GBWWebScanRuleData ruleData){
 
         byte[] bTarget = null;
         String sTarget = null;
         boolean isByte = ruleData.getTarget().equals("byte");
 
         if(isByte){
-            bTarget = GBWWebVariables.getBody(response);
+            bTarget = response.getBytes();
             if(bTarget == null||bTarget.length==0)
                 return false;
 
@@ -52,7 +54,7 @@ public class GBWWebScanBase implements GBWWebScan{
         }
     }
 
-    private GBWWebScanResult detect(Host host,HttpResponse response,GBWWebScanRule scanRule){
+    private GBWWebScanResult detect(Host host,GBWHttpResponse response,GBWWebScanRule scanRule){
 
 
         List<GBWWebScanRuleData> ruleDatas = scanRule.getMatches();
@@ -67,12 +69,12 @@ public class GBWWebScanBase implements GBWWebScan{
                     return null;
             }else{
                 if(match)
-                    return new GBWWebScanResult(host,response,scanRule);
+                    return new GBWWebScanResult(host,scanRule);
             }
 
         }
 
-        return scanRule.isAnd()?new GBWWebScanResult(host,response,scanRule):null;
+        return scanRule.isAnd()?new GBWWebScanResult(host,scanRule):null;
     }
 
     @Override
@@ -81,34 +83,35 @@ public class GBWWebScanBase implements GBWWebScan{
         if(!scanRule.isEnable())
             return;
 
-        List<HttpRequest> httpRequests = GBWHttpRequestBuilder.build(host,scanRule,scanConfig == null?5000:scanConfig.getTimeout());
+        List<HttpUriRequest> httpRequests = null;
+        try {
+            httpRequests = GBWHttpRequestBuilder.build(host,scanConfig,scanRule);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
 
-        HttpClient client = HttpClient.newHttpClient();
+        CloseableHttpClient client = null;
+        try {
+            client = GBWHttpClientBuilder.make(host.getProto(),host.getPort());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
 
-        for(HttpRequest request:httpRequests){
+        for(HttpUriRequest request:httpRequests){
 
-            HttpResponse response = null;
-
-            try {
-                if(scanRule.isBin()){
-                    response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
-                }else{
-                    response = client.send(request,HttpResponse.BodyHandlers.ofString());
-                }
-            }catch (Exception e){
-                response = null;
-                // e.printStackTrace();
-                // log.error(e.getMessage());
+            GBWHttpResponse response = HttpUtils.sendWithHeaders(client,request,scanRule.isBin()?false:true);
+            GBWWebScanResult result = detect(host,response,scanRule);
+            if(result!=null){
+                sinkQueue.put(result);
             }
+        }
 
-            if(response!=null){
-
-                GBWWebScanResult result = detect(host,response,scanRule);
-                if(result!=null){
-
-                    sinkQueue.put(result);
-                }
-            }
+        try {
+            client.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

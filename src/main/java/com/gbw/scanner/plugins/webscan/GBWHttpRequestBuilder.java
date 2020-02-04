@@ -1,13 +1,12 @@
 package com.gbw.scanner.plugins.webscan;
 
 import com.gbw.scanner.Host;
+import com.gbw.scanner.http.GBWHttpGetRequestBuilder;
+import com.gbw.scanner.http.GBWHttpPostRequestBuilder;
 import com.xmap.api.utils.TextUtils;
+import org.apache.http.client.methods.HttpUriRequest;
 
-import java.io.FileNotFoundException;
-import java.net.URI;
-import java.net.http.HttpRequest;
-import java.nio.file.Paths;
-import java.time.Duration;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,64 +16,64 @@ public class GBWHttpRequestBuilder {
 
     }
 
-    private static HttpRequest httpGet(String uri,GBWWebScanRule rule,long timeout) {
+    private static HttpUriRequest httpGet(Host host, GBWWebScanConfig config,String uri,GBWWebScanRule rule) {
 
-        HttpRequest.Builder builder = HttpRequest.newBuilder()
-                .timeout(Duration.ofMillis(timeout))
-                .GET()
-                .uri(URI.create(uri));
+        GBWHttpGetRequestBuilder builder =  new GBWHttpGetRequestBuilder(host.getProto(),host.getServer(),host.getPort(),uri)
+                .setTimeout(config.getConTimeout(),config.getReadTimeout());
 
         rule.getHeaders().forEach(header->{
-            builder.header(header.getName(),header.getValue());
+            builder.addHead(header.getName(),header.getValue());
         });
 
         return builder.build();
     }
 
-    private static HttpRequest httpPost(String uri,GBWWebScanRule rule,long timeout){
+    private static HttpUriRequest httpPost(Host host, GBWWebScanConfig config,String uri,GBWWebScanRule rule) throws IOException {
 
-        HttpRequest.Builder builder = HttpRequest.newBuilder()
-                .timeout(Duration.ofMillis(timeout))
-                .uri(URI.create(uri));
-        if(TextUtils.isEmpty(rule.getPostArgsFilePath())){
-            builder.POST(HttpRequest.BodyPublishers.ofString(rule.getPostArgs()));
+        GBWHttpPostRequestBuilder builder = new GBWHttpPostRequestBuilder(host.getProto(),host.getServer(),host.getPort(),uri)
+                .setTimeout(config.getConTimeout(),config.getReadTimeout());
+
+        rule.getHeaders().forEach(header->builder.addHead(header.getName(),header.getValue()));
+
+        if(rule.isUpload()){
+
+            builder.upload(rule.getPostArgsFilePath(),null,rule.getMime());
         }else{
-            try {
-                builder.POST(HttpRequest.BodyPublishers.ofFile(Paths.get(rule.getPostArgsFilePath())));
-            } catch (FileNotFoundException e) {
-                return null;
+
+            if(rule.isText()){
+                String file = rule.getPostArgsFilePath();
+                boolean isFile = !TextUtils.isEmpty(file);
+                builder.postString(isFile?file:rule.getPostArgs(),isFile);
+            }else{
+                /*bytes*/
+                String file = rule.getPostArgsFilePath();
+                boolean isFile = !TextUtils.isEmpty(file);
+
+                builder.postBytes(isFile?file:rule.getPostArgs(),isFile);
             }
+
         }
 
-        rule.getHeaders().forEach(header->{
-            builder.header(header.getName(),header.getValue());
-        });
-
         return builder.build();
     }
 
-    public static List<HttpRequest> build(Host host, GBWWebScanRule rule,long timeout) {
+    public static List<HttpUriRequest> build(Host host, GBWWebScanConfig config,GBWWebScanRule rule) throws IOException {
 
-        String h = String.format("%s://%s",rule.getProto(),host.getServer());
-        if(host.getPort()!=80&&host.getPort()!=443)
-            h = h+":"+host.getPort();
-
-        List<HttpRequest> httpRequests = new ArrayList<>();
+        List<HttpUriRequest> httpRequests = new ArrayList<>();
 
         List<String> uris = rule.getUris();
         boolean isPost = rule.getMethod().equalsIgnoreCase("POST");
 
-        HttpRequest request = null;
+        HttpUriRequest request = null;
 
         for(String u:uris){
 
-            String uri = String.format("%s%s",h,u);
             if(isPost){
 
-                request = httpPost(uri,rule,timeout);
+                request = httpPost(host,config,u,rule);
             }else{
 
-                request = httpGet(uri,rule,timeout);
+                request = httpGet(host,config,u,rule);
             }
             if(request!=null){
 

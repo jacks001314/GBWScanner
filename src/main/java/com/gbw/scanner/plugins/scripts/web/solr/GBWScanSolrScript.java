@@ -1,12 +1,18 @@
 package com.gbw.scanner.plugins.scripts.web.solr;
 
 import com.gbw.scanner.Host;
+import com.gbw.scanner.http.GBWHttpClientBuilder;
+import com.gbw.scanner.http.GBWHttpResponse;
 import com.gbw.scanner.plugins.scripts.GBWScanScript;
 import com.gbw.scanner.plugins.scripts.GBWScanScriptCommonConfig;
 import com.gbw.scanner.sink.SinkQueue;
+import com.gbw.scanner.utils.HttpUtils;
 import com.google.gson.Gson;
 import com.xmap.api.utils.TextUtils;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.CloseableHttpClient;
 
+import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -21,58 +27,67 @@ public abstract class GBWScanSolrScript implements GBWScanScript {
     }
 
     public abstract void  processResult(SinkQueue sinkQueue, Host host, SolrCoreAdmin solrCoreAdmin, String result, String core);
-    public abstract String runPoc(HttpClient httpClient, Host host, String core);
+    public abstract String runPoc(CloseableHttpClient httpClient, Host host, String core);
 
     @Override
     public GBWScanScriptCommonConfig getConfig() {
         return config;
     }
+
+    private static  final boolean isJson(String content){
+
+        return !TextUtils.isEmpty(content)&&content.startsWith("{");
+    }
+
     @Override
     public void scan(Host host, SinkQueue sinkQueue) {
 
         String result;
-        HttpRequest httpRequest;
-        HttpResponse httpResponse;
+        HttpUriRequest httpRequest;
+        GBWHttpResponse httpResponse;
         String content;
         Gson gson = new Gson();
 
-        HttpClient httpClient = HttpClient.newHttpClient();
+        CloseableHttpClient httpClient = null;
+
         /**get solr admin cores info*/
-        httpRequest = SolrHttpRequestBuilder.makeSolrCoreAdminRequest(host.getIp(),host.getPort(),config.getReadTimeout());
+        httpRequest = SolrHttpRequestBuilder.makeSolrCoreAdminRequest(host,config);
         try {
-            httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-            if(httpResponse.statusCode()==200){
+            httpClient = GBWHttpClientBuilder.make(host.getProto(),host.getPort());
+            httpResponse = HttpUtils.send(httpClient,httpRequest,true);
 
-                content = (String)httpResponse.body();
-                if(TextUtils.isEmpty(content)||!content.startsWith("{")){
-                    /*not json text*/
-                    return;
-                }
+            if(httpResponse.getStatus()==200){
 
-                /*parseu json content**/
-                SolrCoreAdmin solrCoreAdmin = gson.fromJson(content,SolrCoreAdmin.class);
+                content = httpResponse.getContent();
 
-                /*get all core names*/
-                List<String> cores = solrCoreAdmin.getCoreNames();
-                if(cores.isEmpty()){
-
-                    cores = config.getDefaultCores();
-
-                    if(cores == null||cores.isEmpty())
-                        return;
-                }
-
-                /*try to detect for all cores until find a bug */
-                for(String core:cores){
-                    result = runPoc(httpClient,host,core);
-                    if(!TextUtils.isEmpty(result)){
-                        processResult(sinkQueue,host,solrCoreAdmin,result,core);
-                        break;
+                if(isJson(content)){
+                    /*parseu json content**/
+                    SolrCoreAdmin solrCoreAdmin = gson.fromJson(content,SolrCoreAdmin.class);
+                    /*get all core names*/
+                    List<String> cores = solrCoreAdmin.getCoreNames();
+                    if(cores.isEmpty()){
+                        cores = config.getDefaultCores();
+                    }
+                    /*try to detect for all cores until find a bug */
+                    for(String core:cores){
+                        result = runPoc(httpClient,host,core);
+                        if(!TextUtils.isEmpty(result)){
+                            processResult(sinkQueue,host,solrCoreAdmin,result,core);
+                            break;
+                        }
                     }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            if(httpClient!=null) {
+                try {
+                    httpClient.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

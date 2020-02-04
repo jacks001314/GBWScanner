@@ -20,6 +20,12 @@ public class GBWWebScanRule {
     private String method;
     private String uriFilePath;
     private List<String> uris;
+
+    private boolean isUpload;
+    private String mime;
+
+    private boolean isText;
+
     private String postArgs;
     private String postArgsFilePath;
 
@@ -152,5 +158,29 @@ public class GBWWebScanRule {
 
     public void setBin(boolean bin) {
         isBin = bin;
+    }
+
+    public boolean isUpload() {
+        return isUpload;
+    }
+
+    public void setUpload(boolean upload) {
+        isUpload = upload;
+    }
+
+    public boolean isText() {
+        return isText;
+    }
+
+    public void setText(boolean text) {
+        isText = text;
+    }
+
+    public String getMime() {
+        return mime;
+    }
+
+    public void setMime(String mime) {
+        this.mime = mime;
     }
 }

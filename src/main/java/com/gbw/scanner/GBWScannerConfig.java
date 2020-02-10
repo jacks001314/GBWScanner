@@ -9,6 +9,7 @@ import com.gbw.scanner.sink.es.ESConfigItem;
 import com.gbw.scanner.sink.file.FileSinkConfig;
 import com.gbw.scanner.source.GBWESSourceConfig;
 import com.gbw.scanner.source.GBWFileLineSourceConfig;
+import com.gbw.scanner.source.GBWFoFaSourceConfig;
 import com.gbw.scanner.source.GBWShodanSourceConfig;
 
 public class GBWScannerConfig {
@@ -16,6 +17,8 @@ public class GBWScannerConfig {
     public static final String SOURCETYPEES = "es";
     public static final String SOURCETYPEFILELINE = "fileLine";
     public static final String SOURCETYPESHODAN = "shodan";
+    public static final String SOURCETYPEFOFA = "fofa";
+
     public static final String esSink = "esSink";
     public static final String fileSink = "fileSink";
 
@@ -24,6 +27,7 @@ public class GBWScannerConfig {
     private GBWESSourceConfig sESConfig;
     private GBWFileLineSourceConfig sFileLineConfig;
     private GBWShodanSourceConfig sShodanConfig;
+    private GBWFoFaSourceConfig sFoFaConfig;
 
     private boolean isOnBruteForce;
     private boolean isOnDetect;
@@ -170,5 +174,13 @@ public class GBWScannerConfig {
 
     public void setOnScanScript(boolean onScanScript) {
         isOnScanScript = onScanScript;
+    }
+
+    public GBWFoFaSourceConfig getsFoFaConfig() {
+        return sFoFaConfig;
+    }
+
+    public void setsFoFaConfig(GBWFoFaSourceConfig sFoFaConfig) {
+        this.sFoFaConfig = sFoFaConfig;
     }
 }

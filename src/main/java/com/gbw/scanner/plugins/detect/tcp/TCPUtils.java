@@ -71,12 +71,12 @@ public class TCPUtils {
          */
       String json = "{\"id\":3333,\"jsonrpc\":\"2.0\",\"method\":\"keepalived\",\"params\":{\"id\":\"xmrig\"}}\n\0";
       String json1 = "{\"id\":3333,\"method\":\"mining.subscribe\",\"params\":[]}\n\0";
+      String json2 = "{\"id\":3,\"jsonrpc\":\"2.0\",\"method\":\"keepalived\",\"params\":{\"id\":\"7e7d5e33-8409-41eb-b96e-7a018b61a988\"}}";
+        String ip = "136.243.90.99";
+        int port = 8080;
 
-        String ip = "x-pool.ulimit-n.com";
-        int port = 80;
 
-
-        process(ip,port,json,false);
+        process(ip,port,json2,false);
 
     }
 

@@ -5,10 +5,7 @@ import com.gbw.scanner.plugins.detect.GBWDetectPlugin;
 import com.gbw.scanner.plugins.scripts.GBWScanScriptPlugin;
 import com.gbw.scanner.plugins.webscan.GBWWebScanPlugin;
 import com.gbw.scanner.sink.SinkQueue;
-import com.gbw.scanner.source.GBWESHostSource;
-import com.gbw.scanner.source.GBWFileLineSource;
-import com.gbw.scanner.source.GBWHostSource;
-import com.gbw.scanner.source.GBWShodanSource;
+import com.gbw.scanner.source.*;
 import com.xmap.api.SourceException;
 
 import java.util.ArrayList;
@@ -50,11 +47,13 @@ public class GBWScannerThread {
         String sType = config.getStype();
         if (sType.equals(GBWScannerConfig.SOURCETYPEES)) {
             this.hostSource = new GBWESHostSource(config.getsESConfig());
-        } else if (sType.equals(GBWScannerConfig.SOURCETYPEFILELINE)) {
+        }else if (sType.equals(GBWScannerConfig.SOURCETYPEFILELINE)) {
             this.hostSource = new GBWFileLineSource(config.getsFileLineConfig());
-        } else if(sType.equals(GBWScannerConfig.SOURCETYPESHODAN)) {
+        }else if(sType.equals(GBWScannerConfig.SOURCETYPESHODAN)) {
             this.hostSource = new GBWShodanSource(config.getsShodanConfig());
-        }else{
+        }else if(sType.equals(GBWScannerConfig.SOURCETYPEFOFA)) {
+            this.hostSource = new GBWFoFaSource(config.getsFoFaConfig());
+        } else{
             throw new IllegalArgumentException("Unkown host source type:" + sType);
         }
 

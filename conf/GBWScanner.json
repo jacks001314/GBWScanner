@@ -38,6 +38,14 @@
         "scanType":["scanScriptFlink"],
         "proto":""
     },
+	"sFoFaConfig":{
+        "sleepTime":60000,
+        "queueLimits":10000,
+		"shodanFile":"/opt/data/fofa.json",
+        "scanType":["scanScriptFlink"],
+        "proto":"http",
+        "port":80
+    },
 	
     "isOnBruteForce":false,
 	"isOnDetect":false,

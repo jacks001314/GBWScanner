@@ -1,0 +1,30 @@
+{
+    "rules":[
+        {
+            "id":33330003,
+            "type":"redis/noauth",
+             "msg":"redis无授权漏洞",
+             "proto":"tcp",
+             "connType":"tcp",
+             "enable":true,
+             "isAnd":true,
+             "ruleDatas":[
+                 { 
+                    "isBin":false,
+                    "rawData":"redis_version",
+                    "op":"contains",
+                    "preOP":"",
+                    "dataWriter":{
+                        "isBin":true,
+                        "data": "0d0a696e666f0d0a"
+                    },
+                     "dataReader":{
+                         "rop":"readString",
+                         "len":1024
+                     }
+                 }
+             ]
+        }
+    ]
+}
+

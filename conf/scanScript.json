@@ -46,6 +46,22 @@
         "entryClass":"com.scanner.apache.Flink",
         "submitJson":"{\"entryClass\":\"com.scanner.apache.Flink\",\"parallelism\":null,\"programArgs\":null,\"savepointPath\":null,\"allowNonRestoredState\":null}"
     },
+    "tomcatAjpScriptConfig":{
+		"isOn":false,
+		"name":"tomcatAJP",
+		"type":"scanScriptTomcatAJP",
+		"msg":"Apache Tomcate AJP Protocal Any File download",
+		"subject":"please reconfig tomcate web config",
+		"code":"CNVD-2020-10487",
+		"refer":"https://github.com/nibiwodong/CNVD-2020-10487-Tomcat-ajp-POC.git",
+		"conTimeout":10000,
+		"readTimeout":10000,
+        "uri":"/",
+        "file":"WEB-INF/web.xml",
+        "storeDir":"/opt/data/GBWScanner/ajp",
+        "filePrefix":"web.xml",
+        "isSSL":false
+    },
 
     "ms17010ScriptConfig":{
 		"isOn":false,

@@ -2,6 +2,7 @@ package com.gbw.scanner.plugins.scripts;
 
 import com.gbw.scanner.plugins.scripts.web.flink.GBWScanFlinkScriptConfig;
 import com.gbw.scanner.plugins.scripts.web.solr.GBWScanSolrScriptConfig;
+import com.gbw.scanner.plugins.scripts.web.tomcat.GBWScanAJPConfig;
 import com.gbw.scanner.plugins.scripts.windows.rdp.bluekeep.GBWScanBluekeepScriptConfig;
 import com.gbw.scanner.plugins.scripts.windows.smb.MS17010.GBWScanSMBMS17010ScriptConfig;
 
@@ -12,6 +13,7 @@ public class GBWScanScriptConfig extends GBWScanScriptCommonConfig {
     private GBWScanSolrScriptConfig solrVelocityScriptConfig;
     private GBWScanSolrScriptConfig solrDataImportScriptConfig;
     private GBWScanFlinkScriptConfig flinkScriptConfig;
+    private GBWScanAJPConfig tomcatAjpScriptConfig;
 
     private GBWScanSMBMS17010ScriptConfig  ms17010ScriptConfig;
     private GBWScanBluekeepScriptConfig bluekeepScriptConfig;
@@ -50,10 +52,18 @@ public class GBWScanScriptConfig extends GBWScanScriptCommonConfig {
         this.flinkScriptConfig = flinkScriptConfig;
     }
 
-
     public GBWScanSolrScriptConfig getSolrVelocityScriptConfig() {
         return solrVelocityScriptConfig;
     }
+
+    public GBWScanAJPConfig getTomcatAjpScriptConfig() {
+        return tomcatAjpScriptConfig;
+    }
+
+     public void setTomcatAjpScriptConfig(GBWScanAJPConfig tomcatAjpScriptConfig){
+
+        this.tomcatAjpScriptConfig = tomcatAjpScriptConfig;
+     }
 
     public void setSolrVelocityScriptConfig(GBWScanSolrScriptConfig solrVelocityScriptConfig) {
         this.solrVelocityScriptConfig = solrVelocityScriptConfig;

@@ -109,6 +109,21 @@
             <artifactId>httpcore</artifactId>
             <version>4.4.13</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-yarn-client</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>tomcat</groupId>
+            <artifactId>tomcat-ajp</artifactId>
+            <version>5.5.23</version>
+        </dependency>
 
     </dependencies>
     <build>

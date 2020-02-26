@@ -5,6 +5,7 @@ import com.gbw.scanner.Host;
 import com.gbw.scanner.plugins.scripts.web.flink.GBWScanFlinkScript;
 import com.gbw.scanner.plugins.scripts.web.solr.dataimport.GBWScanSolrDataImportScript;
 import com.gbw.scanner.plugins.scripts.web.solr.velocity.GBWScanSolrVelocityScript;
+import com.gbw.scanner.plugins.scripts.web.tomcat.GBWScanAJPScript;
 import com.gbw.scanner.plugins.scripts.windows.rdp.bluekeep.GBWScanBluekeepScript;
 import com.gbw.scanner.plugins.scripts.windows.smb.MS17010.GBWScanSMBMS17010Script;
 import com.gbw.scanner.sink.SinkQueue;
@@ -24,6 +25,7 @@ public class GBWScanScriptPlugin implements GBWScannerPlugin {
     public static final String ms17010Scan = "scanScriptMS17010";
     public static final String bluekeepScan = "scanScriptBluekeep";
     public static final String flinkScan = "scanScriptFlink";
+    public static final String tomcatAJPScan = "scanScriptTomcatAJP";
 
     private final GBWScanScriptConfig scanScriptConfig;
     private final GBWScanScriptQueue scanScriptQueue;
@@ -49,6 +51,11 @@ public class GBWScanScriptPlugin implements GBWScannerPlugin {
         }
         if(scanScriptConfig.getFlinkScriptConfig().isOn()){
             scanScriptMap.put(flinkScan,new GBWScanFlinkScript(scanScriptConfig.getFlinkScriptConfig()));
+        }
+
+        if(scanScriptConfig.getTomcatAjpScriptConfig().isOn()){
+
+            scanScriptMap.put(tomcatAJPScan,new GBWScanAJPScript(scanScriptConfig.getTomcatAjpScriptConfig()));
         }
 
         if(scanScriptConfig.getMs17010ScriptConfig().isOn()){

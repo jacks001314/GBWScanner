@@ -19,4 +19,9 @@ public class FileUtils {
 
         return path;
     }
+
+    public static final void write(String fname,byte[] data) throws IOException {
+
+        Files.write(createPath(fname),data);
+    }
 }

@@ -4,6 +4,7 @@ import com.gbw.scanner.connection.Connection;
 import com.gbw.scanner.connection.GBWConnection;
 import com.gbw.scanner.connection.SSLSocketClient;
 import com.gbw.scanner.connection.SocketClient;
+import com.gbw.scanner.utils.ByteDataUtils;
 
 
 public class TCPUtils {
@@ -30,10 +31,10 @@ public class TCPUtils {
 
         Connection connection = new GBWConnection(socketClient);
 
-        byte[] results = new byte[128];
+        byte[] results = new byte[1024];
 
         try {
-            connection.send(data);
+            connection.send(ByteDataUtils.parseHex("0d0a696e666f0d0a"));
             connection.read(results);
 
             System.out.println(String.format("%s:%d--->%s",ip,port,new String(results)));
@@ -69,14 +70,16 @@ public class TCPUtils {
         }
 
          */
+        System.out.println(new String(ByteDataUtils.parseHex("0d0a696e666f0d0a")));
       String json = "{\"id\":3333,\"jsonrpc\":\"2.0\",\"method\":\"keepalived\",\"params\":{\"id\":\"xmrig\"}}\n\0";
       String json1 = "{\"id\":3333,\"method\":\"mining.subscribe\",\"params\":[]}\n\0";
       String json2 = "{\"id\":3,\"jsonrpc\":\"2.0\",\"method\":\"keepalived\",\"params\":{\"id\":\"7e7d5e33-8409-41eb-b96e-7a018b61a988\"}}";
-        String ip = "136.243.90.99";
-        int port = 8080;
+      String json3 = "\r\ninfo\r\n";
+        String ip = "120.27.3.140";
+        int port = 6379;
 
 
-        process(ip,port,json2,false);
+        process(ip,port,json,false);
 
     }
 

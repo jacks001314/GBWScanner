@@ -60,7 +60,8 @@
         "file":"WEB-INF/web.xml",
         "storeDir":"/opt/data/GBWScanner/ajp",
         "filePrefix":"web.xml",
-        "isSSL":false
+        "isSSL":false,
+        "maxLen":8192
     },
 
     "ms17010ScriptConfig":{

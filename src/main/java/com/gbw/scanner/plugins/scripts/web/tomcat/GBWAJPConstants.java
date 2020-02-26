@@ -48,6 +48,11 @@ public class GBWAJPConstants {
     public static final int SERVER_TO_CONTAINER = 0;
     public static final int CONTAINER_TO_SERVER = 1;
 
+    public static final int SEND_BODY_CHUNK = 3;
+    public static final int SEND_HEADERS = 4;
+    public static final int END_RESPONSE = 5;
+    public static final int GET_BODY_CHUNK =6;
+
     public static final String UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.74 Safari/537.36";
 
     public static final String[] headerTransArray = new String[]{"accept", "accept-charset", "accept-encoding", "accept-language", "authorization", "connection", "content-type", "content-length", "cookie", "cookie2", "host", "pragma", "referer", "user-agent"};

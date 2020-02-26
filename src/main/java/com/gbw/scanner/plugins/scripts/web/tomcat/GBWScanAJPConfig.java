@@ -11,6 +11,7 @@ public class GBWScanAJPConfig extends GBWScanScriptCommonConfig {
     private String filePrefix;
 
     private boolean isSSL;
+    private int maxLen;
 
     public boolean isSSL() {
         return isSSL;
@@ -52,5 +53,13 @@ public class GBWScanAJPConfig extends GBWScanScriptCommonConfig {
 
     public void setFilePrefix(String filePrefix) {
         this.filePrefix = filePrefix;
+    }
+
+    public int getMaxLen() {
+        return maxLen;
+    }
+
+    public void setMaxLen(int maxLen) {
+        this.maxLen = maxLen;
     }
 }

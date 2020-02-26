@@ -11,9 +11,11 @@ import java.io.IOException;
 public class GBWAJPClient {
 
     private Connection connection;
+    private GBWScanAJPConfig config;
 
     public GBWAJPClient(Host host,GBWScanAJPConfig config) throws GBWAJPConnectionException {
 
+        this.config = config;
         SocketClient socketClient;
         if(config.isSSL()){
             socketClient = new SSLSocketClient();
@@ -34,10 +36,10 @@ public class GBWAJPClient {
 
     public void sendRequest(GBWAJPMessage hmessage,GBWAJPMessage bmessage) throws IOException {
 
-        connection.send(hmessage.getBuffer(),0,hmessage.getLen());
+        connection.send(hmessage.getBuffer(),0,hmessage.getPos());
 
         if(bmessage!=null){
-            connection.send(bmessage.getBuffer(),0,bmessage.getLen());
+            connection.send(bmessage.getBuffer(),0,bmessage.getPos());
         }
 
     }
@@ -51,21 +53,19 @@ public class GBWAJPClient {
 
     public byte[] readResponse() throws IOException {
 
-        GBWAJPMessage message = new GBWAJPMessage(32);
-        byte[]  b = message.getBuffer();
-        connection.read(b,0,message.getHeaderLength());
-        int mlen = message.processHeader();
+        while(true){
 
-        if(mlen<0){
-            throw new IOException("Invalid AJP message length");
-        }else if(mlen == 0){
-            return "no content".getBytes();
+            GBWAJPResponse response = new GBWAJPResponse(connection,config.getMaxLen());
+
+            if(response.getCode() == GBWAJPConstants.SEND_BODY_CHUNK){
+
+                return response.getData();
+            }
+            if(response.getCode() == GBWAJPConstants.END_RESPONSE)
+                break;
         }
 
-        byte[] res = new byte[mlen];
-        connection.read(res,message.getHeaderLength(),mlen);
-
-        return res;
+        return "null".getBytes();
     }
 
     public void close(){

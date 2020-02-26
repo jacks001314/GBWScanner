@@ -75,8 +75,9 @@ public class TCPUtils {
       String json1 = "{\"id\":3333,\"method\":\"mining.subscribe\",\"params\":[]}\n\0";
       String json2 = "{\"id\":3,\"jsonrpc\":\"2.0\",\"method\":\"keepalived\",\"params\":{\"id\":\"7e7d5e33-8409-41eb-b96e-7a018b61a988\"}}";
       String json3 = "\r\ninfo\r\n";
-        String ip = "120.27.3.140";
-        int port = 6379;
+      String ip = "120.27.3.140";
+
+      int port = 6379;
 
 
         process(ip,port,json,false);

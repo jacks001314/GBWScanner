@@ -120,9 +120,9 @@
             <version>3.2.1</version>
         </dependency>
         <dependency>
-            <groupId>tomcat</groupId>
-            <artifactId>tomcat-ajp</artifactId>
-            <version>5.5.23</version>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-coyote</artifactId>
+            <version>7.0.39</version>
         </dependency>
 
     </dependencies>

@@ -105,6 +105,7 @@ public class GBWAJPForwardRequest {
         message.appendByte(prefix_code);
         message.appendByte(method);
         message.appendString(protocol);
+        message.appendString(req_uri);
         message.appendString(remote_addr);
         message.appendString(remote_host);
         message.appendString(server_name);
@@ -219,4 +220,7 @@ public class GBWAJPForwardRequest {
         this.attributes = attributes;
     }
 
+    public void setData_direction(int data_direction) {
+        this.data_direction = data_direction;
+    }
 }

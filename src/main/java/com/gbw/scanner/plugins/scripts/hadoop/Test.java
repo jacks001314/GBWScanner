@@ -162,6 +162,7 @@ public class Test {
         Resource resource = Records.newRecord(Resource.class);
         resource.setMemorySize(1024);
         resource.setVirtualCores(1);
+
         appContext.setResource(resource);
         client.submitApplication(appContext);
 

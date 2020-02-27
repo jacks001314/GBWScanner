@@ -7,6 +7,8 @@ import com.gbw.scanner.connection.SSLSocketClient;
 import com.gbw.scanner.connection.SocketClient;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GBWAJPClient {
 
@@ -44,28 +46,32 @@ public class GBWAJPClient {
 
     }
 
-    public byte[] sendAndReceive(GBWAJPMessage hmessage,GBWAJPMessage bmessage) throws IOException {
+    public List<GBWAJPResponse> sendAndReceive(GBWAJPMessage hmessage,GBWAJPMessage bmessage) throws IOException {
 
         sendRequest(hmessage,bmessage);
 
         return readResponse();
     }
 
-    public byte[] readResponse() throws IOException {
+    public List<GBWAJPResponse> readResponse() throws IOException {
 
+        List<GBWAJPResponse> responses = new ArrayList<>();
         while(true){
 
-            GBWAJPResponse response = new GBWAJPResponse(connection,config.getMaxLen());
+            try{
 
-            if(response.getCode() == GBWAJPConstants.SEND_BODY_CHUNK){
-
-                return response.getData();
-            }
-            if(response.getCode() == GBWAJPConstants.END_RESPONSE)
+                GBWAJPResponse response = new GBWAJPResponse(connection,config.getMaxLen());
+                if(response.getCode() == GBWAJPConstants.SEND_BODY_CHUNK){
+                    responses.add(response);
+                }
+                if(response.getCode() == GBWAJPConstants.END_RESPONSE)
+                    break;
+            }catch (Exception e){
                 break;
+            }
         }
 
-        return "null".getBytes();
+        return responses;
     }
 
     public void close(){

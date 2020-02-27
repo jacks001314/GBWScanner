@@ -7,6 +7,8 @@ import com.gbw.scanner.sink.SinkQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class GBWScanAJPScript implements GBWScanScript {
 
     private static final Logger log = LoggerFactory.getLogger(GBWScanScript.class);
@@ -54,13 +56,13 @@ public class GBWScanAJPScript implements GBWScanScript {
 
             GBWAJPMessage message = createAJPMessage(host);
 
-            byte[] data = client.sendAndReceive(message,null);
+            List<GBWAJPResponse> responses = client.sendAndReceive(message,null);
 
-            if(data!=null&&data.length>0){
+            if(responses!=null&&responses.size()>0){
 
                 log.warn(String.format("Find a apache tomcat ajp any file download poc in:%s:%d",host.getServer(),host.getPort()));
                 //System.out.println(String.format("Find a apache tomcat ajp any file download poc in:%s:%d",host.getServer(),host.getPort()));
-                sinkQueue.put(new GBWScanAJPResult(config,host,data));
+                sinkQueue.put(new GBWScanAJPResult(config,host,responses));
 
                 //System.out.println(new String(data));
             }

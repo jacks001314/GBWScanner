@@ -16,7 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GBWScanYarnScript implements GBWScanScript {
@@ -48,8 +50,11 @@ public class GBWScanYarnScript implements GBWScanScript {
 
         capability.setMemorySize(amMemory);
         capability.setVirtualCores(amVCores);
+
+        appContext.setResource(capability);
+        /*
         appContext.getAMContainerResourceRequests().get(0).setCapability(
-                capability);
+                capability);*/
     }
 
     private Map<String,String> makeEnv(YarnConfiguration yarnConf) {
@@ -67,11 +72,12 @@ public class GBWScanYarnScript implements GBWScanScript {
 
         env.put("CLASSPATH", classPathEnv.toString());
 
-        for(GBWYarnEnv e:config.getEnvs()){
+        if(config.getEnvs()!=null) {
+            for (GBWYarnEnv e : config.getEnvs()) {
 
-            env.put(e.getKey(),e.getValue());
+                env.put(e.getKey(), e.getValue());
+            }
         }
-
         return env;
     }
 
@@ -83,13 +89,13 @@ public class GBWScanYarnScript implements GBWScanScript {
         appContext.setApplicationName(config.getAppname());
         appContext.setPriority(Priority.newInstance(config.getPriority()));
 
-        setAMResourceCapability(appContext,result);
-
         // Set up the container launch context for the application master
         ContainerLaunchContext amContainer = ContainerLaunchContext.newInstance(
                 null, makeEnv(conf), config.getCmds(), null, null, null);
 
         appContext.setAMContainerSpec(amContainer);
+
+        setAMResourceCapability(appContext,result);
 
         yarnClient.submitApplication(appContext);
 
@@ -125,7 +131,7 @@ public class GBWScanYarnScript implements GBWScanScript {
                 YarnClusterMetrics clusterMetrics = yarnClient.getYarnClusterMetrics();
 
                 log.warn(String.format("Find a hadoop yarn create application bugs in %s:%d ,appID:%s",host.getServer(),host.getPort(),appId.toString()));
-
+               // System.out.println(String.format("Find a hadoop yarn create application bugs in %s:%d ,appID:%s",host.getServer(),host.getPort(),appId.toString()));
                 GBWScanYarnResult result = new GBWScanYarnResult(config,host);
                 result.setAppID(appId.toString());
                 result.setMaxMem(appResponse.getMaximumResourceCapability().getMemorySize());
@@ -141,6 +147,7 @@ public class GBWScanYarnScript implements GBWScanScript {
             }
 
         } catch (Exception e){
+            //e.printStackTrace();
             log.error(String.format("scan yarn error:for:%s:%d message:%s",host.getServer(),host.getPort(),e.getMessage()));
         }finally {
             if(yarnClient!=null) {
@@ -217,6 +224,33 @@ public class GBWScanYarnScript implements GBWScanScript {
             }
         }
 
+    }
+
+    public static void main(String[] args){
+
+        Host host = new Host("","",8088,null,null);
+
+        GBWScanYarnConfig config = new GBWScanYarnConfig();
+        config.setAppname("test");
+        config.setMemory(1024);
+        config.setMonitor(false);
+        config.setPriority(1);
+        config.setQueue("test");
+        config.setTimeout(100000);
+        config.setRunCmd(true);
+        List<String> cmds = new ArrayList<>();
+
+        cmds.add("touch /tmp/test.datadata");
+
+        config.setCmds(cmds);
+
+        config.setVcores(1);
+
+        config.setUser("test");
+
+        GBWScanYarnScript scanYarnScript = new GBWScanYarnScript(config);
+
+        scanYarnScript.scan(host,null);
     }
 
 }

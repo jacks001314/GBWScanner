@@ -85,5 +85,28 @@
 		"refer":"https://www.exploit-db.com/exploits/47416",
 		"conTimeout":10000,
 		"readTimeout":10000
+    },
+    "scanYarnConfig":{
+		"isOn":false,
+		"name":"HadoopYarn",
+		"type":"scanScriptHadoopYarn",
+		"msg":"hadoop yarn no auth ,remote create application and exe any codes",
+		"subject":"please set auth hadoop",
+		"code":"none",
+		"refer":"none",
+		"conTimeout":10000,
+		"readTimeout":10000,
+        
+        "runCmd":true,
+        "monitor":true,
+        "user":"scan",
+        "appname":"scanYarn",
+        "priority":0,
+        "queue":"","
+        "timeout":100000,
+        "cmds":["touch /tmp/test.data","echo scanYarn>>/tmp/test.data"],
+        "envs":[],
+        "memory:1024,
+        "vcores":1
     }
 }

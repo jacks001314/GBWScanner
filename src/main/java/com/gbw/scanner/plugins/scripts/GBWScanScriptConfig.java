@@ -1,5 +1,6 @@
 package com.gbw.scanner.plugins.scripts;
 
+import com.gbw.scanner.plugins.scripts.hadoop.yarn.GBWScanYarnConfig;
 import com.gbw.scanner.plugins.scripts.web.flink.GBWScanFlinkScriptConfig;
 import com.gbw.scanner.plugins.scripts.web.solr.GBWScanSolrScriptConfig;
 import com.gbw.scanner.plugins.scripts.web.tomcat.GBWScanAJPConfig;
@@ -18,7 +19,7 @@ public class GBWScanScriptConfig extends GBWScanScriptCommonConfig {
     private GBWScanSMBMS17010ScriptConfig  ms17010ScriptConfig;
     private GBWScanBluekeepScriptConfig bluekeepScriptConfig;
 
-
+    private GBWScanYarnConfig scanYarnConfig;
 
     public int getThreads() {
         return threads;
@@ -75,5 +76,13 @@ public class GBWScanScriptConfig extends GBWScanScriptCommonConfig {
 
     public void setSolrDataImportScriptConfig(GBWScanSolrScriptConfig solrDataImportScriptConfig) {
         this.solrDataImportScriptConfig = solrDataImportScriptConfig;
+    }
+
+    public GBWScanYarnConfig getScanYarnConfig() {
+        return scanYarnConfig;
+    }
+
+    public void setScanYarnConfig(GBWScanYarnConfig scanYarnConfig) {
+        this.scanYarnConfig = scanYarnConfig;
     }
 }

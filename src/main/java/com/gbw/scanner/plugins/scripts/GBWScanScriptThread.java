@@ -38,7 +38,9 @@ public class GBWScanScriptThread implements Runnable {
                 if(scanScript!=null){
 
                     log.info(String.format("Start Scan script:%s for host:%s:%d",scanType,host.getIp(),host.getPort()));
-                    scanScript.scan(host,sinkQueue);
+
+                    if(scanScript.isAccept(host))
+                        scanScript.scan(host,sinkQueue);
                 }
             }
         }

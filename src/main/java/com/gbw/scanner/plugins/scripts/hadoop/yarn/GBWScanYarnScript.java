@@ -290,7 +290,7 @@ public class GBWScanYarnScript implements GBWScanScript {
 
     public static void main(String[] args){
 
-        Host host = new Host("","",8088,null,null);
+        Host host = new Host("39.106.121.27","39.106.121.27",8088,null,null);
 
         GBWScanYarnConfig config = new GBWScanYarnConfig();
         config.setAppname("test");

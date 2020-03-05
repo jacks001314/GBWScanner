@@ -33,6 +33,20 @@ public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
     /*Amount of virtual cores to be requested to run the shell command"*/
     private int vcores;
 
+    private String uri;
+    private List<String> keys;
+
+
+
+    public String getUri() {
+        return uri;
+    }
+
+
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
 
     public String getUser() {
         return user;
@@ -123,5 +137,13 @@ public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
 
     public void setMonitor(boolean monitor) {
         this.monitor = monitor;
+    }
+
+    public List<String> getKeys() {
+        return keys;
+    }
+
+    public void setKeys(List<String> keys) {
+        this.keys = keys;
     }
 }

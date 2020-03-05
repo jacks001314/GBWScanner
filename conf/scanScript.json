@@ -104,9 +104,11 @@
         "priority":0,
         "queue":"","
         "timeout":100000,
-        "cmds":["touch /tmp/test.data","echo scanYarn>>/tmp/test.data"],
+        "cmds":["touch /tmp/test.data"],
         "envs":[],
         "memory:1024,
-        "vcores":1
+        "vcores":1,
+        "uri":"/cluster",
+        "keys":["/cluster/nodes","All Applications"]
     }
 }

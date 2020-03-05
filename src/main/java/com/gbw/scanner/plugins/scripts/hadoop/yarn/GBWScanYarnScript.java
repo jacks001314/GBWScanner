@@ -1,9 +1,15 @@
 package com.gbw.scanner.plugins.scripts.hadoop.yarn;
 
 import com.gbw.scanner.Host;
+import com.gbw.scanner.http.GBWHttpClientBuilder;
+import com.gbw.scanner.http.GBWHttpGetRequestBuilder;
+import com.gbw.scanner.http.GBWHttpResponse;
 import com.gbw.scanner.plugins.scripts.GBWScanScript;
 import com.gbw.scanner.plugins.scripts.GBWScanScriptCommonConfig;
+import com.gbw.scanner.plugins.scripts.web.flink.FlinkHttpRequestBuilder;
 import com.gbw.scanner.sink.SinkQueue;
+import com.gbw.scanner.utils.HttpUtils;
+import com.xmap.api.utils.TextUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.api.ApplicationConstants;
 import org.apache.hadoop.yarn.api.protocolrecords.GetNewApplicationResponse;
@@ -12,6 +18,9 @@ import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.client.api.YarnClientApplication;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.exceptions.YarnException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,9 +45,61 @@ public class GBWScanYarnScript implements GBWScanScript {
         return config;
     }
 
+    private boolean isYarn(Host host, CloseableHttpClient httpClient) {
+
+        List<String> keys = config.getKeys();
+        if(keys == null || keys.size()==0)
+            return false;
+
+        HttpGet request = new GBWHttpGetRequestBuilder(host.getProto(),host.getServer(),host.getPort(),config.getUri())
+                .addHead("User-Agent","YarnClient")
+                .setTimeout(config.getConTimeout(),config.getReadTimeout())
+                .build();
+
+        GBWHttpResponse response = HttpUtils.send(httpClient,request,true);
+
+        String content = response.getContent();
+
+        if(TextUtils.isEmpty(content))
+            return false;
+
+
+        for(String k:keys){
+
+            if(!content.contains(k))
+                return false;
+        }
+
+        return true;
+    }
+
     @Override
     public boolean isAccept(Host host) {
-        return true;
+
+        HttpUriRequest httpRequest;
+        GBWHttpResponse httpResponse;
+        boolean res = false;
+
+        CloseableHttpClient httpClient = null;
+
+        try {
+            httpClient = GBWHttpClientBuilder.make(host.getProto(),host.getPort());
+            res = isYarn(host,httpClient);
+        }catch (Exception e){
+            return false;
+        }finally {
+
+            if(httpClient!=null)
+            {
+                try {
+                    httpClient.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return res;
     }
 
     private void setAMResourceCapability(ApplicationSubmissionContext appContext,GBWScanYarnResult result){
@@ -115,6 +176,7 @@ public class GBWScanYarnScript implements GBWScanScript {
 
             conf = new YarnConfiguration(new Configuration());
             conf.set(YarnConfiguration.RM_ADDRESS, host.getServer());
+            conf.setLong(YarnConfiguration.YARN_CLIENT_APPLICATION_CLIENT_PROTOCOL_POLL_TIMEOUT_MS,10000);
             yarnClient = YarnClient.createYarnClient();
 
             yarnClient.init(conf);
@@ -240,6 +302,16 @@ public class GBWScanYarnScript implements GBWScanScript {
         config.setRunCmd(true);
         List<String> cmds = new ArrayList<>();
 
+        config.setReadTimeout(10000);
+        config.setConTimeout(10000);
+
+        config.setUri("/cluster");
+        List<String> keys = new ArrayList<>();
+        keys.add("/cluster/nodes");
+        keys.add("All Applications");
+        config.setKeys(keys);
+
+
         cmds.add("touch /tmp/test.datadata");
 
         config.setCmds(cmds);
@@ -249,8 +321,9 @@ public class GBWScanYarnScript implements GBWScanScript {
         config.setUser("test");
 
         GBWScanYarnScript scanYarnScript = new GBWScanYarnScript(config);
+        System.out.println(scanYarnScript.isAccept(host));
 
-        scanYarnScript.scan(host,null);
+        //scanYarnScript.scan(host,null);
     }
 
 }

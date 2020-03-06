@@ -2,6 +2,7 @@ package com.gbw.scanner.plugins.scripts.hadoop.yarn;
 
 import com.gbw.scanner.plugins.scripts.GBWScanScriptCommonConfig;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
@@ -38,7 +39,37 @@ public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
 
     private int ipcRetries;
 
+    /*for utils*/
+    private String addr;
 
+    public GBWScanYarnConfig(){
+
+        setConTimeout(10000);
+        setReadTimeout(10000);
+        setOn(true);
+        setUser("test");
+        setRunCmd(false);
+        setMonitor(false);
+        setAppname("test");
+        setPriority(0);
+        setQueue("default");
+        setTimeout(60000);
+        List<String> cmd = new ArrayList<>();
+        cmd.add("touch /tmp/test.data");
+
+        setCmds(cmd);
+
+        setEnvs(new ArrayList<>());
+        setMemory(1024);
+        setVcores(1);
+        setUri("/cluster");
+        List<String> keys = new ArrayList<>();
+        keys.add("/cluster/nodes");
+        keys.add("All Applications");
+        setKeys(keys);
+        setIpcRetries(0);
+
+    }
 
     public String getUri() {
         return uri;
@@ -156,4 +187,43 @@ public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
     public void setIpcRetries(int ipcRetries) {
         this.ipcRetries = ipcRetries;
     }
+
+    public String getAddr() {
+        return addr;
+    }
+
+    public void setAddr(String addr) {
+        this.addr = addr;
+    }
+
+    public String toString(){
+
+        StringBuffer sb = new StringBuffer();
+        cmds.forEach(e->sb.append(e+"\n"));
+
+        return String.format("addr:%s\n" +
+                        "appname:%s\n" +
+                        "user:%s\n" +
+                        "queue:%s\n" +
+                        "priority:%d\n" +
+                        "memory:%d\n" +
+                        "cores:%d\n" +
+                        "timeout:%d\n" +
+                        "ipcRetries:%d\n" +
+                        "mon:%s\n" +
+                        "cmds:%s\n",
+                addr==null?"0.0.0.0":addr,
+                appname,
+                user,
+                queue,
+                priority,
+                memory,
+                vcores,
+                timeout,
+                ipcRetries,
+                monitor?"true":"false",
+                sb.toString());
+
+    }
+
 }

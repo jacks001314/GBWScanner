@@ -17,6 +17,7 @@ if [ $# = 0 ]; then
   echo "Usage: GBWScanner COMMAND"
   echo "where COMMAND is one of:"
   echo "tcp		 					send/recv tcp packets"
+  echo "yarn		 			    run hadoop yarn attack!"
   exit 1
 fi
 
@@ -28,17 +29,19 @@ shift
 THIS_DIR=`dirname "$THIS"`
 #GBWScanner_HOME=`cd "$THIS_DIR/.." ; pwd`
 
-GBWScanner_JOB=/opt/antell/GBWScanner/lib/GBWScanner-1.0.jar
+CLASSP=/opt/scan/GBWScanner/conf:/opt/scan/GBWScanner/lib/*
 
 
 # figure out which class to run
 if [ "$COMMAND" = "tcp" ] ; then
     CLASS=com.gbw.scanner.plugins.detect.tcp.TCPUtils
+elif [ "$COMMAND" = "yarn" ] ; then
+    CLASS=com.gbw.scanner.plugins.scripts.hadoop.yarn.GBWScanYarnScript
 else
     CLASS=$COMMAND
 fi
 
-EXEC_CALL="java jar $GBWScanner_JOB"
+EXEC_CALL="java -cp $CLASSP $CLASS"
 
 
 # run it

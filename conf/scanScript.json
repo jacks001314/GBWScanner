@@ -109,6 +109,7 @@
         "memory":1024,
         "vcores":1,
         "uri":"/cluster",
-        "keys":["/cluster/nodes","All Applications"]
+        "keys":["/cluster/nodes","All Applications"],
+        "ipcRetries":1
     }
 }

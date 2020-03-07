@@ -161,8 +161,6 @@ public class GBWYarnUtils {
             GBWHttpResponse response = HttpUtils.send(httpClient,request,true);
 
             Gson gson = new Gson();
-
-            System.out.println(response.getContent());
             return gson.fromJson(response.getContent(),GBWYarnCluster.class);
         }catch (Exception e){
 
@@ -183,7 +181,6 @@ public class GBWYarnUtils {
 
             Gson gson = new Gson();
 
-            System.out.println(response.getContent());
             return gson.fromJson(response.getContent(),GBWYarnApp.class);
         }catch (Exception e){
 

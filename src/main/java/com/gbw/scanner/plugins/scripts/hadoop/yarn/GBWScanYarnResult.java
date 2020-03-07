@@ -15,10 +15,14 @@ public class GBWScanYarnResult  extends GBWScanScriptResult {
     private int nodes;
     private long maxMem;
     private int maxVcores;
-
+    private String scan;
 
     public GBWScanYarnResult(GBWScanScriptCommonConfig scanScriptConfig, Host host) {
         super(scanScriptConfig, host, GBWScanScriptPlugin.hadoopYarnScan);
+
+        nodes = 0;
+        maxMem = 0;
+        maxVcores = 0;
     }
 
     @Override
@@ -28,6 +32,7 @@ public class GBWScanYarnResult  extends GBWScanScriptResult {
         cb.field("nodes",nodes);
         cb.field("maxMem",maxMem);
         cb.field("maxVcores",maxVcores);
+        cb.field("scan",scan);
 
         return cb;
     }
@@ -62,5 +67,13 @@ public class GBWScanYarnResult  extends GBWScanScriptResult {
 
     public void setMaxVcores(int maxVcores) {
         this.maxVcores = maxVcores;
+    }
+
+    public String getScan() {
+        return scan;
+    }
+
+    public void setScan(String scan) {
+        this.scan = scan;
     }
 }

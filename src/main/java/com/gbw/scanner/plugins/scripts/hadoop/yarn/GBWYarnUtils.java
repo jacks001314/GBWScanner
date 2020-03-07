@@ -1,10 +1,20 @@
 package com.gbw.scanner.plugins.scripts.hadoop.yarn;
 
+import com.gbw.scanner.Host;
+import com.gbw.scanner.http.GBWHttpGetRequestBuilder;
+import com.gbw.scanner.http.GBWHttpPostRequestBuilder;
+import com.gbw.scanner.http.GBWHttpResponse;
+import com.gbw.scanner.utils.HttpUtils;
+import com.google.gson.Gson;
 import org.apache.commons.cli.*;
 import org.apache.hadoop.yarn.api.records.ResourceInformation;
 import org.apache.hadoop.yarn.util.UnitsConversionUtil;
 import org.apache.hadoop.yarn.util.resource.ResourceUtils;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +31,7 @@ public class GBWYarnUtils {
         Options opts = new Options();
 
         opts.addOption("addr", true, "Application address<ip>:[port]");
+        opts.addOption("port", true, "Application port");
         opts.addOption("user", true, "Application user. Default value - test");
         opts.addOption("appname", true, "Application Name. Default value - test");
         opts.addOption("priority", true, "Application Priority. Default 0");
@@ -46,7 +57,13 @@ public class GBWYarnUtils {
             return null;
         }
 
+
         config.setAddr(cliParser.getOptionValue("addr"));
+
+        if(cliParser.hasOption("port")){
+
+            config.setPort(Integer.parseInt(cliParser.getOptionValue("port")));
+        }
 
         if(cliParser.hasOption("user")){
             config.setUser(cliParser.getOptionValue("user"));
@@ -133,13 +150,70 @@ public class GBWYarnUtils {
         return resources;
     }
 
-    public static void main(String[] args) throws ParseException {
+    public static GBWYarnCluster getYarnCluster(GBWScanYarnConfig config,CloseableHttpClient httpClient,Host host){
 
-        GBWScanYarnConfig config = createYarnConfig(args);
+        try {
+            HttpGet request = new GBWHttpGetRequestBuilder(host.getProto(),host.getServer(),host.getPort(),"/ws/v1/cluster/metrics")
+                    .addHead("User-Agent","YarnClient")
+                    .setTimeout(config.getConTimeout(),config.getReadTimeout())
+                    .build();
 
-        if(config!=null){
-            System.out.println(config);
+            GBWHttpResponse response = HttpUtils.send(httpClient,request,true);
+
+            Gson gson = new Gson();
+
+            System.out.println(response.getContent());
+            return gson.fromJson(response.getContent(),GBWYarnCluster.class);
+        }catch (Exception e){
+
+
         }
+        return null;
+    }
+
+    public static GBWYarnApp createYarnApp(GBWScanYarnConfig config,CloseableHttpClient httpClient,Host host){
+
+        try {
+            HttpPost request = new GBWHttpPostRequestBuilder(host.getProto(),host.getServer(),host.getPort(),"/ws/v1/cluster/apps/new-application")
+                    .addHead("User-Agent","YarnClient")
+                    .setTimeout(config.getConTimeout(),config.getReadTimeout())
+                    .build();
+
+            GBWHttpResponse response = HttpUtils.send(httpClient,request,true);
+
+            Gson gson = new Gson();
+
+            System.out.println(response.getContent());
+            return gson.fromJson(response.getContent(),GBWYarnApp.class);
+        }catch (Exception e){
+
+
+        }
+        return null;
+    }
+
+    public static HttpPost createYarnAppSubmitRequest(GBWScanYarnConfig config,CloseableHttpClient httpClient,GBWYarnApp app,Host host) throws IOException {
+
+        HttpPost request = new GBWHttpPostRequestBuilder(host.getProto(),host.getServer(),host.getPort(),"/ws/v1/cluster/apps")
+                .addHead("User-Agent","YarnClient")
+                .addHead("Accept"," application/json")
+                .addHead("Content-Type"," application/json")
+                .setTimeout(config.getConTimeout(),config.getReadTimeout())
+                .postString(createYarnPostJson(app,config),false)
+                .build();
+
+
+        return request;
+    }
+
+
+    public static String createYarnPostJson(GBWYarnApp app,GBWScanYarnConfig config){
+
+        Gson gson = new Gson();
+
+        GBWYarnAppPostData postData = new GBWYarnAppPostData(config,app);
+
+        return gson.toJson(postData);
     }
 
 }

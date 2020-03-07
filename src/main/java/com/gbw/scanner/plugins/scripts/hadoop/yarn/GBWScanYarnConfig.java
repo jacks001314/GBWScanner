@@ -42,6 +42,8 @@ public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
     /*for utils*/
     private String addr;
 
+    private int port;
+
     public GBWScanYarnConfig(){
 
         setConTimeout(10000);
@@ -69,6 +71,7 @@ public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
         setKeys(keys);
         setIpcRetries(0);
 
+        setPort(8088);
     }
 
     public String getUri() {
@@ -202,6 +205,7 @@ public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
         cmds.forEach(e->sb.append(e+"\n"));
 
         return String.format("addr:%s\n" +
+                        "port:%d\n" +
                         "appname:%s\n" +
                         "user:%s\n" +
                         "queue:%s\n" +
@@ -213,6 +217,7 @@ public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
                         "mon:%s\n" +
                         "cmds:%s\n",
                 addr==null?"0.0.0.0":addr,
+                port,
                 appname,
                 user,
                 queue,
@@ -226,4 +231,11 @@ public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
 
     }
 
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
 }

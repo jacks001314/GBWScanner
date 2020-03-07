@@ -126,7 +126,7 @@ public class GBWScanYarnScript implements GBWScanScript {
 
             System.out.println(config);
 
-            Host host = new Host(config.getAddr(),config.getAddr(),8088,null,null);
+            Host host = new Host(config.getAddr(),config.getAddr(),config.getPort(),null,null);
             new GBWScanYarnScript(config).scan(host,null);
         }
 

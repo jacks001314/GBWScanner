@@ -9,6 +9,7 @@ public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
 
     private boolean runCmd;
     private boolean monitor;
+    private boolean preFilter;
 
     private String user;
 
@@ -70,7 +71,7 @@ public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
         keys.add("All Applications");
         setKeys(keys);
         setIpcRetries(0);
-
+        setPreFilter(false);
         setPort(8088);
     }
 
@@ -237,5 +238,13 @@ public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public boolean isPreFilter() {
+        return preFilter;
+    }
+
+    public void setPreFilter(boolean preFilter) {
+        this.preFilter = preFilter;
     }
 }

@@ -77,6 +77,9 @@ public class GBWScanYarnScript implements GBWScanScript {
 
         CloseableHttpClient httpClient = null;
 
+        if(!config.isPreFilter())
+            return true;
+        
         try {
             httpClient = GBWHttpClientBuilder.make(host.getProto(),host.getPort());
             res = isYarn(host,httpClient);

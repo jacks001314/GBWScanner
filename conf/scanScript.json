@@ -99,6 +99,7 @@
         
         "runCmd":true,
         "monitor":true,
+        "preFilter":false,
         "user":"scan",
         "appname":"scanYarn",
         "priority":0,

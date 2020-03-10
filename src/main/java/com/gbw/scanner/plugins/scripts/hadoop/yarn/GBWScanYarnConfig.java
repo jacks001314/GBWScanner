@@ -45,6 +45,8 @@ public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
 
     private int port;
 
+    private String ua;
+
     public GBWScanYarnConfig(){
 
         setConTimeout(10000);
@@ -73,6 +75,7 @@ public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
         setIpcRetries(0);
         setPreFilter(false);
         setPort(8088);
+        setUa("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36");
     }
 
     public String getUri() {
@@ -246,5 +249,13 @@ public class GBWScanYarnConfig extends GBWScanScriptCommonConfig {
 
     public void setPreFilter(boolean preFilter) {
         this.preFilter = preFilter;
+    }
+
+    public String getUa() {
+        return ua;
+    }
+
+    public void setUa(String ua) {
+        this.ua = ua;
     }
 }

@@ -37,7 +37,7 @@ public class GBWScanYarnRestScript {
 
             /*create a app*/
             GBWYarnApp app = GBWYarnUtils.createYarnApp(config,httpClient,host);
-            if(!TextUtils.isEmpty(app.getAppId())){
+            if(app!=null&&!TextUtils.isEmpty(app.getAppId())){
 
                 res = true;
                 log.warn(String.format("Find a hadoop yarn create application bugs in %s:%d ,appID:%s",host.getServer(),host.getPort(),app.getAppId()));
@@ -71,7 +71,8 @@ public class GBWScanYarnRestScript {
             }
 
         }catch (Exception e){
-
+            e.printStackTrace();
+            log.error(String.format("Rest scan yarn error:for:%s:%d message:%s",host.getServer(),host.getPort(),e.getMessage()));
         }finally {
 
             if(httpClient!=null) {

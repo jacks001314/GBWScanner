@@ -71,6 +71,7 @@ public abstract class GBWAbstractHostSource implements GBWHostSource {
                 } else {
                     int c = read();
                     if (c != 0) {
+                        log.info(String.format("Current queue etries:%d,read:%d",sourceEntries.size(),c));
                         continue;
                     }
                 }

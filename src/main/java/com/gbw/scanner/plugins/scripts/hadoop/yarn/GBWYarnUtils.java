@@ -42,6 +42,7 @@ public class GBWYarnUtils {
         opts.addOption("memory", true, "memory need be allocated for application");
         opts.addOption("cores", true, "cpu cores need be allocated for application");
         opts.addOption("ipcRetries", true, "the number of ipc retry when connection ipc failed");
+        opts.addOption("ua", true, "http request user-agent");
         opts.addOption("help", false, "Print usage");
 
         CommandLine cliParser = new GnuParser().parse(opts, args);
@@ -111,6 +112,11 @@ public class GBWYarnUtils {
             config.setIpcRetries(Integer.parseInt(cliParser.getOptionValue("ipcRetries")));
         }
 
+        if(cliParser.hasOption("ua")){
+
+            config.setUa(cliParser.getOptionValue("ua"));
+        }
+
         return config;
     }
 
@@ -154,7 +160,7 @@ public class GBWYarnUtils {
 
         try {
             HttpGet request = new GBWHttpGetRequestBuilder(host.getProto(),host.getServer(),host.getPort(),"/ws/v1/cluster/metrics")
-                    .addHead("User-Agent","YarnClient")
+                    .addHead("User-Agent",config.getUa())
                     .setTimeout(config.getConTimeout(),config.getReadTimeout())
                     .build();
 
@@ -173,7 +179,7 @@ public class GBWYarnUtils {
 
         try {
             HttpPost request = new GBWHttpPostRequestBuilder(host.getProto(),host.getServer(),host.getPort(),"/ws/v1/cluster/apps/new-application")
-                    .addHead("User-Agent","YarnClient")
+                    .addHead("User-Agent",config.getUa())
                     .setTimeout(config.getConTimeout(),config.getReadTimeout())
                     .build();
 
@@ -192,7 +198,7 @@ public class GBWYarnUtils {
     public static HttpPost createYarnAppSubmitRequest(GBWScanYarnConfig config,CloseableHttpClient httpClient,GBWYarnApp app,Host host) throws IOException {
 
         HttpPost request = new GBWHttpPostRequestBuilder(host.getProto(),host.getServer(),host.getPort(),"/ws/v1/cluster/apps")
-                .addHead("User-Agent","YarnClient")
+                .addHead("User-Agent",config.getUa())
                 .addHead("Accept"," application/json")
                 .addHead("Content-Type"," application/json")
                 .setTimeout(config.getConTimeout(),config.getReadTimeout())

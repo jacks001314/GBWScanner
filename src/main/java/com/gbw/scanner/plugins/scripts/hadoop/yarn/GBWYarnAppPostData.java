@@ -12,6 +12,8 @@ public class GBWYarnAppPostData {
     @SerializedName("application-name")
     private String appname;
 
+    private String queue;
+
     @SerializedName("am-container-spec")
     private ContainerSpec containerSpec;
 
@@ -35,6 +37,8 @@ public class GBWYarnAppPostData {
         unmanagedAM = false;
         maxAppAttempts = 2;
         appType = "YARN";
+
+        queue = config.getQueue();
     }
 
     public String getAppType() {

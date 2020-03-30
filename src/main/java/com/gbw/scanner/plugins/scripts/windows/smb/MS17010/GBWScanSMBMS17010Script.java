@@ -132,10 +132,11 @@ public class GBWScanSMBMS17010Script implements GBWScanScript {
                     result.setOs(os);
                     sinkQueue.put(result);
                 }
+            }else {
+                System.out.println(String.format("no vul:%s:%d", host.getHost(), host.getPort()));
             }
-
         }catch (Exception e){
-
+            System.out.println(String.format("scan %s:%d,error:%s",host.getHost(),host.getPort(),e.getMessage()));
         }finally {
             try {
                 if(connection!=null)

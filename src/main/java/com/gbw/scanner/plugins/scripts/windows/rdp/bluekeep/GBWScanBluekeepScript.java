@@ -71,6 +71,8 @@ public class GBWScanBluekeepScript implements GBWScanScript {
                     }
 
                     return;
+                }else {
+                    System.out.println(String.format("no vul:%s:%d", host.getHost(), host.getPort()));
                 }
             }
         }
@@ -185,7 +187,7 @@ public class GBWScanBluekeepScript implements GBWScanScript {
             doCheck(host,sinkQueue,connection,rc4);
 
         }catch (Exception e){
-
+            System.out.println(String.format("scan %s:%d,error:%s",host.getHost(),host.getPort(),e.getMessage()));
         }finally {
 
             try {

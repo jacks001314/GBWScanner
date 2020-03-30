@@ -139,6 +139,8 @@ public class GBWScanScriptTool {
                 try {
                     Host host = hosts.take();
                     if(host!=null){
+
+                        System.out.println(String.format("start scan:%s:%d",host.getHost(),host.getPort()));
                         scanScript.scan(host,null);
                     }
 

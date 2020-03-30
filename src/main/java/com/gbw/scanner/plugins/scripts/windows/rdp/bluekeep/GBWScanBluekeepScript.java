@@ -6,6 +6,7 @@ import com.gbw.scanner.connection.GBWConnection;
 import com.gbw.scanner.connection.SocketClient;
 import com.gbw.scanner.plugins.scripts.GBWScanScript;
 import com.gbw.scanner.plugins.scripts.GBWScanScriptCommonConfig;
+import com.gbw.scanner.plugins.scripts.GBWScanScriptTool;
 import com.gbw.scanner.protocol.GBWProtoBuffer;
 import com.gbw.scanner.protocol.rdp.GBWRDPAttachUserConfirm;
 import com.gbw.scanner.protocol.rdp.GBWRDPMCSResponse;
@@ -14,6 +15,7 @@ import com.gbw.scanner.utils.ByteDataUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 
 public class GBWScanBluekeepScript implements GBWScanScript {
@@ -61,10 +63,12 @@ public class GBWScanBluekeepScript implements GBWScanScript {
                 connection.read(results);
                 if(ByteDataUtils.contains(results,payloads)){
                     log.warn("Found bluekeep valnerable in Host:"+host.getIp()+":"+host.getPort());
-
-                    GBWScanBluekeepScriptResult bluekeepScriptResult = new GBWScanBluekeepScriptResult(config,host);
-                    bluekeepScriptResult.setPayload(ByteDataUtils.toHex(results).substring(0,64));
-                    sinkQueue.put(bluekeepScriptResult);
+                    System.out.println("Found bluekeep valnerable in Host:"+host.getIp()+":"+host.getPort());
+                    if(sinkQueue!=null) {
+                        GBWScanBluekeepScriptResult bluekeepScriptResult = new GBWScanBluekeepScriptResult(config, host);
+                        bluekeepScriptResult.setPayload(ByteDataUtils.toHex(results).substring(0, 64));
+                        sinkQueue.put(bluekeepScriptResult);
+                    }
 
                     return;
                 }
@@ -82,12 +86,13 @@ public class GBWScanBluekeepScript implements GBWScanScript {
         SocketClient socketClient = new SocketClient();
 
         try {
-            socketClient.setDefaultTimeout(10000);
-            socketClient.setConnectTimeout(10000);
+            socketClient.setDefaultTimeout(config.getConTimeout());
+            socketClient.setConnectTimeout(config.getConTimeout());
             socketClient.connect(ip,port);
-            socketClient.setSoTimeout(10000);
+            socketClient.setSoTimeout(config.getReadTimeout());
 
         } catch (Exception e) {
+            System.out.println(String.format("Connect to ip:%s:%d,error%s",host.getHost(),host.getPort(),e.getMessage()));
             return;
         }
         Connection connection = null;
@@ -189,5 +194,17 @@ public class GBWScanBluekeepScript implements GBWScanScript {
             }
         }
     }
+
+    public static void main(String[] args) throws Exception {
+
+        GBWScanBluekeepScriptConfig config = new GBWScanBluekeepScriptConfig();
+
+        GBWScanBluekeepScript scanBluekeepScript = new GBWScanBluekeepScript(config);
+
+        GBWScanScriptTool tool = new GBWScanScriptTool(args,scanBluekeepScript,3389);
+
+        tool.start();
+    }
+
 
 }

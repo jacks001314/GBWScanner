@@ -18,6 +18,8 @@ if [ $# = 0 ]; then
   echo "where COMMAND is one of:"
   echo "tcp		 					send/recv tcp packets"
   echo "yarn		 			    run hadoop yarn attack!"
+  echo "ms17010		 			    run ms17010 bug scan(yongheng zhi lang)!"
+  echo "bluekeep		 			run bluekeep bug scan!"
   exit 1
 fi
 
@@ -37,6 +39,13 @@ if [ "$COMMAND" = "tcp" ] ; then
     CLASS=com.gbw.scanner.plugins.detect.tcp.TCPUtils
 elif [ "$COMMAND" = "yarn" ] ; then
     CLASS=com.gbw.scanner.plugins.scripts.hadoop.yarn.GBWScanYarnScript
+
+elif [ "$COMMAND" = "ms17010" ] ; then
+    CLASS=com.gbw.scanner.plugins.scripts.windows.smb.MS17010.GBWScanSMBMS17010Script
+
+elif [ "$COMMAND" = "bluekeep" ] ; then
+    CLASS=com.gbw.scanner.plugins.scripts.windows.rdp.bluekeep.GBWScanBluekeepScript
+
 else
     CLASS=$COMMAND
 fi

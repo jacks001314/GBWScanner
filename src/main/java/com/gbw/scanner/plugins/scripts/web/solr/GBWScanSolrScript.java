@@ -83,6 +83,7 @@ public abstract class GBWScanSolrScript implements GBWScanScript {
                     httpClient.close();
                 } catch (IOException e) {
                     e.printStackTrace();
+
                 }
             }
         }

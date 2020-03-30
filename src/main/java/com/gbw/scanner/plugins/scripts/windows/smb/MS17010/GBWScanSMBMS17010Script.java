@@ -6,6 +6,7 @@ import com.gbw.scanner.connection.GBWConnection;
 import com.gbw.scanner.connection.SocketClient;
 import com.gbw.scanner.plugins.scripts.GBWScanScript;
 import com.gbw.scanner.plugins.scripts.GBWScanScriptCommonConfig;
+import com.gbw.scanner.plugins.scripts.GBWScanScriptTool;
 import com.gbw.scanner.protocol.GBWProtoBuffer;
 import com.gbw.scanner.sink.SinkQueue;
 import com.gbw.scanner.utils.ByteDataUtils;
@@ -54,12 +55,13 @@ public class GBWScanSMBMS17010Script implements GBWScanScript {
         SocketClient socketClient = new SocketClient();
 
         try {
-            socketClient.setDefaultTimeout(10000);
-            socketClient.setConnectTimeout(10000);
+            socketClient.setDefaultTimeout(config.getConTimeout());
+            socketClient.setConnectTimeout(config.getConTimeout());
             socketClient.connect(ip,port);
-            socketClient.setSoTimeout(10000);
+            socketClient.setSoTimeout(config.getReadTimeout());
 
         } catch (Exception e) {
+            System.out.println(String.format("Connect to ip:%s:%d,error%s",host.getHost(),host.getPort(),e.getMessage()));
             return;
         }
         Connection connection = null;
@@ -107,7 +109,7 @@ public class GBWScanSMBMS17010Script implements GBWScanScript {
             if (ByteDataUtils.equals(ntStatus, vul)){
 
                 log.warn(String.format("Host:%s has maybe MS17-010 vulnerable",ip));
-
+                System.out.println(String.format("Host:%s has maybe MS17-010 vulnerable",ip));
                 connection.send(GBWSMBRequestBuilder.makeTransRequest(treeId,processId,userID,mutID));
                 connection.read(results);
                 smbBuffer.resetRPos();
@@ -121,16 +123,15 @@ public class GBWScanSMBMS17010Script implements GBWScanScript {
                     key = calculateDoublepulsarXORKey(smbHeader.getSignature());
                     doublepulsar = true;
                     log.warn(String.format("Host:%s is likely infected with doublepulsar! key:%d",ip,key));
-
+                    System.out.println(String.format("Host:%s is likely infected with doublepulsar! key:%d",ip,key));
                 }
-
-
-                GBWScanSMBMS17010ScriptResult result = new GBWScanSMBMS17010ScriptResult(config,host);
-                result.setKey(key);
-                result.setDoublePulsar(doublepulsar);
-                result.setOs(os);
-
-                sinkQueue.put(result);
+                if(sinkQueue!=null){
+                    GBWScanSMBMS17010ScriptResult result = new GBWScanSMBMS17010ScriptResult(config,host);
+                    result.setKey(key);
+                    result.setDoublePulsar(doublepulsar);
+                    result.setOs(os);
+                    sinkQueue.put(result);
+                }
             }
 
         }catch (Exception e){
@@ -145,5 +146,17 @@ public class GBWScanSMBMS17010Script implements GBWScanScript {
 
         }
     }
+
+
+    public static void main(String[] args) throws Exception {
+
+        GBWScanSMBMS17010ScriptConfig config = new GBWScanSMBMS17010ScriptConfig();
+        GBWScanSMBMS17010Script script = new GBWScanSMBMS17010Script(config);
+        GBWScanScriptTool tool = new GBWScanScriptTool(args,script,445);
+
+        tool.start();
+
+    }
+
 
 }

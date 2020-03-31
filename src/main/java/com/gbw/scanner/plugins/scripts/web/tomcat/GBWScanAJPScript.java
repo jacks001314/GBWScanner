@@ -87,7 +87,7 @@ public class GBWScanAJPScript implements GBWScanScript {
 
         StringBuffer sb = new StringBuffer();
         responses.forEach(res->{
-            sb.append(res.getData());
+            sb.append(new String(res.getData()));
         });
 
         return sb.toString();

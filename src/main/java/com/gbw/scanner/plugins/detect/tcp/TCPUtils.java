@@ -5,11 +5,15 @@ import com.gbw.scanner.connection.GBWConnection;
 import com.gbw.scanner.connection.SSLSocketClient;
 import com.gbw.scanner.connection.SocketClient;
 import com.gbw.scanner.utils.ByteDataUtils;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
 
 
 public class TCPUtils {
 
-    private static void process(String ip,int port,String data,boolean isSSL) {
+    private static void process(String ip,int port,String data,boolean isHex,int bsize,int timeout,boolean isSSL) {
 
         SocketClient socketClient;
         if(isSSL){
@@ -19,10 +23,10 @@ public class TCPUtils {
         }
 
         try {
-            socketClient.setDefaultTimeout(10000);
-            socketClient.setConnectTimeout(10000);
+            socketClient.setDefaultTimeout(timeout);
+            socketClient.setConnectTimeout(timeout);
             socketClient.connect(ip,port);
-            socketClient.setSoTimeout(10000);
+            socketClient.setSoTimeout(timeout);
 
         } catch (Exception e) {
             System.out.println(String.format("Exception:%s:%d",ip,port));
@@ -30,15 +34,17 @@ public class TCPUtils {
         }
 
         Connection connection = new GBWConnection(socketClient);
-
-        byte[] results = new byte[1024];
+        byte[] results = new byte[bsize];
 
         try {
-            connection.send(ByteDataUtils.parseHex("0d0a696e666f0d0a"));
+
+            if(isHex){
+                connection.send(ByteDataUtils.parseHex(data));
+            }else{
+                connection.send(data);
+            }
             connection.read(results);
-
             System.out.println(String.format("%s:%d--->%s",ip,port,new String(results)));
-
         }catch (Exception e){
 
             System.out.println(String.format("When send/recv Exception:%s:%d",ip,port));
@@ -52,35 +58,53 @@ public class TCPUtils {
 
     public static void main(String[] args) throws Exception{
 
-        /*
-        if(args.length<3){
-            System.out.println("Usage: main <ipFname><port><dataFile>[isSSL]");
+        Options opts = new Options();
+        String ip;
+        int port;
+        String data;
+        int timeout = 10000;
+        boolean ssl = false;
+        boolean hex = false;
+
+        int bsize = 1024;
+
+        opts.addOption("host", true, "address<ip>:<port>");
+        opts.addOption("timeout", true, "connect/read timeout in milliseconds");
+        opts.addOption("data", true, "send data,hex/string");
+        opts.addOption("ssl", false, "enable ssl");
+        opts.addOption("hex", false, "hex");
+        opts.addOption("bsize", true, "receive data buffer size");
+        opts.addOption("help", false, "Print usage");
+
+        CommandLine cliParser = new GnuParser().parse(opts, args);
+        if(cliParser.hasOption("help")){
+            new HelpFormatter().printHelp("tcp-tool", opts);
+            System.exit(0);
+        }
+
+        if(!cliParser.hasOption("host")||!cliParser.hasOption("data")){
+            System.out.println("Please specify host and data");
             System.exit(-1);
         }
 
-        boolean isSSL = false;
+        String[] hp = cliParser.getOptionValue("host").split(":");
+        ip = hp[0];
+        port = Integer.parseInt(hp[1]);
+        data = cliParser.getOptionValue("data");
 
-        if(args.length>=4){
-            isSSL = args[3].equals("true");
-        }
+        if(cliParser.hasOption("ssl"))
+            ssl = true;
 
-        for(String ip: Files.readAllLines(Paths.get(args[0])) ){
+        if(cliParser.hasOption("hex"))
+            hex = true;
 
-            process(ip,Integer.parseInt(args[1]),String.format("%s\n\0",args[2]),isSSL);
-        }
+        if(cliParser.hasOption("bsize"))
+            bsize = Integer.parseInt("bsize");
 
-         */
-        System.out.println(new String(ByteDataUtils.parseHex("0d0a696e666f0d0a")));
-      String json = "{\"id\":3333,\"jsonrpc\":\"2.0\",\"method\":\"keepalived\",\"params\":{\"id\":\"xmrig\"}}\n\0";
-      String json1 = "{\"id\":3333,\"method\":\"mining.subscribe\",\"params\":[]}\n\0";
-      String json2 = "{\"id\":3,\"jsonrpc\":\"2.0\",\"method\":\"keepalived\",\"params\":{\"id\":\"7e7d5e33-8409-41eb-b96e-7a018b61a988\"}}";
-      String json3 = "\r\ninfo\r\n";
-      String ip = "120.27.3.140";
+        if(cliParser.hasOption("timeout"))
+            timeout = Integer.parseInt("timeout");
 
-      int port = 6379;
-
-
-        process(ip,port,json,false);
+        process(ip,port,data,hex,bsize,timeout,ssl);
 
     }
 

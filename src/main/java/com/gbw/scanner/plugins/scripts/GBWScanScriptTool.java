@@ -21,7 +21,7 @@ public class GBWScanScriptTool {
     private  int threads;
 
     private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
-
+    private CommandLine cliParser;
 
     public GBWScanScriptTool(GBWScanScript scanScript,LinkedBlockingQueue<Host> hosts,int threads){
 
@@ -36,13 +36,21 @@ public class GBWScanScriptTool {
         this.hosts = new LinkedBlockingQueue<>();
         this.threads = 1;
 
-        init(args,defaultPort);
+        init(new Options(),args,defaultPort);
     }
 
-    private void init(String[] args,int defaultPort) throws Exception{
+    public GBWScanScriptTool(String[] args,GBWScanScript scanScript,Options opts,int defaultPort) throws Exception{
+
+        this.scanScript = scanScript;
+        this.hosts = new LinkedBlockingQueue<>();
+        this.threads = 1;
+
+        init(opts,args,defaultPort);
+    }
+
+    private void init(Options opts,String[] args,int defaultPort) throws Exception{
 
         // Command line options
-        Options opts = new Options();
         int port = defaultPort;
         int timeout = 10000;
         GBWScanScriptCommonConfig config = scanScript.getConfig();
@@ -54,7 +62,7 @@ public class GBWScanScriptTool {
         opts.addOption("threads", true, "the number of threads");
         opts.addOption("help", false, "Print usage");
 
-        CommandLine cliParser = new GnuParser().parse(opts, args);
+        cliParser = new GnuParser().parse(opts, args);
         if(cliParser.hasOption("help")){
 
             new HelpFormatter().printHelp("GBWScanScript", opts);
@@ -83,7 +91,15 @@ public class GBWScanScriptTool {
                 if(TextUtils.isEmpty(line))
                     continue;
 
-                Host host = new Host(line,line,port,null,null);
+                Host host;
+
+                if(line.indexOf(":")!=-1){
+                    String[] hports = line.split(":");
+                    host = new Host(hports[0],hports[0],Integer.parseInt(hports[1]),null,null);
+                } else {
+                    host = new Host(line,line,port,null,null);
+                }
+
                 hosts.put(host);
             }
         }
@@ -99,6 +115,11 @@ public class GBWScanScriptTool {
 
         config.setConTimeout(timeout);
         config.setReadTimeout(timeout);
+    }
+
+
+    public CommandLine getCliParser() {
+        return cliParser;
     }
 
     public void start(){
@@ -128,13 +149,26 @@ public class GBWScanScriptTool {
 
     private class ScriptToolThread implements Runnable{
 
+        private boolean isPrint;
+        public ScriptToolThread(){
+
+            isPrint = false;
+        }
+
         @Override
         public void run() {
 
             while(true){
 
-                if(hosts.isEmpty())
+                if(hosts.isEmpty()) {
+                    if(!isPrint){
+
+                        System.out.println("Scan End..............................");
+                        isPrint = true;
+                    }
+
                     break;
+                }
 
                 try {
                     Host host = hosts.take();

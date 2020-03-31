@@ -51,7 +51,7 @@ public class GBWScanSolrVelocityScript extends GBWScanSolrScript {
                     return httpResponse.getContent();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return null;
         }
 
@@ -62,10 +62,26 @@ public class GBWScanSolrVelocityScript extends GBWScanSolrScript {
 
         int len = result.length();
         if(len<config.getResultLenMax()) {
-            GBWScanSolrVelocityScriptResult scriptResult = new GBWScanSolrVelocityScriptResult(config, host, result, solrCoreAdmin,core);
-            sinkQueue.put(scriptResult);
+
+            if(sinkQueue!=null) {
+                GBWScanSolrVelocityScriptResult scriptResult = new GBWScanSolrVelocityScriptResult(config, host, result, solrCoreAdmin,core);
+                sinkQueue.put(scriptResult);
+            }else{
+                System.out.println(String.format("Find a solr velocity template inject bugs in Host:%s:%d", host.getServer(), host.getPort()));
+                System.out.println("cmd:"+config.getCmd());
+                System.out.println(result);
+
+            }
             log.warn(String.format("Find a solr velocity template inject bugs in Host:%s:%d", host.getServer(), host.getPort()));
+
         }
     }
 
+    public static void main(String[] args) throws Exception {
+
+        GBWScanSolrScriptConfig config = new GBWScanSolrScriptConfig();
+        GBWScanSolrVelocityScript velocityScript = new GBWScanSolrVelocityScript(config);
+
+        velocityScript.runMain(args);
+    }
 }

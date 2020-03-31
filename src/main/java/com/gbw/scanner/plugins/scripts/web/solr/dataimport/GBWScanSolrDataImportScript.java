@@ -47,7 +47,7 @@ public class GBWScanSolrDataImportScript extends GBWScanSolrScript {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return null;
         }
 
@@ -56,9 +56,23 @@ public class GBWScanSolrDataImportScript extends GBWScanSolrScript {
 
     public void processResult(SinkQueue sinkQueue, Host host, SolrCoreAdmin solrCoreAdmin, String result,String core){
 
-        GBWScanSolrDataImportScriptResult scriptResult = new GBWScanSolrDataImportScriptResult(config,host,result,solrCoreAdmin,core);
-        sinkQueue.put(scriptResult);
+        if(sinkQueue!=null){
+            GBWScanSolrDataImportScriptResult scriptResult = new GBWScanSolrDataImportScriptResult(config,host,result,solrCoreAdmin,core);
+            sinkQueue.put(scriptResult);
+        }else{
+            System.out.println(String.format("Find a solr dataimport source bugs in Host:%s:%d",host.getServer(),host.getPort()));
+            System.out.println("cmd:"+config.getCmd());
+            System.out.println(result);
+        }
+
         log.warn(String.format("Find a solr dataimport source bugs in Host:%s:%d",host.getServer(),host.getPort()));
     }
 
+    public static void main(String[] args) throws Exception{
+
+        GBWScanSolrScriptConfig config = new GBWScanSolrScriptConfig();
+        GBWScanSolrDataImportScript scanSolrDataImportScript = new GBWScanSolrDataImportScript(config);
+
+        scanSolrDataImportScript.runMain(args);
+    }
 }

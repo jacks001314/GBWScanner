@@ -20,6 +20,11 @@ if [ $# = 0 ]; then
   echo "yarn		 			    run hadoop yarn attack!"
   echo "ms17010		 			    run ms17010 bug scan(yongheng zhi lang)!"
   echo "bluekeep		 			run bluekeep bug scan!"
+  echo "solrVel		 			    run solr Velocity rce scan!"
+  echo "solrImport		 			run solr dataImport rce scan!"
+  echo "flink		 			    run apache fink jar file upload scan!"
+  echo "tomcat		 			    run apache tomcat ajp any file download scan!"
+  echo "bruteforce		 			run bruteforce(ftp,ssh,mail,redis,mysql,msssql....)!"
   exit 1
 fi
 
@@ -35,7 +40,7 @@ CLASSP=/opt/scan/GBWScanner/conf:/opt/scan/GBWScanner/lib/*
 
 
 # figure out which class to run
-if [ "$COMMAND" = "tcp" ] ; then
+if [ "$COMMAND" = "tcp" ] ;then 
     CLASS=com.gbw.scanner.plugins.detect.tcp.TCPUtils
 elif [ "$COMMAND" = "yarn" ] ; then
     CLASS=com.gbw.scanner.plugins.scripts.hadoop.yarn.GBWScanYarnScript
@@ -45,6 +50,21 @@ elif [ "$COMMAND" = "ms17010" ] ; then
 
 elif [ "$COMMAND" = "bluekeep" ] ; then
     CLASS=com.gbw.scanner.plugins.scripts.windows.rdp.bluekeep.GBWScanBluekeepScript
+
+elif [ "$COMMAND" = "solrVel" ] ; then
+    CLASS=com.gbw.scanner.plugins.scripts.web.solr.velocity.GBWScanSolrVelocityScript
+
+elif [ "$COMMAND" = "solrImport" ] ; then
+    CLASS=com.gbw.scanner.plugins.scripts.web.solr.dataimport.GBWScanSolrDataImportScript
+
+elif [ "$COMMAND" = "flink" ] ; then
+    CLASS=com.gbw.scanner.plugins.scripts.web.flink.GBWScanFlinkScript
+
+elif [ "$COMMAND" = "tomcat" ] ; then
+    CLASS=com.gbw.scanner.plugins.scripts.web.tomcat.GBWScanAJPScript
+
+elif [ "$COMMAND" = "bruteforce" ] ; then
+    CLASS=com.gbw.scanner.plugins.bruteforce.GBWBruteForceTool
 
 else
     CLASS=$COMMAND

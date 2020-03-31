@@ -47,7 +47,14 @@ public class GBWBruteForceThread implements Runnable {
 
                         log.info(String.format("BruteForce ok:{proto:%s,host:%s,ip:%s,port:%d,user:%s,passwd:%s}",
                                 host.getProto(),host.getHost(),host.getIp(),host.getPort(),entry.getUser(),entry.getPasswd()));
-                        sinkQueue.put(bruteForceResult);
+
+                        if(sinkQueue!=null){
+                            sinkQueue.put(bruteForceResult);
+                        }else{
+
+                            System.out.println(String.format("BruteForce ok:{proto:%s,host:%s,ip:%s,port:%d,user:%s,passwd:%s}",
+                                    host.getProto(),host.getHost(),host.getIp(),host.getPort(),entry.getUser(),entry.getPasswd()));
+                        }
                     }
                 }
             }

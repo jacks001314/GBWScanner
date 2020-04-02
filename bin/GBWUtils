@@ -22,6 +22,7 @@ if [ $# = 0 ]; then
   echo "bluekeep		 			run bluekeep bug scan!"
   echo "solrVel		 			    run solr Velocity rce scan!"
   echo "solrImport		 			run solr dataImport rce scan!"
+  echo "solrRCE		 			    run solr rce cmds!"
   echo "flink		 			    run apache fink jar file upload scan!"
   echo "tomcat		 			    run apache tomcat ajp any file download scan!"
   echo "bruteforce		 			run bruteforce(ftp,ssh,mail,redis,mysql,msssql....)!"
@@ -56,6 +57,9 @@ elif [ "$COMMAND" = "solrVel" ] ; then
 
 elif [ "$COMMAND" = "solrImport" ] ; then
     CLASS=com.gbw.scanner.plugins.scripts.web.solr.dataimport.GBWScanSolrDataImportScript
+
+elif [ "$COMMAND" = "solrRCE" ] ; then
+    CLASS=com.gbw.scanner.plugins.scripts.web.solr.GBWSolrRCE
 
 elif [ "$COMMAND" = "flink" ] ; then
     CLASS=com.gbw.scanner.plugins.scripts.web.flink.GBWScanFlinkScript

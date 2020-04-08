@@ -64,7 +64,7 @@ public class GBWSolrRCE {
 
         host = cliParser.getOptionValue("host");
         if(cliParser.hasOption("port")){
-            port = Integer.parseInt("port");
+            port = Integer.parseInt(cliParser.getOptionValue("port"));
         }
 
         if(cliParser.hasOption("timeout"))

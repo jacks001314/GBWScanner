@@ -1,6 +1,5 @@
 package com.gbw.scanner.elasticsearch;
 
-import com.gbw.scanner.utils.ESUtil;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;

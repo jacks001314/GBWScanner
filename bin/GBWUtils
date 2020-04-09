@@ -26,6 +26,7 @@ if [ $# = 0 ]; then
   echo "flink		 			    run apache fink jar file upload scan!"
   echo "tomcat		 			    run apache tomcat ajp any file download scan!"
   echo "bruteforce		 			run bruteforce(ftp,ssh,mail,redis,mysql,msssql....)!"
+  echo "redis		 			    run redis no auth all kinds of attack!"
   exit 1
 fi
 
@@ -70,6 +71,8 @@ elif [ "$COMMAND" = "tomcat" ] ; then
 elif [ "$COMMAND" = "bruteforce" ] ; then
     CLASS=com.gbw.scanner.plugins.bruteforce.GBWBruteForceTool
 
+elif [ "$COMMAND" = "redis" ] ; then
+    CLASS=com.gbw.scanner.plugins.scripts.redis.GBWRedisRCE
 else
     CLASS=$COMMAND
 fi

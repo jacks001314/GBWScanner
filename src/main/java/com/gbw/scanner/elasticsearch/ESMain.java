@@ -32,8 +32,8 @@ public class ESMain {
         String[] splits = args.split(":");
         String field1 = splits[0];
         String field2 = splits[1];
-        int topN = Integer.parseInt(splits[3]);
-        boolean isansc = splits[4].toLowerCase().equals("true");
+        int topN = Integer.parseInt(splits[2]);
+        boolean isansc = splits[3].toLowerCase().equals("true");
 
         List<MoreAggItem> results = esService.topBYTerms2(query,topN,isansc,field1,field2);
 

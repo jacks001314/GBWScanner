@@ -151,7 +151,7 @@ public class ESMain {
 
         if(cliParser.hasOption("top2")){
 
-            esTop2(esService,queryString,cliParser.getOptionValue("top"));
+            esTop2(esService,queryString,cliParser.getOptionValue("top2"));
         }
 
         if(cliParser.hasOption("max")){

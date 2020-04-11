@@ -10,7 +10,9 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
@@ -40,6 +42,25 @@ public class ESUtil {
         return esClient;
     }
 
+    public final static  QueryBuilder makeQuery(String queryString) {
+
+        if(TextUtils.isEmpty(queryString))
+            return new MatchAllQueryBuilder();
+
+        return QueryBuilders.queryStringQuery(queryString);
+    }
+
+    public final static Client getClient(String cluster,String host,int port) throws UnknownHostException {
+
+        Settings settings = Settings.builder()
+                .put("cluster.name",cluster).build();
+
+        TransportClient esClient = new PreBuiltTransportClient(settings);
+
+        esClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(host),port));
+
+        return esClient;
+    }
 
     public static Client getClient(String cfname){
 

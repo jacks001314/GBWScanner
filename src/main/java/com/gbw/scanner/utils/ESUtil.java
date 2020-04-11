@@ -4,6 +4,7 @@ import com.gbw.scanner.elasticsearch.ESConfig;
 import com.gbw.scanner.elasticsearch.ESStringQueryBuilder;
 import com.gbw.scanner.elasticsearch.ValueRange;
 import com.gbw.scanner.source.GBWESSearchRule;
+import com.xmap.api.utils.DateUtils;
 import com.xmap.api.utils.TextUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.client.Client;
@@ -18,10 +19,16 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static org.elasticsearch.search.aggregations.AggregationBuilders.terms;
 
 public class ESUtil {
+
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
 
     public final static Client getClient(ESConfig esConfig){
 
@@ -104,5 +111,34 @@ public class ESUtil {
         return searchRequestBuilder;
     }
 
+    public static long getIndexTime(String index){
+
+        String dateStr = index.substring(index.lastIndexOf("_")+1);
+        {
+            if (TextUtils.isEmpty(dateStr)) {
+                return 0L;
+            } else {
+                try {
+                    Date date = formatter.parse(dateStr);
+                    return date.getTime();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    return 0L;
+                }
+            }
+        }
+    }
+
+    public static boolean dateInRange(ValueRange range,String index){
+
+        long t = getIndexTime(index);
+
+        return t>=range.getFrom()&&t<=range.getTo();
+    }
+
+    public static void main(String[] args){
+
+        System.out.println(getIndexTime("log_stream_2020.03.26"));
+    }
 
 }

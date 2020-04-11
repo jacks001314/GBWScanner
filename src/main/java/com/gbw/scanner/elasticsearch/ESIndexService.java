@@ -18,9 +18,9 @@ public class ESIndexService {
         this(ESUtil.getClient(cluster,host,port));
     }
 
-    public String[] getIndices(){
+    public String[] getIndices(String index){
 
-        GetIndexResponse response = client.admin().indices().prepareGetIndex().get();
+        GetIndexResponse response = client.admin().indices().prepareGetIndex().setIndices(index).get();
         return response.getIndices();
     }
 

@@ -56,9 +56,9 @@ public class ESMain {
         System.out.println(service.sumValue(query,field));
     }
 
-    private static void esIndices(ESIndexService indexService){
+    private static void esIndices(ESIndexService indexService,String ind){
 
-        for(String index:indexService.getIndices()){
+        for(String index:indexService.getIndices(ind)){
             System.out.println(index);
         }
     }
@@ -171,7 +171,7 @@ public class ESMain {
 
         if(cliParser.hasOption("indices")){
 
-            esIndices(indexService);
+            esIndices(indexService,index);
         }
 
         if(cliParser.hasOption("open")){

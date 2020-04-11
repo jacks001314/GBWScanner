@@ -74,6 +74,20 @@ public class ESMain {
 
     }
 
+    private static void esDel(ESIndexService indexService,String index){
+        indexService.deleteIndex(index);
+    }
+
+    private static void esMapping(String host,int port,String index) throws Exception {
+
+        System.out.println(ESHttpService.getMappings(host,port,index));
+    }
+
+    private static void esHttp(String host,int port,String uri) throws Exception{
+
+        System.out.println(ESHttpService.get(host,port,uri));
+    }
+
     public static void main(String[] args) throws Exception {
 
         ESService esService;
@@ -105,10 +119,14 @@ public class ESMain {
         opts.addOption("min", true, "get a field min value ,args: <field>");
         opts.addOption("sum", true, "get a field sum value ,args: <field>");
 
+
         opts.addOption("indices", false, "get all es indices");
         opts.addOption("close",true,"close es index,args:<index>");
         opts.addOption("open",true,"open es index,args:<index>");
-
+        opts.addOption("del",true,"delete es index,args:<index>");
+        //opts.addOption("indices");
+        opts.addOption("mapping",true,"get es index mappings,args:<index>");
+        opts.addOption("http",true,"get some es information by http requst,args:<url>");
         opts.addOption("help", false, "Print usage");
 
         CommandLine cliParser = new GnuParser().parse(opts, args);
@@ -182,6 +200,20 @@ public class ESMain {
             esClose(indexService,cliParser.getOptionValue("close"));
         }
 
+        if(cliParser.hasOption("del")){
+
+            esDel(indexService,cliParser.getOptionValue("del"));
+        }
+
+        if(cliParser.hasOption("mapping")){
+
+            esMapping(host,port,cliParser.getOptionValue("mapping"));
+        }
+
+        if(cliParser.hasOption("http")){
+
+            esHttp(host,port,cliParser.getOptionValue("http"));
+        }
 
         client.close();
 

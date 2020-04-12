@@ -87,7 +87,7 @@ public class GBWWebScanBase implements GBWWebScan{
         try {
             httpRequests = GBWHttpRequestBuilder.build(host,scanConfig,scanRule);
         } catch (IOException e) {
-            e.printStackTrace();
+           // e.printStackTrace();
             return;
         }
 
@@ -95,7 +95,7 @@ public class GBWWebScanBase implements GBWWebScan{
         try {
             client = GBWHttpClientBuilder.make(host.getProto(),host.getPort());
         } catch (Exception e) {
-            e.printStackTrace();
+           // e.printStackTrace();
             return;
         }
 
@@ -104,14 +104,26 @@ public class GBWWebScanBase implements GBWWebScan{
             GBWHttpResponse response = HttpUtils.sendWithHeaders(client,request,scanRule.isBin()?false:true);
             GBWWebScanResult result = detect(host,response,scanRule);
             if(result!=null){
-                sinkQueue.put(result);
+
+                if(sinkQueue!=null){
+                    sinkQueue.put(result);
+                    String res = String.format("Find OK: webscan address:%s:%d for uri:%s,ruleID:%d",
+                            host.getServer(),host.getPort(),request.getURI().toString(),scanRule.getId());
+                    log.warn(res);
+                }else{
+
+                    String res = String.format("Find OK: webscan address:%s:%d for uri:%s,ruleID:%d",
+                            host.getServer(),host.getPort(),request.getURI().toString(),scanRule.getId());
+
+                    System.out.println(res);
+                }
             }
         }
 
         try {
             client.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 

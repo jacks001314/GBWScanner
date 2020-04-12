@@ -2,6 +2,7 @@ package com.gbw.scanner.elasticsearch;
 
 import com.gbw.scanner.http.GBWHttpClientBuilder;
 import com.gbw.scanner.http.GBWHttpGetRequestBuilder;
+import com.gbw.scanner.http.GBWHttpPostRequestBuilder;
 import com.gbw.scanner.http.GBWHttpResponse;
 import com.gbw.scanner.utils.HttpUtils;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -17,13 +18,12 @@ public class ESHttpService {
 
         HttpUriRequest request = new GBWHttpGetRequestBuilder("http",host,port,url)
                 .addHead("User-Agent","esHttp")
-                .addHead("Connection","close")
                 .build();
 
         GBWHttpResponse response = HttpUtils.send(httpClient,request,true);
+        String res = response.getContent();
         httpClient.close();
-
-        return response.getContent();
+        return res;
     }
 
     public static String get(String host,int port,String uri) throws Exception{
@@ -33,14 +33,30 @@ public class ESHttpService {
 
         HttpUriRequest request = new GBWHttpGetRequestBuilder("http",host,port,uri)
                 .addHead("User-Agent","esHttp")
-                .addHead("Connection","close")
                 .build();
 
         GBWHttpResponse response = HttpUtils.send(httpClient,request,true);
-        httpClient.close();
 
-        return response.getContent();
+
+        String res = response.getContent();
+        httpClient.close();
+        return res;
     }
 
+    public static String post(String host,int port,String uri,String content,boolean isFile) throws Exception {
 
+        CloseableHttpClient httpClient = GBWHttpClientBuilder.make("http",port);
+        HttpUriRequest request = new GBWHttpPostRequestBuilder("http",host,port,uri)
+                .addHead("User-Agent","esHttp")
+                .addHead("Content-Type", "application/json")
+                .postString(content,isFile)
+                .build();
+
+        GBWHttpResponse response = HttpUtils.send(httpClient,request,true);
+
+        String res = response.getContent();
+        httpClient.close();
+
+        return res;
+    }
 }

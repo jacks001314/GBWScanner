@@ -83,9 +83,27 @@ public class ESMain {
         System.out.println(ESHttpService.getMappings(host,port,index));
     }
 
-    private static void esHttp(String host,int port,String uri) throws Exception{
+    private static void esHttpGet(String host,int port,String uri) throws Exception{
 
         System.out.println(ESHttpService.get(host,port,uri));
+    }
+
+    private static void esHttpPost(String host,int port,String args) throws Exception{
+
+        String[] splits = args.split(":");
+
+        System.out.println(ESHttpService.post(host,port,splits[0],splits[2],splits[1].toLowerCase().equals("true")));
+
+
+    }
+
+    private static void esHttpQuery(String host,int port,String index,String doc,String query) throws Exception{
+
+        String uri =  String.format("/%s/%s/_search?pretty=true",index,doc);
+        String content = String.format(" {\"query\":{\"query_string\":{\"query\":%s}}}",query);
+
+        System.out.println(ESHttpService.post(host,port,uri,content,false));
+
     }
 
     public static void main(String[] args) throws Exception {
@@ -126,7 +144,9 @@ public class ESMain {
         opts.addOption("del",true,"delete es index,args:<index>");
         //opts.addOption("indices");
         opts.addOption("mapping",true,"get es index mappings,args:<index>");
-        opts.addOption("http",true,"get some es information by http requst,args:<url>");
+        opts.addOption("hget",true,"get some es information by http get requst,args:<url>");
+        opts.addOption("hpost",true,"get some es information by http post requst,args:<url>:<isFromFile>:<content>");
+        opts.addOption("hquery",true,"query es by query_string,args:<query_string>");
         opts.addOption("help", false, "Print usage");
 
         CommandLine cliParser = new GnuParser().parse(opts, args);
@@ -210,9 +230,19 @@ public class ESMain {
             esMapping(host,port,cliParser.getOptionValue("mapping"));
         }
 
-        if(cliParser.hasOption("http")){
+        if(cliParser.hasOption("hget")){
 
-            esHttp(host,port,cliParser.getOptionValue("http"));
+            esHttpGet(host,port,cliParser.getOptionValue("hget"));
+        }
+
+        if(cliParser.hasOption("hpost")){
+
+            esHttpPost(host,port,cliParser.getOptionValue("hpost"));
+        }
+
+        if(cliParser.hasOption("hquery")){
+
+            esHttpQuery(host,port,index,doc,cliParser.getOptionValue("hquery"));
         }
 
         client.close();

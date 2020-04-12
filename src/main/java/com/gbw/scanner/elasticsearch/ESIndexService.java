@@ -2,7 +2,6 @@ package com.gbw.scanner.elasticsearch;
 
 import com.gbw.scanner.utils.ESUtil;
 import org.elasticsearch.action.admin.indices.get.GetIndexResponse;
-import org.elasticsearch.action.support.IndicesOptions;
 import org.elasticsearch.client.Client;
 
 public class ESIndexService {
@@ -22,7 +21,7 @@ public class ESIndexService {
     public String[] getIndices(String index){
 
 
-        GetIndexResponse response = client.admin().indices().prepareGetIndex().setIndices(index).setIndicesOptions(IndicesOptions.strictExpandOpenAndForbidClosed()).get();
+        GetIndexResponse response = client.admin().indices().prepareGetIndex().setIndices(index).get();
 
         return response.getIndices();
     }

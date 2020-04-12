@@ -49,10 +49,15 @@ public class GBWDetectThread implements Runnable {
                             log.info(String.format("Start Detect OK:{host:%s,ip:%s,port:%d,ruleID:%d,ruleType:%s}",
                                     host.getHost(),host.getIp(),host.getPort(),entry.getId(),entry.getType()));
 
-                            sinkQueue.put(detectResult);
+                            if(sinkQueue!=null){
+                                sinkQueue.put(detectResult);
+                            }else{
+                                System.out.println(String.format("Find OK:{host:%s,ip:%s,port:%d,ruleID:%d,ruleType:%s}",
+                                        host.getHost(),host.getIp(),host.getPort(),entry.getId(),entry.getType()));
+                            }
                         }
                     } catch (GBWDetectException e) {
-                        e.printStackTrace();
+                       // e.printStackTrace();
 
                     }
 

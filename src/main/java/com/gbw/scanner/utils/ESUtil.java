@@ -2,9 +2,7 @@ package com.gbw.scanner.utils;
 
 import com.gbw.scanner.elasticsearch.ESConfig;
 import com.gbw.scanner.elasticsearch.ESStringQueryBuilder;
-import com.gbw.scanner.elasticsearch.ValueRange;
 import com.gbw.scanner.source.GBWESSearchRule;
-import com.xmap.api.utils.DateUtils;
 import com.xmap.api.utils.TextUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.client.Client;
@@ -19,7 +17,6 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;

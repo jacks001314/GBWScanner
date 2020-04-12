@@ -3,7 +3,7 @@ package com.gbw.scanner.elasticsearch;
 import com.xmap.api.utils.TextUtils;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-
+import com.gbw.scanner.utils.ValueRange;
 public class ESStringQueryBuilder {
 
     private StringBuffer sb;

@@ -1,14 +1,19 @@
 package com.gbw.scanner.elasticsearch;
 
 import com.gbw.scanner.utils.ESUtil;
+import com.xmap.api.utils.TextUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.reindex.BulkByScrollResponse;
+import org.elasticsearch.index.reindex.DeleteByQueryAction;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.metrics.max.Max;
 import org.elasticsearch.search.aggregations.metrics.min.Min;
 import org.elasticsearch.search.aggregations.metrics.sum.Sum;
+import org.elasticsearch.search.sort.SortOrder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,6 +139,32 @@ public class ESService {
         return moreAggItems;
     }
 
+    public SearchHit[] search(String q,int page,int pageSize,String sortField,boolean isDec){
+
+        SearchRequestBuilder sq = prepare(q)
+                .setFrom(page)
+                .setSize(pageSize);
+
+        if(!TextUtils.isEmpty(sortField))
+        {
+            sq.addSort(sortField,isDec? SortOrder.DESC:SortOrder.ASC);
+        }
+
+        SearchResponse response = sq.get();
+
+        return response.getHits().getHits();
+    }
+
+    public long delete(String q){
+
+
+        BulkByScrollResponse response = DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
+                .filter(ESUtil.makeQuery(q))
+                .source(index)
+                .get();
+
+        return response.getDeleted();
+    }
 
     public Client getClient() {
         return client;

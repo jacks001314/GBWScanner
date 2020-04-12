@@ -1,8 +1,14 @@
 package com.gbw.scanner.elasticsearch;
 
 import com.gbw.scanner.utils.ESUtil;
-import org.apache.commons.cli.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.search.SearchHit;
 
 import java.util.List;
 
@@ -63,6 +69,23 @@ public class ESMain {
         }
     }
 
+    private static void esSearch(ESService service,String q,int page,int pageSize,String sortField,boolean isDec,boolean isPretty){
+
+        SearchHit[] hits = service.search(q,page,pageSize,sortField,isDec);
+
+        Gson gson = isPretty?new GsonBuilder().setPrettyPrinting().create():new GsonBuilder().create();
+
+        for(SearchHit hit:hits){
+
+            System.out.println(gson.toJson(hit.getSourceAsMap()));
+        }
+    }
+
+    private static void esDeleteByQuery(ESService service,String q){
+
+        System.out.println(service.delete(q));
+    }
+
     private static void esOpen(ESIndexService esIndexService,String index){
 
         esIndexService.openIndex(index);
@@ -73,6 +96,15 @@ public class ESMain {
         indexService.closeIndex(index);
 
     }
+
+    private static void esCloseBeforeDays(ESIndexService indexService,String args){
+
+        String[] splits = args.split(":");
+
+        indexService.closeIndexBeforeDay(splits[0],Integer.parseInt(splits[1]));
+
+    }
+
 
     private static void esDel(ESIndexService indexService,String index){
         indexService.deleteIndex(index);
@@ -118,6 +150,11 @@ public class ESMain {
         String doc = "esdatabase_doc";
 
         String queryString = "";
+        int page = 0;
+        int pageSize = 10;
+        String sortField = "";
+        boolean isDec = false;
+        boolean isPretty = false;
 
         Options opts = new Options();
 
@@ -128,7 +165,11 @@ public class ESMain {
         opts.addOption("doc", true, "es doc ");
 
         opts.addOption("query", true, "es query string");
-
+        opts.addOption("page", true, "es search page");
+        opts.addOption("pageSize", true, "es search pageSize");
+        opts.addOption("sortField", true, "es search sort field");
+        opts.addOption("sortOrderDec", false, "es search sort by dec order");
+        opts.addOption("pretty", false, "es search result is pretty");
 
         opts.addOption("count", false, "count cmd");
         opts.addOption("top", true, "topN cmd by one term args: <field>:<topN><isasc>");
@@ -136,17 +177,18 @@ public class ESMain {
         opts.addOption("max", true, "get a field max value ,args: <field>");
         opts.addOption("min", true, "get a field min value ,args: <field>");
         opts.addOption("sum", true, "get a field sum value ,args: <field>");
-
+        opts.addOption("search", false, "search es");
+        opts.addOption("delByQuery", false, "delete es by query");
 
         opts.addOption("indices", false, "get all es indices");
         opts.addOption("close",true,"close es index,args:<index>");
+        opts.addOption("closeBeforeDay",true,"close es indices before days,args:<index>:<before days>");
         opts.addOption("open",true,"open es index,args:<index>");
         opts.addOption("del",true,"delete es index,args:<index>");
         //opts.addOption("indices");
         opts.addOption("mapping",true,"get es index mappings,args:<index>");
         opts.addOption("hget",true,"get some es information by http get requst,args:<url>");
         opts.addOption("hpost",true,"get some es information by http post requst,args:<url>:<isFromFile>:<content>");
-        opts.addOption("hquery",true,"query es by query_string,args:<query_string>");
         opts.addOption("help", false, "Print usage");
 
         CommandLine cliParser = new GnuParser().parse(opts, args);
@@ -174,6 +216,24 @@ public class ESMain {
 
         esService = new ESService(client,index,doc);
         indexService = new ESIndexService(client);
+
+        opts.addOption("page", true, "es search page");
+        opts.addOption("pageSize", true, "es search pageSize");
+        opts.addOption("sortField", true, "es search sort field");
+        opts.addOption("sortOrderDec", false, "es search sort by dec order");
+        if(cliParser.hasOption("page"))
+            page = Integer.parseInt(cliParser.getOptionValue("page"));
+
+        if(cliParser.hasOption("pageSize"))
+            pageSize = Integer.parseInt(cliParser.getOptionValue("pageSize"));
+        if(cliParser.hasOption("sortField"))
+            sortField = cliParser.getOptionValue("sortField");
+
+        if(cliParser.hasOption("sortOrderDec"))
+            isDec = true;
+
+        if(cliParser.hasOption("pretty"))
+            isPretty = true;
 
         if(cliParser.hasOption("query"))
             queryString = cliParser.getOptionValue("query");
@@ -220,6 +280,11 @@ public class ESMain {
             esClose(indexService,cliParser.getOptionValue("close"));
         }
 
+        if(cliParser.hasOption("closeBeforeDay")){
+
+            esCloseBeforeDays(indexService,cliParser.getOptionValue("closeBeforeDay"));
+        }
+
         if(cliParser.hasOption("del")){
 
             esDel(indexService,cliParser.getOptionValue("del"));
@@ -240,9 +305,14 @@ public class ESMain {
             esHttpPost(host,port,cliParser.getOptionValue("hpost"));
         }
 
-        if(cliParser.hasOption("hquery")){
+        if(cliParser.hasOption("search")){
 
-            esHttpQuery(host,port,index,doc,cliParser.getOptionValue("hquery"));
+            esSearch(esService,queryString,page,pageSize,sortField,isDec,isPretty);
+        }
+
+        if(cliParser.hasOption("delByQuery")){
+
+            esDeleteByQuery(esService,queryString);
         }
 
         client.close();

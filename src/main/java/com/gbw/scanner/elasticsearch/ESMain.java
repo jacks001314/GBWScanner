@@ -146,7 +146,7 @@ public class ESMain {
         String cluster = "antell-SmartEye-ES";
         String host = "127.0.0.1";
         int port = 9300;
-        String index = "log_*";
+        String index = "";
         String doc = "esdatabase_doc";
 
         String queryString = "";

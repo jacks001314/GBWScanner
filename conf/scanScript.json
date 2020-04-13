@@ -112,5 +112,19 @@
         "uri":"/cluster",
         "keys":["/cluster/nodes","All Applications"],
         "ipcRetries":1
+    },
+    "scanRedisConfig":{
+		"isOn":false,
+		"name":"scanRedis",
+		"type":"scanScriptRedis",
+		"msg":"scan redis no auth bug",
+		"subject":"please set auth redis",
+		"code":"none",
+		"refer":"none",
+		"conTimeout":10000,
+		"readTimeout":10000,
+        "checkDir":true,
+        "key":"redis_version",
+        "dirs":["/var/spool/cron","/etc/cron.d","/root/.ssh","/home/redis/.ssh"]
     }
 }

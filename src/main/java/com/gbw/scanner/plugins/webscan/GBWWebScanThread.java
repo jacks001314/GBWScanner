@@ -36,10 +36,8 @@ public class GBWWebScanThread implements Runnable {
 
                     Host host = split.getHost();
 
-
                     log.info(String.format("Start WebScan:{host:%s,ip:%s,port:%d,ruleID:%d,ruleType:%s}",
                             host.getHost(),host.getIp(),host.getPort(),rule.getId(),rule.getType()));
-
 
                     try {
 
@@ -49,8 +47,6 @@ public class GBWWebScanThread implements Runnable {
                         e.printStackTrace();
 
                     }
-
-
                 }
             }
         }

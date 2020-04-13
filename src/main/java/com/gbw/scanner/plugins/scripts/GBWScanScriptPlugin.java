@@ -3,6 +3,7 @@ package com.gbw.scanner.plugins.scripts;
 import com.gbw.scanner.GBWScannerPlugin;
 import com.gbw.scanner.Host;
 import com.gbw.scanner.plugins.scripts.hadoop.yarn.GBWScanYarnScript;
+import com.gbw.scanner.plugins.scripts.redis.GBWScanRedisScript;
 import com.gbw.scanner.plugins.scripts.web.flink.GBWScanFlinkScript;
 import com.gbw.scanner.plugins.scripts.web.solr.dataimport.GBWScanSolrDataImportScript;
 import com.gbw.scanner.plugins.scripts.web.solr.velocity.GBWScanSolrVelocityScript;
@@ -28,6 +29,7 @@ public class GBWScanScriptPlugin implements GBWScannerPlugin {
     public static final String flinkScan = "scanScriptFlink";
     public static final String tomcatAJPScan = "scanScriptTomcatAJP";
     public static final String hadoopYarnScan = "scanScriptHadoopYarn";
+    public static final String redisScan = "scanScriptRedis";
 
     private final GBWScanScriptConfig scanScriptConfig;
     private final GBWScanScriptQueue scanScriptQueue;
@@ -70,6 +72,11 @@ public class GBWScanScriptPlugin implements GBWScannerPlugin {
         if(scanScriptConfig.getScanYarnConfig().isOn()){
 
             scanScriptMap.put(hadoopYarnScan,new GBWScanYarnScript(scanScriptConfig.getScanYarnConfig()));
+        }
+
+        if(scanScriptConfig.getScanRedisConfig().isOn()){
+
+            scanScriptMap.put(redisScan,new GBWScanRedisScript(scanScriptConfig.getScanRedisConfig()));
         }
 
     }

@@ -174,12 +174,12 @@ public class GBWScanScriptTool {
                     Host host = hosts.take();
                     if(host!=null){
 
-                        System.out.println(String.format("start scan:%s:%d",host.getHost(),host.getPort()));
+                        //System.out.println(String.format("start scan:%s:%d",host.getHost(),host.getPort()));
                         scanScript.scan(host,null);
                     }
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                     break;
                 }
             }

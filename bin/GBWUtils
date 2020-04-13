@@ -29,6 +29,7 @@ if [ $# = 0 ]; then
   echo "detect		 			    run detect rules match!"
   echo "webscan		 			    run webscan rules match!"
   echo "redis		 			    run redis no auth all kinds of attack!"
+  echo "scanRedis		 			run redis no auth scan!"
   echo "es		 			        run elasticsearch cmds!"
   exit 1
 fi
@@ -82,6 +83,9 @@ elif [ "$COMMAND" = "webscan" ] ; then
 
 elif [ "$COMMAND" = "redis" ] ; then
     CLASS=com.gbw.scanner.plugins.scripts.redis.GBWRedisRCE
+
+elif [ "$COMMAND" = "scanRedis" ] ; then
+    CLASS=com.gbw.scanner.plugins.scripts.redis.GBWScanRedisScript
 
 elif [ "$COMMAND" = "es" ] ; then
     CLASS=com.gbw.scanner.elasticsearch.ESMain

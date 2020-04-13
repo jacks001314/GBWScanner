@@ -3,6 +3,7 @@ package com.gbw.scanner.elasticsearch;
 import com.gbw.scanner.utils.ESUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.xmap.api.utils.TextUtils;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -10,6 +11,9 @@ import org.apache.commons.cli.Options;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.search.SearchHit;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class ESMain {
@@ -85,6 +89,60 @@ public class ESMain {
 
         System.out.println(service.delete(q));
     }
+
+    private static String makeQueryString(String field,String value,String op){
+
+        String res = "";
+
+        if(op.equals("startsWith")){
+
+            res = String.format("%s:*%s",field,value);
+        }else if(op.equals("endsWith")){
+
+            res = String.format("%s:%s*",field,value);
+        }else if(op.equals("contains")){
+
+            res = String.format("%s:*%s*",field,value);
+        }else{
+
+            res = String.format("%s:%s",field,value);
+        }
+
+        return res;
+    }
+
+    private static void esDelFromFile(ESService service,String args) throws IOException {
+
+        String[] splits = args.split(":");
+        String file = splits[0];
+        String field = splits[1];
+        String op = splits[2];
+
+        for(String line: Files.readAllLines(Paths.get(file))){
+
+            String nline = line.trim();
+            if(TextUtils.isEmpty(nline))
+                continue;
+
+            String query = "";
+
+            if(nline.indexOf(',')!=-1){
+
+                String[] slist = nline.split(",");
+                if(slist.length==3){
+                    query = makeQueryString(slist[1],splits[2],slist[0]);
+                }else{
+                    query = makeQueryString(field,slist[1],slist[0]);
+                }
+            }else{
+                query = makeQueryString(field,nline,op);
+            }
+
+            long count = service.delete(query);
+            System.out.println("Delete by query:"+query+",count:"+count);
+        }
+    }
+
 
     private static void esOpen(ESIndexService esIndexService,String index){
 
@@ -179,7 +237,7 @@ public class ESMain {
         opts.addOption("sum", true, "get a field sum value ,args: <field>");
         opts.addOption("search", false, "search es");
         opts.addOption("delByQuery", false, "delete es by query");
-
+        opts.addOption("delFromFile",true,"delete es from file,args:<file>:<field>:<op,-->startsWith,endsWith,contains,eq>");
         opts.addOption("indices", false, "get all es indices");
         opts.addOption("close",true,"close es index,args:<index>");
         opts.addOption("closeBeforeDay",true,"close es indices before days,args:<index>:<before days>");
@@ -313,6 +371,10 @@ public class ESMain {
         if(cliParser.hasOption("delByQuery")){
 
             esDeleteByQuery(esService,queryString);
+        }
+
+        if(cliParser.hasOption("delFromFile")){
+            esDelFromFile(esService,cliParser.getOptionValue("delFromFile"));
         }
 
         client.close();

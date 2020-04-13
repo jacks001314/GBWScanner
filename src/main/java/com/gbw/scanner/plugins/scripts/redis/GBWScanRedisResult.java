@@ -48,7 +48,7 @@ public class GBWScanRedisResult  extends GBWScanScriptResult {
 
         writableDirs.forEach(e->sb.append(e+","));
         sb.append("]");
-        
+
         return String.format("Find OK:Redis no auth bug,address:%s:%d,writable dirs:%s",getHost(),getPort(),sb.toString());
     }
 

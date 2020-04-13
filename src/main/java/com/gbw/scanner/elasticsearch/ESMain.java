@@ -96,10 +96,10 @@ public class ESMain {
 
         if(op.equals("startsWith")){
 
-            res = String.format("%s:*%s",field,value);
+            res = String.format("%s:%s*",field,value);
         }else if(op.equals("endsWith")){
 
-            res = String.format("%s:%s*",field,value);
+            res = String.format("%s:*%s",field,value);
         }else if(op.equals("contains")){
 
             res = String.format("%s:*%s*",field,value);

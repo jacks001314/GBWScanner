@@ -103,7 +103,7 @@
         "user":"scan",
         "appname":"scanYarn",
         "priority":0,
-        "queue":"test"
+        "queue":"test",
         "timeout":100000,
         "cmds":["touch /tmp/test.data"],
         "envs":[],

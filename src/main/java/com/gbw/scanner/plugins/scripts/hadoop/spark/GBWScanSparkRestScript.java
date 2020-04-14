@@ -2,6 +2,7 @@ package com.gbw.scanner.plugins.scripts.hadoop.spark;
 
 import com.gbw.scanner.Host;
 import com.gbw.scanner.http.GBWHttpClientBuilder;
+import com.gbw.scanner.http.GBWHttpGetRequestBuilder;
 import com.gbw.scanner.http.GBWHttpPostRequestBuilder;
 import com.gbw.scanner.http.GBWHttpResponse;
 import com.gbw.scanner.sink.SinkQueue;
@@ -66,6 +67,40 @@ public class GBWScanSparkRestScript {
                 .build();
     }
 
+    public String getResult(String host,int port,String subId){
+
+        String uri = String.format("/logPage/?driverId=%s&logType=stdout",subId);
+
+        GBWHttpResponse httpResponse;
+        HttpUriRequest uriRequest;
+        CloseableHttpClient httpClient = null;
+
+        try {
+
+            httpClient =  GBWHttpClientBuilder.make("http", port);
+            uriRequest = new GBWHttpGetRequestBuilder("http",host,port,uri)
+                    .addHead("User-Agent","ScanSpark")
+                    .build();
+
+            httpResponse = HttpUtils.send(httpClient,uriRequest,true);
+
+            return httpResponse.getContent();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if(httpClient!=null) {
+                try {
+                    httpClient.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return "error";
+    }
+
     public boolean scan(Host host, SinkQueue sinkQueue) {
 
         boolean res = false;
@@ -88,7 +123,7 @@ public class GBWScanSparkRestScript {
 
                    res = true;
                    /*find a val*/
-                   String logStr = String.format("Find ok by spark restfull,address:%s:%d,response:%s",host.getHost(),host.getHost(),restResponse.toString());
+                   String logStr = String.format("Find ok by spark restfull,address:%s:%d,response:%s",host.getHost(),host.getPort(),restResponse.toString());
 
                    if(sinkQueue!=null){
 

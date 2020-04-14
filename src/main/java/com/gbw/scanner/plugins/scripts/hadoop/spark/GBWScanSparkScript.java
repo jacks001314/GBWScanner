@@ -44,6 +44,9 @@ public class GBWScanSparkScript implements GBWScanScript {
 
     }
 
+    public GBWScanSparkRestScript getRestScript() {
+        return restScript;
+    }
 
     public static void main(String[] args) throws Exception{
 
@@ -68,6 +71,8 @@ public class GBWScanSparkScript implements GBWScanScript {
         opts.addOption("mainClass",true,"spark application jar main class name");
         opts.addOption("args",true,"spark application jar main args");
         opts.addOption("ua",true,"spark application client user-agent");
+
+        opts.addOption("get",true,"get spark run result,args:<ip>:<port>:<submitID>");
 
         GBWScanScriptTool tool = new GBWScanScriptTool(args,scanSparkScript,opts,6066);
 
@@ -96,6 +101,19 @@ public class GBWScanSparkScript implements GBWScanScript {
         }
         if(cli.hasOption("ua")){
             userAgent = cli.getOptionValue("ua");
+        }
+
+        if(cli.hasOption("get")){
+
+            String myargs = cli.getOptionValue("get");
+            String[] splits = myargs.split(":");
+
+            String host = splits[0];
+            int port = Integer.parseInt(splits[1]);
+            String subId = splits[2];
+
+            System.out.println(scanSparkScript.getRestScript().getResult(host,port,subId));
+            System.exit(0);
         }
 
         config.setSparkVersion(sparkVersion);

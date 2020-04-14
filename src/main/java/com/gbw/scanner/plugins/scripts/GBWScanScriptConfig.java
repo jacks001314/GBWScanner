@@ -1,5 +1,6 @@
 package com.gbw.scanner.plugins.scripts;
 
+import com.gbw.scanner.plugins.scripts.hadoop.spark.GBWScanSparkConfig;
 import com.gbw.scanner.plugins.scripts.hadoop.yarn.GBWScanYarnConfig;
 import com.gbw.scanner.plugins.scripts.redis.GBWScanRedisConfig;
 import com.gbw.scanner.plugins.scripts.web.flink.GBWScanFlinkScriptConfig;
@@ -22,6 +23,7 @@ public class GBWScanScriptConfig extends GBWScanScriptCommonConfig {
 
     private GBWScanYarnConfig scanYarnConfig;
     private GBWScanRedisConfig scanRedisConfig;
+    private GBWScanSparkConfig scanSparkConfig;
 
     public int getThreads() {
         return threads;
@@ -94,5 +96,14 @@ public class GBWScanScriptConfig extends GBWScanScriptCommonConfig {
 
     public void setScanRedisConfig(GBWScanRedisConfig scanRedisConfig) {
         this.scanRedisConfig = scanRedisConfig;
+    }
+
+
+    public GBWScanSparkConfig getScanSparkConfig() {
+        return scanSparkConfig;
+    }
+
+    public void setScanSparkConfig(GBWScanSparkConfig scanSparkConfig) {
+        this.scanSparkConfig = scanSparkConfig;
     }
 }

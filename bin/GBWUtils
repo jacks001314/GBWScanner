@@ -30,6 +30,7 @@ if [ $# = 0 ]; then
   echo "webscan		 			    run webscan rules match!"
   echo "redis		 			    run redis no auth all kinds of attack!"
   echo "scanRedis		 			run redis no auth scan!"
+  echo "spark		 			    run spark no auth scan!"
   echo "es		 			        run elasticsearch cmds!"
   exit 1
 fi
@@ -86,6 +87,9 @@ elif [ "$COMMAND" = "redis" ] ; then
 
 elif [ "$COMMAND" = "scanRedis" ] ; then
     CLASS=com.gbw.scanner.plugins.scripts.redis.GBWScanRedisScript
+
+elif [ "$COMMAND" = "spark" ] ; then
+    CLASS=com.gbw.scanner.plugins.scripts.hadoop.spark.GBWScanSparkScript
 
 elif [ "$COMMAND" = "es" ] ; then
     CLASS=com.gbw.scanner.elasticsearch.ESMain

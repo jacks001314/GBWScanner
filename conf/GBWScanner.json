@@ -41,7 +41,7 @@
 	"sFoFaConfig":{
         "sleepTime":60000,
         "queueLimits":10000,
-		"shodanFile":"/opt/data/fofa.json",
+		"fofaFile":"/opt/data/fofa.json",
         "scanType":["scanScriptFlink"],
         "proto":"http",
         "port":80

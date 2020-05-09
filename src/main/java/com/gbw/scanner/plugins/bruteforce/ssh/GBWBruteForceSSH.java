@@ -79,11 +79,14 @@ public class GBWBruteForceSSH extends GBWAbstractBruteForce {
             /*ok*/
             result = new GBWBruteForceResult(entry, host, GBWBruteForcePlugin.BRUTEFORCESSH);
             if(!TextUtils.isEmpty(cmd)){
+                try {
+                    session = ssh.startSession();
+                    Session.Command exe = session.exec(cmd);
+                    result.setCmd(cmd);
+                    result.setCmdResult(IOUtils.readFully(exe.getInputStream()).toString());
+                }catch (Exception e){
 
-                session = ssh.startSession();
-                Session.Command exe = session.exec(cmd);
-                result.setCmd(cmd);
-                result.setCmdResult(IOUtils.readFully(exe.getInputStream()).toString());
+                }
             }
 
             return isPass(result)?null:result;

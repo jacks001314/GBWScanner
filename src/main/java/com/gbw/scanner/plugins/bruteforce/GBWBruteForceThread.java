@@ -45,15 +45,16 @@ public class GBWBruteForceThread implements Runnable {
 
                     if(bruteForceResult!=null){
 
-                        log.info(String.format("BruteForce ok:{proto:%s,host:%s,ip:%s,port:%d,user:%s,passwd:%s}",
-                                host.getProto(),host.getHost(),host.getIp(),host.getPort(),entry.getUser(),entry.getPasswd()));
-
+                        log.info(String.format("BruteForce ok:{proto:%s,host:%s,ip:%s,port:%d,user:%s,passwd:%s,cmd:%s,cmdResult:%s}",
+                                host.getProto(),host.getHost(),host.getIp(),host.getPort(),entry.getUser(),entry.getPasswd(),
+                                bruteForceResult.getCmd(),bruteForceResult.getCmdResult()));
                         if(sinkQueue!=null){
                             sinkQueue.put(bruteForceResult);
                         }else{
 
-                            System.out.println(String.format("BruteForce ok:{proto:%s,host:%s,ip:%s,port:%d,user:%s,passwd:%s}",
-                                    host.getProto(),host.getHost(),host.getIp(),host.getPort(),entry.getUser(),entry.getPasswd()));
+                            System.out.println(String.format("BruteForce ok:{proto:%s,host:%s,ip:%s,port:%d,user:%s,passwd:%s,cmd:%s,cmdResult:%s}",
+                                    host.getProto(),host.getHost(),host.getIp(),host.getPort(),entry.getUser(),entry.getPasswd(),
+                                    bruteForceResult.getCmd(),bruteForceResult.getCmdResult()));
                         }
                     }
                 }

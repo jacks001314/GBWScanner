@@ -81,6 +81,11 @@
         </dependency>
         <dependency>
             <groupId>com.hierynomus</groupId>
+            <artifactId>sshj</artifactId>
+            <version>0.27.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hierynomus</groupId>
             <artifactId>smbj</artifactId>
             <version>0.9.1</version>
         </dependency>

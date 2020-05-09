@@ -101,10 +101,9 @@
 			"userFName":"/opt/scan/GBWScanner/conf/bruteforce/ssh_users.txt",
 			"passwdFName":"/opt/scan/GBWScanner/conf/bruteforce/ssh_passwd.txt",
             "timeout":1000,
-			"proxyHost":"",
-    		"proxyPort":0,
-    		"proxyUser":"",
-    		"proxyPasswd":""
+    		"cmd":"uname -a",
+            "ignoreEmpty":true,
+             "passKeys":["login:","listensocks"]
 		}
 	},
 

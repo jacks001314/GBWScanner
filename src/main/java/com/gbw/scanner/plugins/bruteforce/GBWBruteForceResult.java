@@ -14,10 +14,14 @@ import java.util.Map;
 public class GBWBruteForceResult extends GBWScannerResult {
 
     private GBWDictEntry entry;
+    private String cmd;
+    private String cmdResult;
 
     public GBWBruteForceResult(GBWDictEntry entry,Host host,String type){
 
         this.entry = entry;
+        this.cmd = "";
+        this.cmdResult = "";
 
         setTime(System.currentTimeMillis());
         setHost(host.getHost());
@@ -36,6 +40,9 @@ public class GBWBruteForceResult extends GBWScannerResult {
 
     @Override
     public XContentBuilder makeDetails(XContentBuilder cb) throws IOException {
+
+        cb.field("cmd",cmd);
+        cb.field("cmdResult",cmdResult);
 
         cb.field("count",1);
         XContentBuilder cbb = cb.startArray("passwds");
@@ -56,6 +63,11 @@ public class GBWBruteForceResult extends GBWScannerResult {
         sb.append(entry.getUser());
         sb.append(",passwd:");
         sb.append(entry.getPasswd());
+        sb.append(",cmd:");
+        sb.append(cmd);
+        sb.append(",cmdResult:");
+        sb.append(cmdResult);
+
         sb.append("}\n");
 
         return sb.toString();
@@ -131,4 +143,19 @@ public class GBWBruteForceResult extends GBWScannerResult {
 
     }
 
+    public String getCmd() {
+        return cmd;
+    }
+
+    public void setCmd(String cmd) {
+        this.cmd = cmd;
+    }
+
+    public String getCmdResult() {
+        return cmdResult;
+    }
+
+    public void setCmdResult(String cmdResult) {
+        this.cmdResult = cmdResult;
+    }
 }

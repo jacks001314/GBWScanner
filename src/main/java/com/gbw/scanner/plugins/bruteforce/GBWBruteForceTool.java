@@ -181,8 +181,6 @@ public class GBWBruteForceTool {
 
         config.setThreads(threads);
 
-
-
         int port = Integer.parseInt(cliParser.getOptionValue("port"));
 
         if(cliParser.hasOption("host")){

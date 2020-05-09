@@ -4,77 +4,68 @@ import com.gbw.scanner.plugins.bruteforce.GBWBruteForceCommonConfig;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GBWBruteForceSSHConfig extends GBWBruteForceCommonConfig {
 
-    private String proxyHost;
-    private int proxyPort;
-    private String proxyUser;
-    private String proxyPasswd;
+    private String cmd;
+    private boolean ignoreEmpty;
+    private List<String> passKeys;
 
     public void addOpts(Options opts){
 
         super.addOpts(opts);
-        opts.addOption("proxyHost",true,"ftp proxy host");
-        opts.addOption("proxyPort",true,"ftp proxy port");
-        opts.addOption("proxyUser",true,"ftp proxy user");
-        opts.addOption("proxyPasswd",true,"ftp proxy passwd");
+        opts.addOption("cmd",true,"ssh run cmd!");
+        opts.addOption("ignoreEmpty",false,"ignore empty!");
+        opts.addOption("passKeys",true,"pass ssh result that contains this keys:<k1>,<k2>,.....");
 
     }
 
     public void initFromOpts(CommandLine cmdLine) throws IllegalArgumentException{
 
         super.initFromOpts(cmdLine);
+        ignoreEmpty = false;
 
-        proxyHost = "";
-        proxyPort = 0;
-        proxyUser = "";
-        proxyPasswd = "";
+        cmd = "";
+        this.passKeys = new ArrayList<>();
 
+        if(cmdLine.hasOption("cmd"))
+            cmd = cmdLine.getOptionValue("cmd");
 
-        if(cmdLine.hasOption("proxyHost"))
-            proxyHost = cmdLine.getOptionValue("proxyHost");
+        if(cmdLine.hasOption("ignoreEmpty"))
+            ignoreEmpty = true;
 
-        if(cmdLine.hasOption("proxyPort"))
-            proxyPort = Integer.parseInt(cmdLine.getOptionValue("proxyPort"));
-        if(cmdLine.hasOption("proxyUser"))
-            proxyUser = cmdLine.getOptionValue("proxyUser");
+        if(cmdLine.hasOption("passKeys"))
+        {
+            for(String k:cmdLine.getOptionValue("passKeys").split(",")){
 
-        if(cmdLine.hasOption("proxyPasswd"))
-            proxyPasswd = cmdLine.getOptionValue("proxyPasswd");
-
-
+                passKeys.add(k);
+            }
+        }
     }
 
-    public String getProxyHost() {
-        return proxyHost;
+    public String getCmd() {
+        return cmd;
     }
 
-    public void setProxyHost(String proxyHost) {
-        this.proxyHost = proxyHost;
+    public void setCmd(String cmd) {
+        this.cmd = cmd;
     }
 
-    public int getProxyPort() {
-        return proxyPort;
+    public List<String> getPassKeys() {
+        return passKeys;
     }
 
-    public void setProxyPort(int proxyPort) {
-        this.proxyPort = proxyPort;
+    public void setPassKeys(List<String> passKeys) {
+        this.passKeys = passKeys;
     }
 
-    public String getProxyUser() {
-        return proxyUser;
+    public boolean isIgnoreEmpty() {
+        return ignoreEmpty;
     }
 
-    public void setProxyUser(String proxyUser) {
-        this.proxyUser = proxyUser;
+    public void setIgnoreEmpty(boolean ignoreEmpty) {
+        this.ignoreEmpty = ignoreEmpty;
     }
-
-    public String getProxyPasswd() {
-        return proxyPasswd;
-    }
-
-    public void setProxyPasswd(String proxyPasswd) {
-        this.proxyPasswd = proxyPasswd;
-    }
-
 }

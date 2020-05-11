@@ -57,6 +57,7 @@ public class GBWScanAJPResult extends GBWScanScriptResult {
     @Override
     public XContentBuilder makeDetails(XContentBuilder cb) throws IOException {
 
+        super.makeDetails(cb);
         cb.field("payload", payload);
 
         return cb;

@@ -26,6 +26,8 @@ public class GBWWebScanResult extends GBWScannerResult {
         setRuleType(scanRule.getType());
         setRuleMsg(scanRule.getMsg());
 
+        setDesc(scanRule.getMsg());
+        setCode(scanRule.getType());
     }
 
     @Override

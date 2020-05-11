@@ -38,10 +38,13 @@ public class GBWScanSolrVelocityScriptResult extends GBWScanScriptResult {
     @Override
     public XContentBuilder makeDetails(XContentBuilder cb) throws IOException {
 
+        super.makeDetails(cb);
+
         cb.field("system",system);
         cb.field("result",result);
         cb.field("core",core);
         cb.field("cores",cores);
+
 
         return cb;
     }

@@ -29,6 +29,10 @@ public abstract class GBWScanScriptResult extends GBWScannerResult {
         setSubject(scanScriptConfig.getSubject());
         setCode(scanScriptConfig.getCode());
         setRefer(scanScriptConfig.getRefer());
+
+        setDesc(msg);
+        super.setCode(code);
+
     }
 
     @Override

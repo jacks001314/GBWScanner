@@ -28,6 +28,7 @@ public class GBWScanYarnResult  extends GBWScanScriptResult {
     @Override
     public XContentBuilder makeDetails(XContentBuilder cb) throws IOException {
 
+        super.makeDetails(cb);
         cb.field("appID", TextUtils.isEmpty(appID)?"":appID);
         cb.field("nodes",nodes);
         cb.field("maxMem",maxMem);

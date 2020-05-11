@@ -17,6 +17,7 @@ public class GBWDetectResult extends GBWScannerResult {
 
 
     public GBWDetectResult(Host host, GBWDetectRule detectRule,String type) {
+
         this.host = host;
         this.detectRule = detectRule;
 
@@ -26,6 +27,9 @@ public class GBWDetectResult extends GBWScannerResult {
         setIp(host.getIp());
         setPort(host.getPort());
         setType(type);
+
+        setDesc(detectRule.getMsg());
+        setCode(detectRule.getType());
 
     }
 

@@ -23,7 +23,7 @@ public class GBWScanRedisResult  extends GBWScanScriptResult {
 
     @Override
     public XContentBuilder makeDetails(XContentBuilder cb) throws IOException {
-
+        super.makeDetails(cb);
         cb.field("writableDirs",writableDirs);
 
         return cb;

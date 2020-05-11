@@ -20,6 +20,7 @@ public class GBWScanFlinkScriptResult extends GBWScanScriptResult {
     @Override
     public XContentBuilder makeDetails(XContentBuilder cb) throws IOException {
 
+        super.makeDetails(cb);
         cb.field("payload", TextUtils.isEmpty(payload)?"":payload);
 
         return cb;

@@ -22,6 +22,7 @@ public class GBWScanSparkResult  extends GBWScanScriptResult {
     @Override
     public XContentBuilder makeDetails(XContentBuilder cb) throws IOException {
 
+        super.makeDetails(cb);
         cb.field("scanType",scanType);
         XContentBuilder cbb = cb.startObject("response");
         response.toJson(cbb);

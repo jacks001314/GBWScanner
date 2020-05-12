@@ -26,10 +26,12 @@ public class GBWDetectResult extends GBWScannerResult {
         setHost(host.getHost());
         setIp(host.getIp());
         setPort(host.getPort());
-        setType(type);
+        setScanType(type);
 
+        setType(detectRule.getType());
         setDesc(detectRule.getMsg());
         setCode(detectRule.getType());
+        setSubject(detectRule.getMsg());
 
     }
 
@@ -49,8 +51,6 @@ public class GBWDetectResult extends GBWScannerResult {
     public XContentBuilder makeDetails(XContentBuilder cb) throws IOException {
 
         cb.field("ruleID",detectRule.getId());
-        cb.field("ruleType",detectRule.getType());
-        cb.field("ruleMsg",detectRule.getMsg());
         cb.field("proto",detectRule.getProto());
         cb.field("dataSize",data==null?0:data.length);
         cb.field("data",data==null?"".getBytes():data);
@@ -69,12 +69,14 @@ public class GBWDetectResult extends GBWScannerResult {
                 "\"ip\":{\"type\":\"keyword\"}," +
                 "\"port\":{\"type\":\"integer\"}," +
                 "\"host\":{\"type\":\"keyword\"}," +
-                "\"type\":{\"type\":\"keyword\"}," +
+                "\"scanType\":{\"type\":\"keyword\"}," +
+                "\"code\":{\"type\":\"keyword\"}," +
+                "\"type\":{\"type\":\"keyword\"},"+
+                "\"desc\":{\"type\":\"keyword\"},"+
+                "\"subject\":{\"type\":\"keyword\"},"+
                 "\"details\":{" +
                 "\"properties\":{" +
                 "\"ruleID\":{\"type\":\"keyword\"}," +
-                "\"ruleType\":{\"type\":\"keyword\"}," +
-                "\"ruleMsg\":{\"type\":\"keyword\"}," +
                 "\"proto\":{\"type\":\"keyword\"}," +
                 "\"data\":{\"type\":\"binary\"}," +
                 "\"dataSize\":{\"type\":\"long\"}" +

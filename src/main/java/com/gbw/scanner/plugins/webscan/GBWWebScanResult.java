@@ -9,8 +9,6 @@ import java.io.IOException;
 public class GBWWebScanResult extends GBWScannerResult {
 
     private long ruleID;
-    private String ruleType;
-    private String ruleMsg;
 
 
     public GBWWebScanResult(Host host, GBWWebScanRule scanRule){
@@ -20,12 +18,13 @@ public class GBWWebScanResult extends GBWScannerResult {
         setHost(host.getHost());
         setIp(host.getIp());
         setPort(host.getPort());
-        setType("webScan");
+        setScanType("webScan");
 
         setRuleID(scanRule.getId());
-        setRuleType(scanRule.getType());
-        setRuleMsg(scanRule.getMsg());
+        setType(scanRule.getType());
+        setDesc(scanRule.getMsg());
 
+        setSubject(scanRule.getMsg());
         setDesc(scanRule.getMsg());
         setCode(scanRule.getType());
     }
@@ -34,8 +33,6 @@ public class GBWWebScanResult extends GBWScannerResult {
     public XContentBuilder makeDetails(XContentBuilder cb) throws IOException {
 
         cb.field("ruleID",ruleID);
-        cb.field("ruleType",ruleType);
-        cb.field("ruleMsg",ruleMsg);
 
         return cb;
     }
@@ -50,12 +47,14 @@ public class GBWWebScanResult extends GBWScannerResult {
                 "\"ip\":{\"type\":\"keyword\"}," +
                 "\"port\":{\"type\":\"integer\"}," +
                 "\"host\":{\"type\":\"keyword\"}," +
-                "\"type\":{\"type\":\"keyword\"}," +
+                "\"scanType\":{\"type\":\"keyword\"}," +
+                "\"code\":{\"type\":\"keyword\"}," +
+                "\"type\":{\"type\":\"keyword\"},"+
+                "\"desc\":{\"type\":\"keyword\"},"+
+                "\"subject\":{\"type\":\"keyword\"},"+
                 "\"details\":{" +
                 "\"properties\":{" +
                 "\"ruleID\":{\"type\":\"keyword\"}," +
-                "\"ruleType\":{\"type\":\"keyword\"}," +
-                "\"ruleMsg\":{\"type\":\"keyword\"}," +
                 "\"method\":{\"type\":\"keyword\"}," +
                 "\"uri\":{\"type\":\"keyword\"}," +
                 "\"reqHeaders\":{\"type\":\"keyword\"}," +
@@ -106,19 +105,4 @@ public class GBWWebScanResult extends GBWScannerResult {
         this.ruleID = ruleID;
     }
 
-    public String getRuleType() {
-        return ruleType;
-    }
-
-    public void setRuleType(String ruleType) {
-        this.ruleType = ruleType;
-    }
-
-    public String getRuleMsg() {
-        return ruleMsg;
-    }
-
-    public void setRuleMsg(String ruleMsg) {
-        this.ruleMsg = ruleMsg;
-    }
 }

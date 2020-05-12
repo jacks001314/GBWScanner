@@ -27,7 +27,11 @@ public class GBWBruteForceResult extends GBWScannerResult {
         setHost(host.getHost());
         setIp(host.getIp());
         setPort(host.getPort());
+        setScanType(type);
         setType(type);
+        setDesc(String.format("%s暴力破解",host.getProto()));
+        setCode(type);
+        setSubject("请不要使用弱口令，请添加登录次数限制，添加验证码机制");
     }
 
     public GBWDictEntry getEntry() {
@@ -83,7 +87,11 @@ public class GBWBruteForceResult extends GBWScannerResult {
                 "\"ip\":{\"type\":\"keyword\"}," +
                 "\"port\":{\"type\":\"integer\"}," +
                 "\"host\":{\"type\":\"keyword\"}," +
-                "\"type\":{\"type\":\"keyword\"}," +
+                "\"scanType\":{\"type\":\"keyword\"}," +
+                "\"code\":{\"type\":\"keyword\"}," +
+                "\"type\":{\"type\":\"keyword\"},"+
+                "\"desc\":{\"type\":\"keyword\"},"+
+                "\"subject\":{\"type\":\"keyword\"},"+
                 "\"details\":{" +
                 "\"properties\":{" +
                 "\"passwds\":{\"type\":\"keyword\"}," +

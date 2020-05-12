@@ -13,9 +13,13 @@ public abstract class GBWScannerResult implements ESIndexable {
     private String ip;
     private String host;
     private int port;
+
+    private String scanType;
+
     private String type;
     private String desc;
     private String code;
+    private String subject;
 
     @Override
     public XContentBuilder dataToJson(XContentBuilder cb) throws IOException {
@@ -24,9 +28,12 @@ public abstract class GBWScannerResult implements ESIndexable {
         cb.field("ip",ip);
         cb.field("host", TextUtils.isEmpty(host)?ip:host);
         cb.field("port",port);
+        cb.field("scanType",scanType);
+
         cb.field("type",type);
         cb.field("desc",desc);
         cb.field("code",code);
+        cb.field("subject",subject);
 
         XContentBuilder details = cb.startObject("details");
         makeDetails(details);
@@ -100,5 +107,21 @@ public abstract class GBWScannerResult implements ESIndexable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getScanType() {
+        return scanType;
+    }
+
+    public void setScanType(String scanType) {
+        this.scanType = scanType;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 }

@@ -37,14 +37,14 @@ public class GBWESHostSource extends GBWAbstractHostSource {
         this.statusFPath = statusFileName;
 
         Path path = Paths.get(this.statusFPath);
-        if (!Files.exists(path)){
+        if (!Files.exists(path)) {
             Files.createDirectories(path.getParent());
             Files.createFile(path);
             this.lastCheckTime = 0L;
         } else {
             List<String> lines = Files.readAllLines(path);
             if (lines != null && lines.size() != 0) {
-                this.lastCheckTime = Long.parseLong((String)lines.get(0));
+                this.lastCheckTime = Long.parseLong((String) lines.get(0));
             } else {
                 this.lastCheckTime = 0L;
             }
@@ -74,12 +74,12 @@ public class GBWESHostSource extends GBWAbstractHostSource {
         long curTime = System.currentTimeMillis();
         int count = 0;
 
-        for(GBWESSearchRule rule:config.getRules()){
+        for (GBWESSearchRule rule : config.getRules()) {
 
-            SearchRequestBuilder searchRequestBuilder = ESUtil.makeESSearch(esClient,assetsIPS,rule,lastCheckTime,curTime);
+            SearchRequestBuilder searchRequestBuilder = ESUtil.makeESSearch(esClient, assetsIPS, rule, lastCheckTime, curTime);
             SearchResponse searchResponse = searchRequestBuilder.get();
 
-            count += processResponse(searchResponse,rule);
+            count += processResponse(searchResponse, rule);
 
         }
 
@@ -97,29 +97,29 @@ public class GBWESHostSource extends GBWAbstractHostSource {
         Terms ipTerms = response.getAggregations().get("ip");
         boolean isHost = !TextUtils.isEmpty(rule.getHostField());
 
-        for(Terms.Bucket ipTerm:ipTerms.getBuckets()){
+        for (Terms.Bucket ipTerm : ipTerms.getBuckets()) {
 
-            if(isHost){
+            if (isHost) {
 
                 Terms hostTerms = ipTerm.getAggregations().get("host");
 
-                for(Terms.Bucket hostTerm:hostTerms.getBuckets()){
+                for (Terms.Bucket hostTerm : hostTerms.getBuckets()) {
 
                     Terms portTerms = hostTerm.getAggregations().get("port");
-                    for(Terms.Bucket portTerm:portTerms.getBuckets()){
+                    for (Terms.Bucket portTerm : portTerms.getBuckets()) {
 
-                        Host host = new Host(hostTerm.getKeyAsString(),ipTerm.getKeyAsString(),Integer.parseInt(portTerm.getKeyAsString()),rule.getScanType(),rule.getProto());
+                        Host host = new Host(hostTerm.getKeyAsString(), ipTerm.getKeyAsString(), Integer.parseInt(portTerm.getKeyAsString()), rule.getScanType(), rule.getProto());
                         count++;
                         put(host);
 
                     }
                 }
-            }else {
+            } else {
 
                 Terms portTerms = ipTerm.getAggregations().get("port");
-                for(Terms.Bucket portTerm:portTerms.getBuckets()){
+                for (Terms.Bucket portTerm : portTerms.getBuckets()) {
 
-                    Host host = new Host(ipTerm.getKeyAsString(),ipTerm.getKeyAsString(),Integer.parseInt(portTerm.getKeyAsString()),rule.getScanType(),rule.getProto());
+                    Host host = new Host(ipTerm.getKeyAsString(), ipTerm.getKeyAsString(), Integer.parseInt(portTerm.getKeyAsString()), rule.getScanType(), rule.getProto());
                     count++;
                     put(host);
                 }

@@ -1,11 +1,13 @@
 {
 	"stype":"fileLine",
 	"sESConfig":{
+        "sleepTime":60000,
+        "queueLimits":10000,
 		"esConfig":{
 			"esHosts":["127.0.0.1"],
 			"esPort":9300,
 			"clusterName":"antell-SmartEye-ES"
-        },
+        }
 		"tv":60,
 		"statusFile":"GBWScannerES.data",
 		"xmlPath":"/opt/antell/smarteye/conf/assetsDiscoveryConf.xml",

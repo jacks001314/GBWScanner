@@ -49,6 +49,8 @@ public abstract class GBWScanScriptResult extends GBWScannerResult {
                 "\"properties\":{" +
                 "\"system\":{\"type\":\"keyword\"}," +
                 "\"result\":{\"type\":\"keyword\"}," +
+                "\"core\":{\"type\":\"keyword\"}," +
+                "\"cmd\":{\"type\":\"keyword\"}," +
                 "\"cores\":{\"type\":\"keyword\"}," +
                 "\"os\":{\"type\":\"keyword\"}" +
                 "}" +

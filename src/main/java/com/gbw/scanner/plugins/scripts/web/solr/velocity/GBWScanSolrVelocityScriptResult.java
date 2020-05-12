@@ -4,6 +4,7 @@ import com.gbw.scanner.Host;
 import com.gbw.scanner.plugins.scripts.GBWScanScriptCommonConfig;
 import com.gbw.scanner.plugins.scripts.GBWScanScriptPlugin;
 import com.gbw.scanner.plugins.scripts.GBWScanScriptResult;
+import com.gbw.scanner.plugins.scripts.web.solr.GBWScanSolrScriptConfig;
 import com.gbw.scanner.plugins.scripts.web.solr.SolrCoreAdmin;
 import com.xmap.api.utils.TextUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -16,6 +17,7 @@ public class GBWScanSolrVelocityScriptResult extends GBWScanScriptResult {
 
     private static final String windows = "$ex.waitFor()";
     private String system = "";
+    private String cmd = "id";
     private String result = "";
     private String core = "";
     private List<String> cores;
@@ -24,6 +26,9 @@ public class GBWScanSolrVelocityScriptResult extends GBWScanScriptResult {
 
         super(scanScriptConfig,host, GBWScanScriptPlugin.solrVelScan);
 
+        GBWScanSolrScriptConfig config = (GBWScanSolrScriptConfig)scanScriptConfig;
+
+        this.cmd = config.getCmd();
         this.result = result;
         this.system = "linux";
 
@@ -33,6 +38,8 @@ public class GBWScanSolrVelocityScriptResult extends GBWScanScriptResult {
         cores = new ArrayList<>();
         cores.addAll(solrCoreAdmin.getCoreNames());
         this.core = TextUtils.isEmpty(core)?"":core;
+
+
     }
 
     @Override
@@ -73,5 +80,13 @@ public class GBWScanSolrVelocityScriptResult extends GBWScanScriptResult {
 
     public void setCores(List<String> cores) {
         this.cores = cores;
+    }
+
+    public String getCmd() {
+        return cmd;
+    }
+
+    public void setCmd(String cmd) {
+        this.cmd = cmd;
     }
 }

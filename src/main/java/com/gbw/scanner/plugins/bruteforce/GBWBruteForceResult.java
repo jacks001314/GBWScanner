@@ -95,6 +95,8 @@ public class GBWBruteForceResult extends GBWScannerResult {
                 "\"details\":{" +
                 "\"properties\":{" +
                 "\"passwds\":{\"type\":\"keyword\"}," +
+                "\"cmd\":{\"type\":\"keyword\"}," +
+                "\"cmdResult\":{\"type\":\"keyword\"}," +
                 "\"count\":{\"type\":\"long\"}" +
                 "}" +
                 "}," +

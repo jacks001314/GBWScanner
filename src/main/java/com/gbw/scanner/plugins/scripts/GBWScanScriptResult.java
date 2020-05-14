@@ -2,9 +2,20 @@ package com.gbw.scanner.plugins.scripts;
 
 import com.gbw.scanner.GBWScannerResult;
 import com.gbw.scanner.Host;
+import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.client.Requests;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public abstract class GBWScanScriptResult extends GBWScannerResult {
 
@@ -31,7 +42,7 @@ public abstract class GBWScanScriptResult extends GBWScannerResult {
     }
 
     @Override
-    public String getIndexMapping() {
+    public  String getIndexMapping() {
 
         String mapping = "{" +
                 "\"properties\":{" +

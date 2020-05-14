@@ -52,7 +52,6 @@ public class GBWScanSolrVelocityScriptResult extends GBWScanScriptResult {
         cb.field("core",core);
         cb.field("cores",cores);
 
-
         return cb;
     }
 

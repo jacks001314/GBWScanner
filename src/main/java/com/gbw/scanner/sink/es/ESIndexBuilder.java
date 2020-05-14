@@ -14,6 +14,7 @@ import org.elasticsearch.client.Requests;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.common.xcontent.XContentType;
 
 import java.io.IOException;
 
@@ -38,7 +39,7 @@ public class ESIndexBuilder {
 
         PutMappingRequest putMappingRequest = Requests
                 .putMappingRequest(indexName).type(docType)
-                .source(mappingJson);
+                .source(mappingJson, XContentType.JSON);
 
         client.admin().indices().putMapping(putMappingRequest).actionGet();
     }

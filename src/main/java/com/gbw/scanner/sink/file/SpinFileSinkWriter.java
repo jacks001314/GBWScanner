@@ -2,6 +2,7 @@ package com.gbw.scanner.sink.file;
 
 import com.gbw.scanner.sink.es.ESIndexable;
 import com.gbw.scanner.utils.FileUtils;
+import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
@@ -39,8 +40,7 @@ public class SpinFileSinkWriter implements FileSinkWriter {
         cb.startObject();
         esIndexable.dataToJson(cb);
         cb.endObject();
-
-        writeLine(cb.string());
+        writeLine(Strings.toString(cb));
     }
 
     @Override

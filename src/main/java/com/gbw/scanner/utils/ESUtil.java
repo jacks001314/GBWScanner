@@ -8,7 +8,7 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -36,7 +36,7 @@ public class ESUtil {
 
         for(String host:esConfig.getEsHosts()){
             try {
-                esClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(host),esConfig.getEsPort()));
+                esClient.addTransportAddress(new TransportAddress(InetAddress.getByName(host),esConfig.getEsPort()));
             } catch (UnknownHostException e) {
                 e.printStackTrace();
                 return null;
@@ -61,7 +61,7 @@ public class ESUtil {
 
         TransportClient esClient = new PreBuiltTransportClient(settings);
 
-        esClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(host),port));
+        esClient.addTransportAddress(new TransportAddress(InetAddress.getByName(host),port));
 
         return esClient;
     }

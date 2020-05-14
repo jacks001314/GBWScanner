@@ -9,6 +9,7 @@ import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.BucketOrder;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.metrics.max.Max;
 import org.elasticsearch.search.aggregations.metrics.min.Min;
@@ -105,7 +106,7 @@ public class ESService {
     public List<AggItem> topBYTerm(String q, String field, int topN, boolean isasc) {
 
         SearchResponse searchResponse = prepare(q)
-                .addAggregation(terms("term").field(field).size(topN).order(Terms.Order.count(isasc)))
+                .addAggregation(terms("term").field(field).size(topN).order(BucketOrder.count(isasc)))
                 .get();
 
         return getTermsBucket(searchResponse.getAggregations(),"term").stream().map(bucket -> {
@@ -117,8 +118,8 @@ public class ESService {
     public List<MoreAggItem> topBYTerms2(String q, int topN, boolean isasc, String f1, String f2) {
 
         SearchResponse searchResponse =   prepare(q)
-                .addAggregation(terms("term1").field(f1).size(topN).order(Terms.Order.count(isasc))
-                        .subAggregation(terms("term2").field(f2).size(topN).order(Terms.Order.count(isasc))))
+                .addAggregation(terms("term1").field(f1).size(topN).order(BucketOrder.count(isasc))
+                        .subAggregation(terms("term2").field(f2).size(topN).order(BucketOrder.count(isasc))))
                 .get();
 
         List<MoreAggItem> moreAggItems = new ArrayList<>();

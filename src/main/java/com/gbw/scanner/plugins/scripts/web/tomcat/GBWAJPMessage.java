@@ -41,6 +41,28 @@ public class GBWAJPMessage extends AjpMessage {
         return buffer.toString();
     }
 
+    public void appendString(String str) {
+
+        if (str == null) {
+            appendInt(0);
+            appendByte(0);
+        } else {
+            int len = str.length();
+            appendInt(len);
+
+            for(int i = 0; i < len; ++i) {
+                char c = str.charAt(i);
+                if (c <= 31 && c != '\t' || c == 127 || c > 255) {
+                    c = ' ';
+                }
+
+                appendByte(c);
+            }
+
+            appendByte(0);
+        }
+    }
+
     public int getPos(){
         return pos;
     }

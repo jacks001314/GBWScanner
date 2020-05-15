@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static com.gbw.scanner.plugins.scripts.web.tomcat.GBWAJPUtils.getText;
+
 public class GBWScanAJPScript implements GBWScanScript {
 
     private static final Logger log = LoggerFactory.getLogger(GBWScanScript.class);
@@ -33,22 +35,7 @@ public class GBWScanAJPScript implements GBWScanScript {
         return true;
     }
 
-    private GBWAJPMessage createAJPMessage(Host host){
 
-        GBWAJPForwardRequest request = new GBWAJPForwardRequest(host,config.getUri());
-
-	    request.addHeader(GBWAJPConstants.getHeaderString(GBWAJPConstants.SC_REQ_ACCEPT),"text/html");
-        request.addHeader(GBWAJPConstants.getHeaderString(GBWAJPConstants.SC_REQ_CONNECTION),"keep-alive");
-        request.addHeader(GBWAJPConstants.getHeaderString(GBWAJPConstants.SC_REQ_CONTENT_LENGTH),"0");
-
-        request.addAttr("req_attribute","javax.servlet.include.request_uri,/");
-        request.addAttr("req_attribute",String.format("javax.servlet.include.path_info,%s",config.getFile()));
-        request.addAttr("req_attribute","javax.servlet.include.servlet_path,/");
-
-        request.setIs_ssl(config.isSSL());
-        request.setData_direction(GBWAJPConstants.SERVER_TO_CONTAINER);
-        return request.createMessage(4096);
-    }
 
     @Override
     public void scan(Host host, SinkQueue sinkQueue) {
@@ -57,7 +44,7 @@ public class GBWScanAJPScript implements GBWScanScript {
         try{
             client = new GBWAJPClient(host,config);
 
-            GBWAJPMessage message = createAJPMessage(host);
+            GBWAJPMessage message = GBWAJPUtils.createAJPMessage(host,config);
 
             List<GBWAJPResponse> responses = client.sendAndReceive(message,null);
 
@@ -70,7 +57,7 @@ public class GBWScanAJPScript implements GBWScanScript {
                     sinkQueue.put(new GBWScanAJPResult(config, host, responses));
                 }else{
 
-                    System.out.println(getText(responses));
+                    System.out.println(GBWAJPUtils.getText(responses));
                 }
                 //System.out.println(new String(data));
             }
@@ -83,15 +70,7 @@ public class GBWScanAJPScript implements GBWScanScript {
         }
     }
 
-    private  String getText(List<GBWAJPResponse> responses){
 
-        StringBuffer sb = new StringBuffer();
-        responses.forEach(res->{
-            sb.append(new String(res.getData()));
-        });
-
-        return sb.toString();
-    }
 
     public static void main(String[] args)  throws Exception {
 

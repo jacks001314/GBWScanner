@@ -32,6 +32,7 @@ if [ $# = 0 ]; then
   echo "scanRedis		 			run redis no auth scan!"
   echo "spark		 			    run spark no auth scan!"
   echo "es		 			        run elasticsearch cmds!"
+  echo "jar		 			        run generate java jar package cmds!"
   exit 1
 fi
 
@@ -93,6 +94,9 @@ elif [ "$COMMAND" = "spark" ] ; then
 
 elif [ "$COMMAND" = "es" ] ; then
     CLASS=com.gbw.scanner.elasticsearch.ESMain
+
+elif [ "$COMMAND" = "jar" ] ; then
+    CLASS=com.gbw.scanner.tools.GBWScannerGenShellJar
 
 else
     CLASS=$COMMAND

@@ -1,5 +1,6 @@
 package com.gbw.scanner.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,6 +26,19 @@ public class FileUtils {
         }
 
         return path;
+    }
+
+    public static final String getFileName(String fpath){
+
+        Path path = Paths.get(fpath);
+        return path.getFileName().toString();
+    }
+
+    public static final void mkDirs(String path){
+
+        File file = new File(path);
+        if(!file.exists())
+            file.mkdirs();
     }
 
     public static final void write(String fname,byte[] data) throws IOException {

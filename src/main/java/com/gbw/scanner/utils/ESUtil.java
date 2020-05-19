@@ -19,6 +19,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 
 import static org.elasticsearch.search.aggregations.AggregationBuilders.terms;
@@ -133,9 +134,5 @@ public class ESUtil {
         return t>=range.getFrom()&&t<=range.getTo();
     }
 
-    public static void main(String[] args){
-
-        System.out.println(getIndexTime("log_stream_2020.03.26"));
-    }
 
 }

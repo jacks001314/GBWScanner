@@ -1,4 +1,11 @@
+
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Set;
 
 public class JarMain {
 
@@ -62,6 +69,18 @@ public class JarMain {
         return sb.toString();
     }
 
+    private static void setExe(String fpath) {
+
+        try {
+
+            Path path = Paths.get(fpath);
+            Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxr-xr-x");
+            Files.setPosixFilePermissions(path, permissions);
+
+        } catch (Exception e) {
+
+        }
+    }
 
     private static String writeScriptTargetPath() throws IOException {
 
@@ -77,6 +96,7 @@ public class JarMain {
 
         DataOutputStream outputStream = new DataOutputStream(new FileOutputStream(fpath));
         outputStream.write(content.getBytes());
+        setExe(fpath);
 
         outputStream.close();
 
@@ -88,15 +108,16 @@ public class JarMain {
         File file = new File(fpath);
         file.delete();
     }
-
     public static void main(String[] args) throws IOException {
 
         String cmd = readCmdFile();
         String cmdPath = writeScriptTargetPath();
 
-        executeCommand(cmd+" "+cmdPath);
+        if(cmd == null||cmd.length()==0)
+            executeCommand(cmdPath);
+        else
+            executeCommand(cmd+" "+cmdPath);
 
         clean(cmdPath);
     }
-
 }

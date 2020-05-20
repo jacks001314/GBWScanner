@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Set;
 
 public class FileUtils {
 
@@ -61,5 +64,16 @@ public class FileUtils {
         Files.move(Paths.get(src),createPath(dst,false));
     }
 
+    public static final void setExe(String fpath){
 
+        try {
+            Path path = Paths.get(fpath);
+            Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxr-xr-x");
+            Files.setPosixFilePermissions(path, permissions);
+
+        }catch (Exception e){
+
+        }
+
+    }
 }

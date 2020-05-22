@@ -30,7 +30,7 @@ public class GBWYarnAttack {
         return config;
     }
 
-    private static void processResponse(SinkQueue sinkQueue,StringBuffer sb){
+    private static void processResponse(SinkQueue sinkQueue,String host,int port,StringBuffer sb){
 
         if(!sinkQueue.isEmpty()) {
 
@@ -39,6 +39,7 @@ public class GBWYarnAttack {
             TextUtils.addLong(sb,"MaxMemory",res.getMaxMem());
             TextUtils.addInt(sb,"MaxVCores",res.getMaxVcores());
             TextUtils.addInt(sb,"HadoopNodes",res.getNodes());
+            TextUtils.addText(sb,"Please check app info",String.format("http://%s:%d/cluster/app/%s",host,port,res.getAppID()));
 
         }else{
             sb.append("Response is Empty!\n");
@@ -66,7 +67,7 @@ public class GBWYarnAttack {
         if(res){
             sb.append("Attack hadoop yarn by hadoop yarn restfull api ok!\n");
             sb.append("response------->\n");
-            processResponse(sinkQueue,sb);
+            processResponse(sinkQueue,ip,port,sb);
            return sb.toString();
         }
 
@@ -76,7 +77,7 @@ public class GBWYarnAttack {
 
             sb.append("Attack hadoop yarn by hadoop yarn ipc api ok!\n");
             sb.append("response------->\n");
-            processResponse(sinkQueue,sb);
+            processResponse(sinkQueue,ip,port,sb);
             return sb.toString();
         }
 

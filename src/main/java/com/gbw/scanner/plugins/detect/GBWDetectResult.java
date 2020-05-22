@@ -21,8 +21,8 @@ public class GBWDetectResult extends GBWScannerResult {
         this.host = host;
         this.detectRule = detectRule;
 
-
         setTime(System.currentTimeMillis());
+        setProto(host.getProto());
         setHost(host.getHost());
         setIp(host.getIp());
         setPort(host.getPort());

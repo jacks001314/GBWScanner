@@ -10,6 +10,8 @@ import java.io.IOException;
 public abstract class GBWScannerResult implements ESIndexable {
 
     private long time;
+
+    private String proto;
     private String ip;
     private String host;
     private int port;
@@ -25,6 +27,7 @@ public abstract class GBWScannerResult implements ESIndexable {
     public XContentBuilder dataToJson(XContentBuilder cb) throws IOException {
 
         cb.field("time",time);
+        cb.field("proto",proto == null?"":proto);
         cb.field("ip",ip);
         cb.field("host", TextUtils.isEmpty(host)?ip:host);
         cb.field("port",port);
@@ -123,5 +126,13 @@ public abstract class GBWScannerResult implements ESIndexable {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public String getProto() {
+        return proto;
+    }
+
+    public void setProto(String proto) {
+        this.proto = proto;
     }
 }

@@ -15,6 +15,7 @@ public class GBWWebScanResult extends GBWScannerResult {
 
 
         setTime(System.currentTimeMillis());
+        setProto(host.getProto());
         setHost(host.getHost());
         setIp(host.getIp());
         setPort(host.getPort());
@@ -47,6 +48,7 @@ public class GBWWebScanResult extends GBWScannerResult {
                 "\"ip\":{\"type\":\"keyword\"}," +
                 "\"port\":{\"type\":\"integer\"}," +
                 "\"host\":{\"type\":\"keyword\"}," +
+                "\"proto\":{\"type\":\"keyword\"}," +
                 "\"scanType\":{\"type\":\"keyword\"}," +
                 "\"code\":{\"type\":\"keyword\"}," +
                 "\"type\":{\"type\":\"keyword\"},"+

@@ -25,6 +25,11 @@ public class ESSinkQueue implements SinkQueue {
 
     }
 
+    public ESSinkQueue(){
+
+        queue = new LinkedBlockingQueue<ESIndexable>();
+    }
+
     @Override
     public void put(ESIndexable entry) {
 

@@ -1,11 +1,14 @@
 package com.gbw.scanner;
 
+import com.gbw.scanner.cmd.GBWCmdThread;
 import com.gbw.scanner.plugins.bruteforce.GBWBruteForcePlugin;
 import com.gbw.scanner.plugins.detect.GBWDetectPlugin;
 import com.gbw.scanner.plugins.scripts.GBWScanScriptPlugin;
 import com.gbw.scanner.plugins.webscan.GBWWebScanPlugin;
 import com.gbw.scanner.sink.SinkQueue;
-import com.gbw.scanner.source.*;
+import com.gbw.scanner.source.GBWHostSourceCmdHandle;
+import com.gbw.scanner.source.GBWHostSourcePool;
+import com.gbw.scanner.source.GBWHostSourcePoolBasic;
 import com.xmap.api.SourceException;
 
 import java.util.ArrayList;
@@ -18,14 +21,17 @@ public class GBWScannerThread {
     private final SinkQueue sinkQueue;
     private final List<GBWScannerPlugin> plugins;
     private final GBWScannerConfig config;
-    private GBWHostSource hostSource;
+    private GBWHostSourcePool sourcePool;
     private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
 
-    public GBWScannerThread(GBWScannerConfig config, SinkQueue sinkQueue) throws Exception {
+    private GBWCmdThread cmdThread;
+
+    public GBWScannerThread(GBWScannerConfig config, SinkQueue sinkQueue, GBWCmdThread cmdThread) throws Exception {
 
         this.sinkQueue = sinkQueue;
         this.plugins = new ArrayList<>();
         this.config = config;
+        this.cmdThread = cmdThread;
 
         if (config.isOnBruteForce()) {
             plugins.add(new GBWBruteForcePlugin(config.getBruteForceConfig(), sinkQueue));
@@ -44,18 +50,9 @@ public class GBWScannerThread {
             plugins.add(new GBWScanScriptPlugin(sinkQueue,config.getScanScriptConfig()));
         }
 
-        String sType = config.getStype();
-        if (sType.equals(GBWScannerConfig.SOURCETYPEES)) {
-            this.hostSource = new GBWESHostSource(config.getsESConfig());
-        }else if (sType.equals(GBWScannerConfig.SOURCETYPEFILELINE)) {
-            this.hostSource = new GBWFileLineSource(config.getsFileLineConfig());
-        }else if(sType.equals(GBWScannerConfig.SOURCETYPESHODAN)) {
-            this.hostSource = new GBWShodanSource(config.getsShodanConfig());
-        }else if(sType.equals(GBWScannerConfig.SOURCETYPEFOFA)) {
-            this.hostSource = new GBWFoFaSource(config.getsFoFaConfig());
-        } else{
-            throw new IllegalArgumentException("Unkown host source type:" + sType);
-        }
+        this.sourcePool = new GBWHostSourcePoolBasic(config.getHostSourcePoolConfig());
+
+        cmdThread.registerHandle(new GBWHostSourceCmdHandle(sourcePool));
 
     }
 
@@ -65,14 +62,14 @@ public class GBWScannerThread {
         scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
         scheduledThreadPoolExecutor.scheduleAtFixedRate(new GBWScannerThreadRunnable(), 0, 1, TimeUnit.MINUTES);
 
-        hostSource.start();
+        sourcePool.start();
         plugins.forEach(plugin -> plugin.start());
 
     }
 
     public void stop() {
 
-        hostSource.stop();
+        sourcePool.stop();
         plugins.forEach(plugin->plugin.stop());
 
     }
@@ -96,10 +93,10 @@ public class GBWScannerThread {
             while (true) {
 
                 try {
-                    if (hostSource.isEmpty())
+                    if (sourcePool.isEmpty())
                         break;
 
-                    Host host = hostSource.get();
+                    Host host = sourcePool.get();
                     if (host == null)
                         break;
 

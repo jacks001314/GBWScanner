@@ -1,4 +1,6 @@
-package com.gbw.scanner.source;
+package com.gbw.scanner.source.fofa;
+
+import com.gbw.scanner.source.GBWHostSourceConfig;
 
 import java.util.List;
 

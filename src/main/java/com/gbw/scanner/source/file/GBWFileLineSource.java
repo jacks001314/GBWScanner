@@ -1,6 +1,8 @@
-package com.gbw.scanner.source;
+package com.gbw.scanner.source.file;
 
 import com.gbw.scanner.Host;
+import com.gbw.scanner.source.GBWHostSource;
+import com.gbw.scanner.source.GBWHostSourcePool;
 import com.xmap.api.utils.TextUtils;
 
 import java.io.BufferedReader;
@@ -9,26 +11,31 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class GBWFileLineSource extends GBWAbstractHostSource {
+public class GBWFileLineSource implements GBWHostSource {
 
     private final GBWFileLineSourceConfig config;
-    private final BufferedReader reader;
+    private  BufferedReader reader;
     private final boolean containsPort;
     private boolean isReadAll;
 
     public GBWFileLineSource(GBWFileLineSourceConfig config) throws IOException {
-        super(config);
+
         this.config = config;
-        this.reader = Files.newBufferedReader(Paths.get(config.getHostFile()));
         List<Integer> ports = config.getPorts();
         this.containsPort = ports == null || ports.size() == 0;
         this.isReadAll = false;
     }
 
-    public void preRead() {
+
+    @Override
+    public void open() throws Exception {
+
+        reader = Files.newBufferedReader(Paths.get(config.getHostFile()));
     }
 
-    public int read() {
+    @Override
+    public int read(GBWHostSourcePool sourcePool) {
+
         if (isReadAll) {
             return 0;
         } else {
@@ -36,7 +43,6 @@ public class GBWFileLineSource extends GBWAbstractHostSource {
                 String line = reader.readLine();
                 if (line == null) {
                     isReadAll = true;
-                    readEnd();
                     return 0;
                 }
 
@@ -45,10 +51,10 @@ public class GBWFileLineSource extends GBWAbstractHostSource {
                     if (containsPort) {
                         String[] splits = nline.split(":");
                         Host host = new Host(splits[0], splits[0], Integer.parseInt(splits[1]), config.getScanType(),config.getProto());
-                        put(host);
+                        sourcePool.put(host);
                     } else {
                         config.getPorts().forEach((port) -> {
-                            put(new Host(nline, nline, port, config.getScanType(),config.getProto()));
+                            sourcePool.put(new Host(nline, nline, port, config.getScanType(),config.getProto()));
                         });
                     }
                 }
@@ -60,12 +66,18 @@ public class GBWFileLineSource extends GBWAbstractHostSource {
         }
     }
 
-    public void readEnd() {
+    @Override
+    public void close() {
+
         try {
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    @Override
+    public boolean isRemove() {
+        return true;
     }
 }

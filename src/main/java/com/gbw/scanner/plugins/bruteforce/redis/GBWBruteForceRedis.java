@@ -15,7 +15,6 @@ public class GBWBruteForceRedis extends GBWAbstractBruteForce {
         redisConfig = config;
     }
 
-
     @Override
     public GBWBruteForceResult bruteForce(Host host, GBWDictEntry entry) {
 

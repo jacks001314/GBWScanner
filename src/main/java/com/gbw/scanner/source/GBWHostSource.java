@@ -1,18 +1,15 @@
 package com.gbw.scanner.source;
 
-import com.gbw.scanner.Host;
-import com.xmap.api.SourceException;
-
 public interface GBWHostSource {
 
-    boolean isEmpty();
 
-    Host get();
+    void open() throws Exception;
 
-    void put(Host host);
+    int read(GBWHostSourcePool sourcePool);
 
-    void start() throws SourceException;
-    void stop();
+    void close();
+
+    boolean isRemove();
 }
 
 

@@ -33,6 +33,8 @@ if [ $# = 0 ]; then
   echo "spark		 			    run spark no auth scan!"
   echo "es		 			        run elasticsearch cmds!"
   echo "jar		 			        run generate java jar package cmds!"
+  echo "hsource		 			    run add host source cmds!"
+  echo "scanCmd		 			    run scanner cmd!"
   exit 1
 fi
 
@@ -97,6 +99,12 @@ elif [ "$COMMAND" = "es" ] ; then
 
 elif [ "$COMMAND" = "jar" ] ; then
     CLASS=com.gbw.scanner.tools.GBWScannerGenShellJar
+
+elif [ "$COMMAND" = "hsource" ] ; then
+    CLASS=com.gbw.scanner.source.GBWHostSourceCmdUtils
+
+elif [ "$COMMAND" = "scanCmd" ] ; then
+    CLASS=com.gbw.scanner.GBWScannerCmdUtils
 
 else
     CLASS=$COMMAND

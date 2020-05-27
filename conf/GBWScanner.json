@@ -1,57 +1,18 @@
 {
-	"stype":"fileLine",
-	"sESConfig":{
+    "hostSourcePoolConfig":{
         "sleepTime":60000,
         "queueLimits":10000,
-		"esConfig":{
-			"esHosts":["127.0.0.1"],
-			"esPort":9300,
-			"clusterName":"antell-SmartEye-ES"
-        }
-		"tv":60,
-		"statusFile":"GBWScannerES.data",
-		"xmlPath":"/opt/antell/smarteye/conf/assetsDiscoveryConf.xml",
-		"rules":[
-			{
-				"indices":["log_stream_session_tcp_*"],
-				"type":"esdatabase_doc",
-				"ipField":"dstIP",
-				"hostField":"",
-				"portField":"dstPort",
-				"timeField":"reqStartTime",
-				"search":"(phaseState:4 AND dstPort:21)",
-				"scanType":["bruteForceFTP"],
-				"proto":"ftp"
-			}
-		]
-	},
-	"sFileLineConfig":{
-        "sleepTime":60000,
-        "queueLimits":10000,
-		"hostFile":"/opt/data/8983.data",
-        "scanType":["scanScriptSolrVelocity"],
-        "proto":"",
-        "ports":[]
-    },
-	"sShodanConfig":{
-        "sleepTime":60000,
-        "queueLimits":10000,
-		"shodanFile":"/opt/data/shodan.json",
-        "scanType":["scanScriptFlink"],
-        "proto":""
-    },
-	"sFoFaConfig":{
-        "sleepTime":60000,
-        "queueLimits":10000,
-		"fofaFile":"/opt/data/fofa.json",
-        "scanType":["scanScriptFlink"],
-        "proto":"http",
-        "port":80
+        "sourceConfigs":[
+            {"isOn":false,"type":"es","cpath":"/opt/scan/GBWScanner/conf/ESSource.json"},
+            {"isOn":false,"type":"fLine","cpath":"/opt/scan/GBWScanner/conf/FLine.json"},
+            {"isOn":false,"type":"fofa","cpath":"/opt/scan/GBWScanner/conf/FoFa.json"},
+            {"isOn":false,"type":"shodan","cpath":"/opt/scan/GBWScanner/conf/Shodan.json"}
+        ]
     },
 	
-    "isOnBruteForce":false,
-	"isOnDetect":false,
-	"isOnWebDetect":false,
+    "isOnBruteForce":true,
+	"isOnDetect":true,
+	"isOnWebDetect":true,
     "isOnScanScript":true,
 
 	"bruteForceConfig":{
@@ -150,6 +111,13 @@
 
         "dbType":"maxmind",
         "dbPath":"/opt/antell/data/lib/GeoLite2-City.mmdb"
+    },
+    "cmdConfig":{
+        
+        "channel":"GBWCmd",
+        "host":"127.0.0.1",
+        "port":6379,
+        "auth":"AntellSec#2017"
     }
 }
 

@@ -1,4 +1,4 @@
-package com.gbw.scanner.source;
+package com.gbw.scanner.source.elasticsearch;
 
 import java.util.List;
 

@@ -1,6 +1,8 @@
-package com.gbw.scanner.source;
+package com.gbw.scanner.source.elasticsearch;
 
 import com.gbw.scanner.Host;
+import com.gbw.scanner.source.GBWHostSource;
+import com.gbw.scanner.source.GBWHostSourcePool;
 import com.gbw.scanner.utils.AssetsIPS;
 import com.gbw.scanner.utils.ESUtil;
 import com.xmap.api.utils.TextUtils;
@@ -16,7 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class GBWESHostSource extends GBWAbstractHostSource {
+public class GBWESHostSource implements GBWHostSource {
 
     private GBWESSourceConfig config;
     private Client esClient;
@@ -25,12 +27,7 @@ public class GBWESHostSource extends GBWAbstractHostSource {
     private AssetsIPS assetsIPS;
 
     public GBWESHostSource(GBWESSourceConfig config) throws Exception {
-
-        super(config);
         this.config = config;
-        this.esClient = ESUtil.getClient(config.getEsConfig());
-        this.assetsIPS = new AssetsIPS(config.getXmlPath());
-        this.initStatusFile(config.getStatusFile());
     }
 
     private void initStatusFile(String statusFileName) throws IOException {
@@ -66,32 +63,8 @@ public class GBWESHostSource extends GBWAbstractHostSource {
 
     }
 
-    public void preRead() {
-    }
 
-    public int read() {
-
-        long curTime = System.currentTimeMillis();
-        int count = 0;
-
-        for (GBWESSearchRule rule : config.getRules()) {
-
-            SearchRequestBuilder searchRequestBuilder = ESUtil.makeESSearch(esClient, assetsIPS, rule, lastCheckTime, curTime);
-            SearchResponse searchResponse = searchRequestBuilder.get();
-
-            count += processResponse(searchResponse, rule);
-
-        }
-
-        updateCheckTime(curTime);
-        return count;
-    }
-
-    public void readEnd() {
-        this.esClient.close();
-    }
-
-    private int processResponse(SearchResponse response, GBWESSearchRule rule) {
+    private int processResponse(GBWHostSourcePool sourcePool,SearchResponse response, GBWESSearchRule rule) {
 
         int count = 0;
         Terms ipTerms = response.getAggregations().get("ip");
@@ -110,7 +83,7 @@ public class GBWESHostSource extends GBWAbstractHostSource {
 
                         Host host = new Host(hostTerm.getKeyAsString(), ipTerm.getKeyAsString(), Integer.parseInt(portTerm.getKeyAsString()), rule.getScanType(), rule.getProto());
                         count++;
-                        put(host);
+                        sourcePool.put(host);
 
                     }
                 }
@@ -121,7 +94,7 @@ public class GBWESHostSource extends GBWAbstractHostSource {
 
                     Host host = new Host(ipTerm.getKeyAsString(), ipTerm.getKeyAsString(), Integer.parseInt(portTerm.getKeyAsString()), rule.getScanType(), rule.getProto());
                     count++;
-                    put(host);
+                    sourcePool.put(host);
                 }
             }
 
@@ -129,4 +102,51 @@ public class GBWESHostSource extends GBWAbstractHostSource {
         return count;
     }
 
+    @Override
+    public void open() throws Exception {
+
+        esClient = ESUtil.getClient(config.getEsConfig());
+
+        if(!TextUtils.isEmpty(config.getXmlPath()))
+            assetsIPS = new AssetsIPS(config.getXmlPath());
+        else
+            assetsIPS = null;
+
+        if(!config.isRemoveWhenReadEnd()&&!TextUtils.isEmpty(config.getStatusFile()))
+            initStatusFile(config.getStatusFile());
+
+    }
+
+    @Override
+    public int read(GBWHostSourcePool sourcePool) {
+
+        long curTime = System.currentTimeMillis();
+        int count = 0;
+
+        for (GBWESSearchRule rule : config.getRules()) {
+
+            SearchRequestBuilder searchRequestBuilder = ESUtil.makeESSearch(esClient, assetsIPS, rule, lastCheckTime, curTime);
+            SearchResponse searchResponse = searchRequestBuilder.get();
+
+            count += processResponse(sourcePool,searchResponse, rule);
+
+        }
+
+        if(!config.isRemoveWhenReadEnd())
+            updateCheckTime(curTime);
+
+        return count;
+    }
+
+    @Override
+    public void close() {
+
+        if(config.isRemoveWhenReadEnd())
+            esClient.close();
+    }
+
+    @Override
+    public boolean isRemove() {
+        return config.isRemoveWhenReadEnd();
+    }
 }

@@ -2,25 +2,13 @@ package com.gbw.scanner.source;
 
 public class GBWHostSourceConfig {
 
-    private int sleepTime;
-    private int queueLimits;
+    private boolean isRemoveWhenReadEnd;
 
-    public GBWHostSourceConfig() {
+    public boolean isRemoveWhenReadEnd() {
+        return isRemoveWhenReadEnd;
     }
 
-    public int getSleepTime() {
-        return this.sleepTime;
-    }
-
-    public void setSleepTime(int sleepTime) {
-        this.sleepTime = sleepTime;
-    }
-
-    public int getQueueLimits() {
-        return this.queueLimits;
-    }
-
-    public void setQueueLimits(int queueLimits) {
-        this.queueLimits = queueLimits;
+    public void setRemoveWhenReadEnd(boolean removeWhenReadEnd) {
+        isRemoveWhenReadEnd = removeWhenReadEnd;
     }
 }

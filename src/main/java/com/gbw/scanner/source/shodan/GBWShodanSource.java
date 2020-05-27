@@ -1,6 +1,8 @@
-package com.gbw.scanner.source;
+package com.gbw.scanner.source.shodan;
 
 import com.gbw.scanner.Host;
+import com.gbw.scanner.source.GBWHostSource;
+import com.gbw.scanner.source.GBWHostSourcePool;
 import com.google.gson.Gson;
 import com.xmap.api.utils.TextUtils;
 
@@ -9,21 +11,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class GBWShodanSource extends GBWAbstractHostSource {
+public class GBWShodanSource implements GBWHostSource {
 
     private GBWShodanSourceConfig config;
-    private final BufferedReader reader;
+    private BufferedReader reader;
     private boolean isReadAll;
 
     public GBWShodanSource(GBWShodanSourceConfig config) throws IOException {
-        super(config);
         this.config = config;
-        this.reader = Files.newBufferedReader(Paths.get(config.getShodanFile()));
+
         this.isReadAll = false;
     }
 
-    public void preRead() {
-    }
+
 
     private JsonData readJsonData(String line) {
         Gson gson = new Gson();
@@ -31,15 +31,24 @@ public class GBWShodanSource extends GBWAbstractHostSource {
         return jsonData;
     }
 
-    public int read() {
-        if (this.isReadAll) {
+
+
+    @Override
+    public void open() throws Exception {
+
+        reader = Files.newBufferedReader(Paths.get(config.getShodanFile()));
+    }
+
+    @Override
+    public int read(GBWHostSourcePool sourcePool) {
+
+        if (isReadAll) {
             return 0;
         } else {
             try {
                 String line = reader.readLine();
                 if (line == null) {
                     isReadAll = true;
-                    readEnd();
                     return 0;
                 }
 
@@ -47,7 +56,7 @@ public class GBWShodanSource extends GBWAbstractHostSource {
                 if (!TextUtils.isEmpty(nline)) {
                     JsonData jsonData = readJsonData(nline);
                     Host host = new Host(jsonData.getIp_str(), jsonData.getIp_str(), jsonData.getPort(), config.getScanType(), config.getProto());
-                    put(host);
+                    sourcePool.put(host);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -57,13 +66,19 @@ public class GBWShodanSource extends GBWAbstractHostSource {
         }
     }
 
-    public void readEnd() {
+    @Override
+    public void close() {
+
         try {
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    @Override
+    public boolean isRemove() {
+        return true;
     }
 
     private class JsonData {

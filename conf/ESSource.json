@@ -1,0 +1,19 @@
+{
+        "isRemoveWhenReadEnd":false,
+		"tv":60,
+		"statusFile":"GBWScannerES.data",
+		"xmlPath":"/opt/antell/smarteye/conf/assetsDiscoveryConf.xml",
+		"rules":[
+			{
+				"indices":["log_stream_session_tcp_*"],
+				"type":"esdatabase_doc",
+				"ipField":"dstIP",
+				"hostField":"",
+				"portField":"dstPort",
+				"timeField":"reqStartTime",
+				"search":"(phaseState:4 AND dstPort:21)",
+				"scanType":["bruteForceFTP"],
+				"proto":"ftp"
+			}
+		]
+}

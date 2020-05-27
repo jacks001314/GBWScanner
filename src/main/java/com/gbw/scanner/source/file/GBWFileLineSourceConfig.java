@@ -1,8 +1,10 @@
-package com.gbw.scanner.source;
+package com.gbw.scanner.source.file;
+
+import com.gbw.scanner.source.GBWHostSourceConfig;
 
 import java.util.List;
 
-public class GBWFileLineSourceConfig  extends GBWHostSourceConfig{
+public class GBWFileLineSourceConfig  extends GBWHostSourceConfig {
 
     private String hostFile;
     private List<String> scanType;

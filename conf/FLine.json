@@ -1,0 +1,7 @@
+{
+    "isRemoveWhenReadEnd":false,
+    "hostFile":"/opt/data/8983.data",
+    "scanType":["scanScriptSolrVelocity"],
+    "proto":"",
+    "ports":[]
+}

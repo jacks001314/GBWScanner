@@ -1,5 +1,6 @@
 package com.gbw.scanner;
 
+import com.gbw.scanner.cmd.GBWCmdConfig;
 import com.gbw.scanner.geoip.GeoIPConfigItem;
 import com.gbw.scanner.plugins.bruteforce.GBWBruteForceConfig;
 import com.gbw.scanner.plugins.detect.GBWDetectConfig;
@@ -7,27 +8,21 @@ import com.gbw.scanner.plugins.scripts.GBWScanScriptConfigItem;
 import com.gbw.scanner.plugins.webscan.GBWWebScanConfig;
 import com.gbw.scanner.sink.es.ESConfigItem;
 import com.gbw.scanner.sink.file.FileSinkConfig;
-import com.gbw.scanner.source.GBWESSourceConfig;
-import com.gbw.scanner.source.GBWFileLineSourceConfig;
-import com.gbw.scanner.source.GBWFoFaSourceConfig;
-import com.gbw.scanner.source.GBWShodanSourceConfig;
+import com.gbw.scanner.source.GBWHostSourcePoolConfig;
+import com.gbw.scanner.source.elasticsearch.GBWESSourceConfig;
+import com.gbw.scanner.source.file.GBWFileLineSourceConfig;
+import com.gbw.scanner.source.fofa.GBWFoFaSourceConfig;
+import com.gbw.scanner.source.shodan.GBWShodanSourceConfig;
 
 public class GBWScannerConfig {
 
-    public static final String SOURCETYPEES = "es";
-    public static final String SOURCETYPEFILELINE = "fileLine";
-    public static final String SOURCETYPESHODAN = "shodan";
-    public static final String SOURCETYPEFOFA = "fofa";
 
     public static final String esSink = "esSink";
     public static final String fileSink = "fileSink";
 
     private String stype;
 
-    private GBWESSourceConfig sESConfig;
-    private GBWFileLineSourceConfig sFileLineConfig;
-    private GBWShodanSourceConfig sShodanConfig;
-    private GBWFoFaSourceConfig sFoFaConfig;
+    private GBWHostSourcePoolConfig hostSourcePoolConfig;
 
     private boolean isOnBruteForce;
     private boolean isOnDetect;
@@ -43,6 +38,8 @@ public class GBWScannerConfig {
     private ESConfigItem esSinkConfig;
     private FileSinkConfig fileSinkConfig;
     private GeoIPConfigItem geoIPConfig;
+
+    private GBWCmdConfig cmdConfig;
 
     public String getSinkType() {
         return sinkType;
@@ -68,22 +65,13 @@ public class GBWScannerConfig {
         this.stype = stype;
     }
 
-
-    public GBWESSourceConfig getsESConfig() {
-        return sESConfig;
-    }
-
-    public void setsESConfig(GBWESSourceConfig sESConfig) {
-        this.sESConfig = sESConfig;
-    }
-
-
     public boolean isOnBruteForce() {
         return isOnBruteForce;
     }
 
     public void setOnBruteForce(boolean onBruteForce) {
-        isOnBruteForce = onBruteForce;
+
+        this.isOnBruteForce = onBruteForce;
     }
 
 
@@ -144,28 +132,12 @@ public class GBWScannerConfig {
         this.esSinkConfig = esSinkConfig;
     }
 
-    public GBWFileLineSourceConfig getsFileLineConfig() {
-        return sFileLineConfig;
-    }
-
-    public void setsFileLineConfig(GBWFileLineSourceConfig sFileLineConfig) {
-        this.sFileLineConfig = sFileLineConfig;
-    }
-
     public GBWScanScriptConfigItem getScanScriptConfig() {
         return scanScriptConfig;
     }
 
     public void setScanScriptConfig(GBWScanScriptConfigItem scanScriptConfig) {
         this.scanScriptConfig = scanScriptConfig;
-    }
-
-    public GBWShodanSourceConfig getsShodanConfig() {
-        return sShodanConfig;
-    }
-
-    public void setsShodanConfig(GBWShodanSourceConfig sShodanConfig) {
-        this.sShodanConfig = sShodanConfig;
     }
 
     public boolean isOnScanScript() {
@@ -176,11 +148,19 @@ public class GBWScannerConfig {
         isOnScanScript = onScanScript;
     }
 
-    public GBWFoFaSourceConfig getsFoFaConfig() {
-        return sFoFaConfig;
+    public GBWHostSourcePoolConfig getHostSourcePoolConfig() {
+        return hostSourcePoolConfig;
     }
 
-    public void setsFoFaConfig(GBWFoFaSourceConfig sFoFaConfig) {
-        this.sFoFaConfig = sFoFaConfig;
+    public void setHostSourcePoolConfig(GBWHostSourcePoolConfig hostSourcePoolConfig) {
+        this.hostSourcePoolConfig = hostSourcePoolConfig;
+    }
+
+    public GBWCmdConfig getCmdConfig() {
+        return cmdConfig;
+    }
+
+    public void setCmdConfig(GBWCmdConfig cmdConfig) {
+        this.cmdConfig = cmdConfig;
     }
 }

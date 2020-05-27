@@ -1,0 +1,6 @@
+{
+    "isRemoveWhenReadEnd":false,
+    "shodanFile":"/opt/data/shodan.json",
+    "scanType":["scanScriptFlink"],
+    "proto":""
+}

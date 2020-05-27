@@ -1,0 +1,7 @@
+{
+    "isRemoveWhenReadEnd":false,
+    "fofaFile":"/opt/data/fofa.json",
+    "scanType":["scanScriptFlink"],
+    "proto":"http",
+    "port":80
+}

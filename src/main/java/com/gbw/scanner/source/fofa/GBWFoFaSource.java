@@ -1,6 +1,8 @@
-package com.gbw.scanner.source;
+package com.gbw.scanner.source.fofa;
 
 import com.gbw.scanner.Host;
+import com.gbw.scanner.source.GBWHostSource;
+import com.gbw.scanner.source.GBWHostSourcePool;
 import com.google.gson.Gson;
 import com.xmap.api.utils.TextUtils;
 
@@ -9,16 +11,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class GBWFoFaSource extends GBWAbstractHostSource{
+public class GBWFoFaSource implements GBWHostSource {
 
     private GBWFoFaSourceConfig config;
-    private final BufferedReader reader;
+    private BufferedReader reader;
     private boolean isReadAll;
 
     public GBWFoFaSource(GBWFoFaSourceConfig config) throws IOException {
-        super(config);
         this.config = config;
-        this.reader = Files.newBufferedReader(Paths.get(config.getFofaFile()));
         this.isReadAll = false;
     }
 
@@ -32,15 +32,22 @@ public class GBWFoFaSource extends GBWAbstractHostSource{
         return jsonData;
     }
 
-    public int read() {
-        if (this.isReadAll) {
+    @Override
+    public void open() throws Exception {
+
+        reader = Files.newBufferedReader(Paths.get(config.getFofaFile()));
+    }
+
+    @Override
+    public int read(GBWHostSourcePool sourcePool) {
+
+        if (isReadAll) {
             return 0;
         } else {
             try {
                 String line = reader.readLine();
                 if (line == null) {
                     isReadAll = true;
-                    readEnd();
                     return 0;
                 }
 
@@ -48,7 +55,7 @@ public class GBWFoFaSource extends GBWAbstractHostSource{
                 if (!TextUtils.isEmpty(nline)) {
                     FofaJsonData jsonData = readJsonData(nline);
                     Host host = new Host(jsonData.getHost(), jsonData.getHost(), jsonData.getPort(), config.getScanType(), jsonData.getProto());
-                    put(host);
+                    sourcePool.put(host);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -58,14 +65,20 @@ public class GBWFoFaSource extends GBWAbstractHostSource{
         }
     }
 
-    public void readEnd() {
+    @Override
+    public void close() {
         try {
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
+
+    @Override
+    public boolean isRemove() {
+        return true;
+    }
+
     private class FofaJsonData {
 
         private String id;

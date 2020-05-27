@@ -2,7 +2,7 @@ package com.gbw.scanner.utils;
 
 import com.gbw.scanner.elasticsearch.ESConfig;
 import com.gbw.scanner.elasticsearch.ESStringQueryBuilder;
-import com.gbw.scanner.source.GBWESSearchRule;
+import com.gbw.scanner.source.elasticsearch.GBWESSearchRule;
 import com.xmap.api.utils.TextUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.client.Client;
@@ -19,7 +19,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
 import java.util.Date;
 
 import static org.elasticsearch.search.aggregations.AggregationBuilders.terms;
@@ -81,11 +80,12 @@ public class ESUtil {
     public static SearchRequestBuilder makeESSearch(Client client,AssetsIPS assetsIPS,GBWESSearchRule searchRule,long startTime,long endTime){
 
 
-        QueryBuilder queryBuilder = new ESStringQueryBuilder()
+        ESStringQueryBuilder queryBuilder = new ESStringQueryBuilder()
                 .field(searchRule.getTimeField(), ValueRange.of(startTime,endTime))
-                .append(searchRule.getSearch())
-                .append(assetsIPS.getSearch(searchRule.getIpField()))
-                .build();
+                .append(searchRule.getSearch());
+
+        if(assetsIPS!=null)
+            queryBuilder.append(assetsIPS.getSearch(searchRule.getIpField()));
 
 
         TermsAggregationBuilder aggregationBuilder = terms("ip").field(searchRule.getIpField()).size(Integer.MAX_VALUE);
@@ -103,7 +103,7 @@ public class ESUtil {
         SearchRequestBuilder searchRequestBuilder = client.prepareSearch()
                 .setIndices(searchRule.getIndices())
                 .setTypes(searchRule.getType())
-                .setQuery(queryBuilder)
+                .setQuery(queryBuilder.build())
                 .addAggregation(aggregationBuilder);
 
         return searchRequestBuilder;

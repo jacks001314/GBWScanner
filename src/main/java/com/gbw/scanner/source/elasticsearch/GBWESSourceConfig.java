@@ -1,6 +1,7 @@
-package com.gbw.scanner.source;
+package com.gbw.scanner.source.elasticsearch;
 
 import com.gbw.scanner.elasticsearch.ESConfig;
+import com.gbw.scanner.source.GBWHostSourceConfig;
 
 import java.util.List;
 
@@ -12,8 +13,6 @@ public class GBWESSourceConfig extends GBWHostSourceConfig {
     private String xmlPath;
     private List<GBWESSearchRule> rules;
 
-    public GBWESSourceConfig() {
-    }
 
     public List<GBWESSearchRule> getRules() {
         return this.rules;

@@ -71,6 +71,7 @@ public class GBWShodanSource implements GBWHostSource {
 
         try {
             reader.close();
+            Files.deleteIfExists(Paths.get(config.getShodanFile()));
         } catch (IOException e) {
             e.printStackTrace();
         }

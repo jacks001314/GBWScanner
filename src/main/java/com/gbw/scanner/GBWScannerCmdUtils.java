@@ -1,6 +1,5 @@
 package com.gbw.scanner;
 
-import com.gbw.scanner.cmd.GBWCmdConstants;
 import com.gbw.scanner.cmd.GBWCmdMessage;
 import com.gbw.scanner.utils.GsonUtils;
 import com.xmap.api.utils.TextUtils;

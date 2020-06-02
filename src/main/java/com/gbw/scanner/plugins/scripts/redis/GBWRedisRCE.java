@@ -312,11 +312,13 @@ public class GBWRedisRCE {
         int port = 6379;
         int timeout = 10000;
         int db = 0;
+        String auth = "";
 
         Options opts = new Options();
         opts.addOption("host",true,"redis host");
         opts.addOption("port",true,"redis port");
         opts.addOption("db",true,"redis database index");
+        opts.addOption("auth",true,"redis database passwd");
 
         opts.addOption("info",false,"redis info cmd");
         opts.addOption("keys",false,"redis keys cmd");
@@ -349,10 +351,16 @@ public class GBWRedisRCE {
         if(cliParser.hasOption("port"))
             port = Integer.parseInt(cliParser.getOptionValue("port"));
 
+        if(cliParser.hasOption("auth"))
+            auth = cliParser.getOptionValue("auth");
+
         if(cliParser.hasOption("timeout"))
             timeout = Integer.parseInt(cliParser.getOptionValue("timeout"));
 
         jedis = new Jedis(host,port,timeout);
+        if(!TextUtils.isEmpty(auth))
+            jedis.auth(auth);
+
         if(cliParser.hasOption("db"))
             db = Integer.parseInt(cliParser.getOptionValue("db"));
 

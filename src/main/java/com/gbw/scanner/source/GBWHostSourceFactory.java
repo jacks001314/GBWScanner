@@ -21,17 +21,17 @@ public class GBWHostSourceFactory {
         String type = config.getType();
         GBWHostSource source = null;
 
-        if(type.equals("fLine")){
+        if(type.equals(GBWHostSource.fileLine)){
 
             source =  new GBWFileLineSource(GsonUtils.loadConfigFromJsonFile(config.getCpath(), GBWFileLineSourceConfig.class));
 
-        }else if(type.equals("es")){
+        }else if(type.equals(GBWHostSource.es)){
 
             source = new GBWESHostSource(GsonUtils.loadConfigFromJsonFile(config.getCpath(), GBWESSourceConfig.class));
-        }else if(type.equals("fofa")) {
+        }else if(type.equals(GBWHostSource.fofa)) {
 
             source = new GBWFoFaSource(GsonUtils.loadConfigFromJsonFile(config.getCpath(), GBWFoFaSourceConfig.class));
-        }else if(type.equals("shodan")){
+        }else if(type.equals(GBWHostSource.shodan)){
 
             source = new GBWShodanSource(GsonUtils.loadConfigFromJsonFile(config.getCpath(), GBWShodanSourceConfig.class));
         }
@@ -46,17 +46,17 @@ public class GBWHostSourceFactory {
 
         GBWHostSource source = null;
 
-        if(type.equals("fLine")){
+        if(type.equals(GBWHostSource.fileLine)){
 
             source =  new GBWFileLineSource(GsonUtils.loadConfigFromJson(json,GBWFileLineSourceConfig.class));
 
-        }else if(type.equals("es")){
+        }else if(type.equals(GBWHostSource.es)){
 
             source = new GBWESHostSource(GsonUtils.loadConfigFromJson(json, GBWESSourceConfig.class));
-        }else if(type.equals("fofa")) {
+        }else if(type.equals(GBWHostSource.fofa)) {
 
             source = new GBWFoFaSource(GsonUtils.loadConfigFromJson(json, GBWFoFaSourceConfig.class));
-        }else if(type.equals("shodan")){
+        }else if(type.equals(GBWHostSource.shodan)){
 
             source = new GBWShodanSource(GsonUtils.loadConfigFromJson(json, GBWShodanSourceConfig.class));
         }

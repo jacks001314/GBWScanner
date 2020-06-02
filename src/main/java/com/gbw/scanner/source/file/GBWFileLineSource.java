@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GBWFileLineSource implements GBWHostSource {
@@ -50,8 +51,25 @@ public class GBWFileLineSource implements GBWHostSource {
                 if (!TextUtils.isEmpty(nline)) {
                     if (containsPort) {
                         String[] splits = nline.split(":");
-                        Host host = new Host(splits[0], splits[0], Integer.parseInt(splits[1]), config.getScanType(),config.getProto());
-                        sourcePool.put(host);
+
+                        Host host = null;
+                        if(splits.length == 2){
+                            host = new Host(splits[0], splits[0], Integer.parseInt(splits[1]), config.getScanType(),config.getProto());
+                        }else if(splits.length == 3) {
+
+                            List<String> types = new ArrayList<>();
+                            types.add(splits[2]);
+                            host = new Host(splits[0], splits[0], Integer.parseInt(splits[1]),types, config.getProto());
+                        }else if(splits.length == 4){
+
+                            List<String> types = new ArrayList<>();
+                            types.add(splits[2]);
+                            host = new Host(splits[0], splits[0], Integer.parseInt(splits[1]),types,splits[3]);
+                        }
+
+                        if(host!=null)
+                            sourcePool.put(host);
+
                     } else {
                         config.getPorts().forEach((port) -> {
                             sourcePool.put(new Host(nline, nline, port, config.getScanType(),config.getProto()));
@@ -71,6 +89,8 @@ public class GBWFileLineSource implements GBWHostSource {
 
         try {
             reader.close();
+            Files.deleteIfExists(Paths.get(config.getHostFile()));
+
         } catch (IOException e) {
             e.printStackTrace();
         }

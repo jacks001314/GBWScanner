@@ -69,6 +69,7 @@ public class GBWFoFaSource implements GBWHostSource {
     public void close() {
         try {
             reader.close();
+            Files.deleteIfExists(Paths.get(config.getFofaFile()));
         } catch (IOException e) {
             e.printStackTrace();
         }

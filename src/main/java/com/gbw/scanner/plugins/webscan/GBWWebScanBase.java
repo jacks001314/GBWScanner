@@ -5,7 +5,6 @@ import com.gbw.scanner.http.GBWHttpClientBuilder;
 import com.gbw.scanner.http.GBWHttpResponse;
 import com.gbw.scanner.sink.SinkQueue;
 import com.gbw.scanner.utils.GBWOPUtils;
-import com.gbw.scanner.utils.GsonUtils;
 import com.gbw.scanner.utils.HttpUtils;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -25,7 +24,7 @@ public class GBWWebScanBase implements GBWWebScan{
 
         this.scanConfig = scanConfig;
         if(scanConfig != null)
-            this.scanRuleConfig = GsonUtils.loadConfigFromJsonFile(scanConfig.getRuleCPath(),GBWWebScanRuleConfig.class);
+            this.scanRuleConfig = GBWWebScanRuleConfigFactory.create(scanConfig.getRuleDir());
         else
             this.scanRuleConfig = null;
     }

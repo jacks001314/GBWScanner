@@ -6,7 +6,7 @@ public class GBWWebScanConfig {
     private int conTimeout;
     private int readTimeout;
 
-    private String ruleCPath;
+    private String ruleDir;
 
     public int getThreads() {
         return threads;
@@ -16,13 +16,7 @@ public class GBWWebScanConfig {
         this.threads = threads;
     }
 
-    public String getRuleCPath() {
-        return ruleCPath;
-    }
 
-    public void setRuleCPath(String ruleCPath) {
-        this.ruleCPath = ruleCPath;
-    }
 
 
     public int getConTimeout() {
@@ -39,5 +33,13 @@ public class GBWWebScanConfig {
 
     public void setReadTimeout(int readTimeout) {
         this.readTimeout = readTimeout;
+    }
+
+    public String getRuleDir() {
+        return ruleDir;
+    }
+
+    public void setRuleDir(String ruleDir) {
+        this.ruleDir = ruleDir;
     }
 }

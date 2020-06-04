@@ -47,7 +47,7 @@ public class GBWDetectPlugin implements GBWScannerPlugin {
                 if(typeConfig.isOn()){
                     String type = typeConfig.getName();
                     if(type.equals(DETECTTCP)){
-                        detectMap.put(DETECTTCP,new GBWDetectTCP(config,GsonUtils.loadConfigFromJsonFile(typeConfig.getCpath(),GBWDetectRuleConfig.class)));
+                        detectMap.put(DETECTTCP,new GBWDetectTCP(config,GBWDetectRuleConfigFactory.create(typeConfig.getRuleDir())));
                     }else if(type.equals(DETECTUDP)){
 
                     }else{

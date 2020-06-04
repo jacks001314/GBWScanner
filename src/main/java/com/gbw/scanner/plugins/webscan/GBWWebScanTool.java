@@ -30,7 +30,7 @@ public class GBWWebScanTool {
         config.setReadTimeout(10000);
         config.setThreads(1);
 
-        config.setRuleCPath("");
+        config.setRuleDir("");
         init(args);
     }
 
@@ -61,7 +61,7 @@ public class GBWWebScanTool {
             System.exit(-1);
         }
 
-        config.setRuleCPath(cliParser.getOptionValue("rulePath"));
+        config.setRuleDir(cliParser.getOptionValue("rulePath"));
 
         webScan = new GBWWebScanBase(config);
 

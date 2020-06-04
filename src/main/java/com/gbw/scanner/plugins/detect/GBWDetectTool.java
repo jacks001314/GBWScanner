@@ -2,7 +2,6 @@ package com.gbw.scanner.plugins.detect;
 
 import com.gbw.scanner.Host;
 import com.gbw.scanner.plugins.detect.tcp.GBWDetectTCP;
-import com.gbw.scanner.utils.GsonUtils;
 import com.gbw.scanner.utils.KeepAliveThread;
 import com.xmap.api.utils.TextUtils;
 import org.apache.commons.cli.CommandLine;
@@ -63,7 +62,7 @@ public class GBWDetectTool {
             System.exit(-1);
         }
 
-        this.ruleConfig = GsonUtils.loadConfigFromJsonFile(cliParser.getOptionValue("rulePath"),GBWDetectRuleConfig.class);
+        this.ruleConfig = GBWDetectRuleConfigFactory.create(cliParser.getOptionValue("rulePath"));
 
         this.detect = new GBWDetectTCP(config,ruleConfig);
 

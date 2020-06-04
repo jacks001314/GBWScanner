@@ -4,7 +4,7 @@ public class GBWDetectTypeConfig {
 
     private String name;
     private boolean isOn;
-    private String cpath;
+    private String ruleDir;
 
     public String getName() {
         return name;
@@ -22,11 +22,11 @@ public class GBWDetectTypeConfig {
         isOn = on;
     }
 
-    public String getCpath() {
-        return cpath;
+    public String getRuleDir() {
+        return ruleDir;
     }
 
-    public void setCpath(String cpath) {
-        this.cpath = cpath;
+    public void setRuleDir(String ruleDir) {
+        this.ruleDir = ruleDir;
     }
 }

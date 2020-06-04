@@ -1,5 +1,7 @@
 package com.gbw.scanner.utils;
 
+import org.apache.logging.log4j.core.util.SystemNanoClock;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,7 +9,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class FileUtils {
 
@@ -76,4 +81,26 @@ public class FileUtils {
         }
 
     }
+
+
+    public static final List<String> dirs(String root){
+
+        try {
+            return Files.list(Paths.get(root))
+                    .map(p->p.getFileName().toString())
+                    .filter(name->!name.startsWith("."))
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+
+            return new ArrayList<>();
+        }
+    }
+
+    public static final boolean isExisted(String fpath){
+
+        return Files.exists(Paths.get(fpath));
+    }
+
+
+
 }

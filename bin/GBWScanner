@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #
 
 ################################
@@ -82,7 +81,7 @@ run_GBWScanner() {
   if [ ${CLEAN_FLAG} -ne 0 ]; then
     set -x
   fi
-  $EXEC $JAVA_HOME/bin/java $JAVA_OPTS $GBWSCANNER_JAVA_OPTS "${arr_java_props[@]}" -cp "$GBWSCANNER_CLASSPATH" \
+  $EXEC $JAVA_HOME/bin/java $JAVA_OPTS --enable-preview $GBWSCANNER_JAVA_OPTS "${arr_java_props[@]}" -cp "$GBWSCANNER_CLASSPATH" \
       -Djava.library.path=$GBWSCANNER_JAVA_LIBRARY_PATH "$GBWSCANNER_APPLICATION_CLASS" $*
 }
 

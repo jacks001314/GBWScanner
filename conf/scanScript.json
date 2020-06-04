@@ -1,5 +1,5 @@
 {
-    "threads":50,
+    "threads":10,
     "solrVelocityScriptConfig":{
 		"isOn":true,
 		"name":"solrVelocity",
@@ -16,7 +16,7 @@
         "defaultCores":["collection1","core","core1","test"]
     },
     "solrDataImportScriptConfig":{
-		"isOn":false,
+		"isOn":true,
 		"name":"solrDataImport",
 		"type":"scanScriptSolrDataImport",
 		"msg":"Apache Solr RCE via dataimport url source",
@@ -31,7 +31,7 @@
         "defaultCores":["collection1","core","core1","test"]
     },
     "flinkScriptConfig":{
-		"isOn":false,
+		"isOn":true,
 		"name":"flink",
 		"type":"scanScriptFlink",
 		"msg":"Apache Fink any jar File upload and exe",
@@ -42,12 +42,12 @@
 		"readTimeout":10000,
         "useRCE":false,
         "keywords":"Apache Flink Web Dashboard",
-        "jarFile":"/opt/antell/GBWScanner/conf/Flink.jar",
+        "jarFile":"/opt/scan/GBWScanner/conf/Flink.jar",
         "entryClass":"com.scanner.apache.Flink",
         "submitJson":"{\"entryClass\":\"com.scanner.apache.Flink\",\"parallelism\":null,\"programArgs\":null,\"savepointPath\":null,\"allowNonRestoredState\":null}"
     },
     "tomcatAjpScriptConfig":{
-		"isOn":false,
+		"isOn":true,
 		"name":"tomcatAJP",
 		"type":"scanScriptTomcatAJP",
 		"msg":"Apache Tomcate AJP Protocal Any File download",
@@ -65,7 +65,7 @@
     },
 
     "ms17010ScriptConfig":{
-		"isOn":false,
+		"isOn":true,
 		"name":"ms17010",
 		"type":"scanScriptMS17010",
 		"msg":"smbv1 remote code exe by heep leak!",
@@ -76,7 +76,7 @@
 		"readTimeout":10000
     },
     "bluekeepScriptConfig":{
-		"isOn":false,
+		"isOn":true,
 		"name":"CVE-2019-0708",
 		"type":"scanScriptBluekeep",
 		"msg":"BlueKeep (CVE-2019-0708) is a vulnerability in the Remote Desktop Protocol (RDP) that can affect the Windows Vista, Windows 7, Windows XP, Server 2003 and Server 2008 operating systems!",
@@ -87,7 +87,7 @@
 		"readTimeout":10000
     },
     "scanYarnConfig":{
-		"isOn":false,
+		"isOn":true,
 		"name":"HadoopYarn",
 		"type":"scanScriptHadoopYarn",
 		"msg":"hadoop yarn no auth ,remote create application and exe any codes",
@@ -114,7 +114,7 @@
         "ipcRetries":1
     },
     "scanRedisConfig":{
-		"isOn":false,
+		"isOn":true,
 		"name":"scanRedis",
 		"type":"scanScriptRedis",
 		"msg":"scan redis no auth bug",
@@ -128,7 +128,7 @@
         "dirs":["/var/spool/cron","/etc/cron.d","/root/.ssh","/home/redis/.ssh"]
     },
     "scanSparkConfig":{
-		"isOn":false,
+		"isOn":true,
 		"name":"scanSpark",
 		"type":"scanScriptSpark",
 		"msg":"scan spark no auth bug",

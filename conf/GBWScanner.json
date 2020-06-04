@@ -16,7 +16,7 @@
     "isOnScanScript":true,
 
 	"bruteForceConfig":{
-		 "threads":1,
+		 "threads":50,
 		 "ftpConfig":{
 			"isOn":true,
 			"userFName":"/opt/scan/GBWScanner/conf/bruteforce/ftp_users.txt",
@@ -31,14 +31,14 @@
 			"proxyPasswd":""
 		},
     	 "mailConfig":{
-			"isOn":false,
+			"isOn":true,
 			"userFName":"/opt/scan/GBWScanner/conf/bruteforce/mail_users.txt",
 			"passwdFName":"/opt/scan/GBWScanner/conf/bruteforce/mail_passwd.txt",
 			"timeout":1000
 		},
 
 		 "mySQLConfig":{
-			"isOn":false,
+			"isOn":true,
 			"userFName":"/opt/scan/GBWScanner/conf/bruteforce/mysql_users.txt",
 			"passwdFName":"/opt/scan/GBWScanner/conf/bruteforce/mysql_passwd.txt",
 			"timeout":1000,
@@ -46,21 +46,21 @@
 		 },
 
 		 "mssqlConfig":{	
-			"isOn":false,
+			"isOn":true,
 			"userFName":"/opt/scan/GBWScanner/conf/bruteforce/mssql_users.txt",
 			"passwdFName":"/opt/scan/GBWScanner/conf/bruteforce/mssql_passwd.txt",
 			"timeout":1000
 		 },
 
 		 "redisConfig":{
-			"isOn":false,
+			"isOn":true,
 			"userFName":"/opt/scan/GBWScanner/conf/bruteforce/redis_users.txt",
 			"passwdFName":"/opt/scan/GBWScanner/conf/bruteforce/redis_passwd.txt",
 			"timeout":1000,
 			"isSSL":false
 		},
 		 "sshConfig":{
-			"isOn":false,
+			"isOn":true,
 			"userFName":"/opt/scan/GBWScanner/conf/bruteforce/ssh_users.txt",
 			"passwdFName":"/opt/scan/GBWScanner/conf/bruteforce/ssh_passwd.txt",
             "timeout":1000,
@@ -71,22 +71,24 @@
 	},
 
     "detectConfig":{
-        "threads":1,
+        "threads":10,
 		"defaultTimeout":10000,
 		"conTimeout":10000,
 		"readTimeout":10000,
         "detects":[
-            {"name":"detectTCP","isOn":false,"cpath":"/opt/scan/GBWScanner/conf/detectTCPRules.json"}
+            {"name":"detectTCP","isOn":true,"ruleDir":"/opt/scan/GBWScanner/conf/tcp"}
         ]
     },
     "webScanConfig":{
-        "threads":1,
-        "ruleCPath":"/opt/scan/GBWScanner/conf/webScanRules.json"
+        "threads":10,
+        "conTimeout":10000,
+        "readTimeout":10000,
+        "ruleDir":"/opt/scan/GBWScanner/conf/web"
     },
     "scanScriptConfig":{
         "cpath":"/opt/scan/GBWScanner/conf/scanScript.json"
     },
-    "sinkType":"fileSink",
+    "sinkType":"esSink",
 
     "esSinkConfig":{
         "esHosts":["127.0.0.1"],
@@ -103,7 +105,7 @@
 
         "threadNum":1,
         "rootDir":"/opt/data/GBWScanner",
-        "prefix":"ScanFlinkResult",
+        "prefix":"ScanYarnResult",
         "type":"spin"
     },
 

@@ -35,6 +35,7 @@ if [ $# = 0 ]; then
   echo "jar		 			        run generate java jar package cmds!"
   echo "hsource		 			    run add host source cmds!"
   echo "scanCmd		 			    run scanner cmd!"
+  echo "tool		 			    run some come cmd,base64....hex.....!"
   exit 1
 fi
 
@@ -106,6 +107,8 @@ elif [ "$COMMAND" = "hsource" ] ; then
 elif [ "$COMMAND" = "scanCmd" ] ; then
     CLASS=com.gbw.scanner.GBWScannerCmdUtils
 
+elif [ "$COMMAND" = "tool" ] ; then
+    CLASS=com.gbw.scanner.utils.UtilsMain
 else
     CLASS=$COMMAND
 fi

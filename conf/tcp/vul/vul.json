@@ -8,12 +8,13 @@
              "connType":"tcp",
              "enable":true,
              "isAnd":true,
-             "ruleDatas":[
+             "items":[
                  { 
                     "isBin":false,
-                    "rawData":"redis_version",
+                     "isArray":false,
+                     "isnot":false,
+                    "value":"redis_version",
                     "op":"contains",
-                    "preOP":"",
                     "dataWriter":{
                         "isBin":true,
                         "data": "0d0a696e666f0d0a"

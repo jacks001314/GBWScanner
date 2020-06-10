@@ -6,6 +6,7 @@ import com.gbw.scanner.connection.GBWConnection;
 import com.gbw.scanner.connection.SSLSocketClient;
 import com.gbw.scanner.connection.SocketClient;
 import com.gbw.scanner.plugins.detect.*;
+import com.gbw.scanner.rule.GBWRuleMatch;
 import com.xmap.api.utils.TextUtils;
 
 import java.io.IOException;
@@ -49,10 +50,10 @@ public class GBWDetectTCP implements GBWDetect {
         }
 
         Connection connection = new GBWConnection(socketClient);
-        GBWDetectConnection detectConnection = new GBWDetectConnection();
+        GBWDetectConnection detectConnection = new GBWDetectConnection(connection);
 
 
-        if(detectConnection.isMatch(connection,rule)){
+        if(GBWRuleMatch.isMatch(detectConnection,rule)){
             result = new GBWDetectResult(host,rule,GBWDetectPlugin.DETECTTCP);
         }
 

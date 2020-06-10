@@ -37,19 +37,13 @@ public class GBWHttpRequestBuilder {
 
         if(rule.isUpload()){
 
-            builder.upload(rule.getPostArgsFilePath(),null,rule.getMime());
+            builder.upload(rule.getPostArgs(),null,rule.getMime());
         }else{
 
-            if(rule.isText()){
-                String file = rule.getPostArgsFilePath();
-                boolean isFile = !TextUtils.isEmpty(file);
-                builder.postString(isFile?file:rule.getPostArgs(),isFile);
+            if(rule.isReqBodyText()){
+                builder.postString(rule.getPostArgs(),false);
             }else{
-                /*bytes*/
-                String file = rule.getPostArgsFilePath();
-                boolean isFile = !TextUtils.isEmpty(file);
-
-                builder.postBytes(isFile?file:rule.getPostArgs(),isFile);
+                builder.postBytes(rule.getPostArgs(),false);
             }
 
         }
@@ -57,31 +51,22 @@ public class GBWHttpRequestBuilder {
         return builder.build();
     }
 
-    public static List<HttpUriRequest> build(Host host, GBWWebScanConfig config,GBWWebScanRule rule) throws IOException {
+    public static HttpUriRequest build(Host host, GBWWebScanConfig config,GBWWebScanRule rule) throws IOException {
 
-        List<HttpUriRequest> httpRequests = new ArrayList<>();
-
-        List<String> uris = rule.getUris();
         boolean isPost = rule.getMethod().equalsIgnoreCase("POST");
 
         HttpUriRequest request = null;
 
-        for(String u:uris){
+        String uri = rule.getUri();
 
-            if(isPost){
+        if(isPost){
+            request = httpPost(host,config,uri,rule);
+        }else{
 
-                request = httpPost(host,config,u,rule);
-            }else{
-
-                request = httpGet(host,config,u,rule);
-            }
-            if(request!=null){
-
-                httpRequests.add(request);
-            }
+            request = httpGet(host,config,uri,rule);
         }
 
-        return httpRequests;
+        return request;
     }
 
 

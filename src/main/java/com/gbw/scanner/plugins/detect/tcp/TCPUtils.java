@@ -99,10 +99,10 @@ public class TCPUtils {
             hex = true;
 
         if(cliParser.hasOption("bsize"))
-            bsize = Integer.parseInt("bsize");
+            bsize = Integer.parseInt(cliParser.getOptionValue("bsize"));
 
         if(cliParser.hasOption("timeout"))
-            timeout = Integer.parseInt("timeout");
+            timeout = Integer.parseInt(cliParser.getOptionValue("timeout"));
 
         process(ip,port,data,hex,bsize,timeout,ssl);
 

@@ -2,6 +2,7 @@ package com.gbw.scanner.plugins.detect;
 
 import com.gbw.scanner.Host;
 import com.gbw.scanner.plugins.detect.tcp.GBWDetectTCP;
+import com.gbw.scanner.utils.GsonUtils;
 import com.gbw.scanner.utils.KeepAliveThread;
 import com.xmap.api.utils.TextUtils;
 import org.apache.commons.cli.CommandLine;
@@ -162,6 +163,7 @@ public class GBWDetectTool {
 
 
     public static void main(String[] args) throws Exception {
+
 
         GBWDetectTool detectTool = new GBWDetectTool(args);
 

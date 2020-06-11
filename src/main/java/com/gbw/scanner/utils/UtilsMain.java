@@ -17,6 +17,7 @@ public class UtilsMain {
         Options opts = new Options();
 
         opts.addOption("toHex",true,"string to hex");
+        opts.addOption("toHexF",true,"file content to hex");
         opts.addOption("enBase64",true,"string to base64");
         opts.addOption("enBase64f",true,"to base64 from file");
         opts.addOption("deBase64",true,"decode base64 from string");
@@ -37,6 +38,11 @@ public class UtilsMain {
         if(cliParser.hasOption("toHex")){
 
             System.out.println(ByteDataUtils.toHex(cliParser.getOptionValue("toHex")));
+        }
+
+        if(cliParser.hasOption("toHexF")){
+
+            System.out.println(ByteDataUtils.toHex(Files.readAllBytes(Paths.get(cliParser.getOptionValue("toHexF")))));
         }
 
         if(cliParser.hasOption("enBase64")){

@@ -1,5 +1,6 @@
 package com.gbw.scanner.utils;
 
+import com.xmap.api.XMapIPIterator;
 import org.apache.commons.cli.*;
 import org.apache.hadoop.fs.Path;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -25,6 +26,8 @@ public class UtilsMain {
 
         opts.addOption("enURL",true,"encode url from string");
         opts.addOption("deURL",true,"decode url from string");
+
+        opts.addOption("ips",true,"generata ip list:<wlist>:<blist>:<outPath>:<ports>");
 
         opts.addOption("help", false, "Print usage");
 
@@ -63,6 +66,12 @@ public class UtilsMain {
         if(cliParser.hasOption("deURL")){
             System.out.println(URLDecoder.decode(cliParser.getOptionValue("deURL"),"utf-8"));
         }
+        if(cliParser.hasOption("ips")){
+            String[] splists = cliParser.getOptionValue("ips").split(":");
+            XMapIPIterator xMapIPIterator = new XMapIPIterator();
+            System.out.println(xMapIPIterator.iterate(splists[0],splists[1],splists[2],splists[3]));
+        }
+
     }
 
 }

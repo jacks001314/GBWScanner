@@ -7,6 +7,7 @@ import com.gbw.scanner.connection.SSLSocketClient;
 import com.gbw.scanner.connection.SocketClient;
 import com.gbw.scanner.plugins.detect.*;
 import com.gbw.scanner.rule.GBWRuleMatch;
+import com.gbw.scanner.utils.SSLUtils;
 import com.xmap.api.utils.TextUtils;
 
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class GBWDetectTCP implements GBWDetect {
 
         SocketClient socketClient;
         if(proto.equalsIgnoreCase("tcps")){
-            socketClient = new SSLSocketClient();
+            socketClient = new SSLSocketClient(true, SSLUtils.createSSLContext());
         }else{
             socketClient = new SocketClient();
         }

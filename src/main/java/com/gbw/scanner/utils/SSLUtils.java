@@ -42,6 +42,22 @@ public class SSLUtils {
 
     private static final TrustManager[] sslm = {trustManager};
 
+    public static SSLContext createSSLContext(){
+
+        SSLContext sslContext = null;
+        try {
+            sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, sslm, null);
+        } catch (Exception e) {
+
+            return null;
+        }
+
+
+        return sslContext;
+
+    }
+
 
     public static CloseableHttpClient createClient() throws NoSuchAlgorithmException, KeyManagementException {
 

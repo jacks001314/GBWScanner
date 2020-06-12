@@ -5,10 +5,12 @@ import com.gbw.scanner.connection.GBWConnection;
 import com.gbw.scanner.connection.SSLSocketClient;
 import com.gbw.scanner.connection.SocketClient;
 import com.gbw.scanner.utils.ByteDataUtils;
+import com.gbw.scanner.utils.SSLUtils;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.tomcat.util.net.SSLUtil;
 
 
 public class TCPUtils {
@@ -17,7 +19,8 @@ public class TCPUtils {
 
         SocketClient socketClient;
         if(isSSL){
-            socketClient = new SSLSocketClient();
+
+            socketClient = new SSLSocketClient(true,SSLUtils.createSSLContext());
         }else{
             socketClient = new SocketClient();
         }
@@ -29,6 +32,7 @@ public class TCPUtils {
             socketClient.setSoTimeout(timeout);
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(String.format("Exception:%s:%d",ip,port));
             return;
         }

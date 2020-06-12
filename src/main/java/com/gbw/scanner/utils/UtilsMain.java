@@ -1,6 +1,7 @@
 package com.gbw.scanner.utils;
 
 import com.xmap.api.XMapIPIterator;
+import com.xmap.api.utils.IPUtils;
 import org.apache.commons.cli.*;
 import org.apache.hadoop.fs.Path;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -28,6 +29,7 @@ public class UtilsMain {
         opts.addOption("deURL",true,"decode url from string");
 
         opts.addOption("ips",true,"generata ip list:<wlist>:<blist>:<outPath>:<ports>");
+        opts.addOption("ipx",true,"generate ip list,by iterator:<wlist>:<blist>");
 
         opts.addOption("help", false, "Print usage");
 
@@ -72,6 +74,22 @@ public class UtilsMain {
             System.out.println(xMapIPIterator.iterate(splists[0],splists[1],splists[2],splists[3]));
         }
 
+        if(cliParser.hasOption("ipx")){
+
+            String[] splists = cliParser.getOptionValue("ipx").split(":");
+            XMapIPIterator xMapIPIterator = new XMapIPIterator();
+
+            xMapIPIterator.prepareIterate(splists[0],splists[1]);
+            long ip = 0;
+            do{
+
+                ip = xMapIPIterator.getNextIP();
+                System.out.println(IPUtils.ipv4Str(ip));
+
+            }while (ip!=0);
+
+            xMapIPIterator.closeIterate();
+        }
     }
 
 }

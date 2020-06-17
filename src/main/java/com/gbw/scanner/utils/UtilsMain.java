@@ -2,9 +2,10 @@ package com.gbw.scanner.utils;
 
 import com.xmap.api.XMapIPIterator;
 import com.xmap.api.utils.IPUtils;
-import org.apache.commons.cli.*;
-import org.apache.hadoop.fs.Path;
-import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;

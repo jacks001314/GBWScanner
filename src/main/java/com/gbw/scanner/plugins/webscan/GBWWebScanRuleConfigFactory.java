@@ -48,14 +48,14 @@ public class GBWWebScanRuleConfigFactory {
         for(String dir:dirs){
 
             String fpath = RuleUtils.getRulePath(ruleRootDir,dir);
-            if(FileUtils.isExisted(fpath)){
+            if(FileUtils.hasContent(fpath)){
 
                 try {
                     GBWWebScanRuleConfig config = GsonUtils.loadConfigFromJsonFile(fpath,GBWWebScanRuleConfig.class);
                     log.info(String.format("Load webscan rule file:%s is ok,the rule number:%d",fpath,config.getRules().size()));
                     merge(webScanRuleConfig,config);
 
-                } catch (IOException e) {
+                } catch (Exception e) {
                     log.error(String.format("Load webscan rule file:%s failed!",fpath));
                 }
             }

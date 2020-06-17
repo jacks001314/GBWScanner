@@ -6,11 +6,17 @@ import com.gbw.scanner.source.file.GBWFileLineSource;
 import com.gbw.scanner.source.file.GBWFileLineSourceConfig;
 import com.gbw.scanner.source.fofa.GBWFoFaSource;
 import com.gbw.scanner.source.fofa.GBWFoFaSourceConfig;
+import com.gbw.scanner.source.iprange.GBWIPRangeSource;
+import com.gbw.scanner.source.iprange.GBWIPRangeSourceConfig;
 import com.gbw.scanner.source.shodan.GBWShodanSource;
 import com.gbw.scanner.source.shodan.GBWShodanSourceConfig;
 import com.gbw.scanner.utils.GsonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GBWHostSourceFactory {
+
+    private static final Logger log = LoggerFactory.getLogger(GBWHostSourcePool.class);
 
     private GBWHostSourceFactory(){
 
@@ -21,6 +27,7 @@ public class GBWHostSourceFactory {
         String type = config.getType();
         GBWHostSource source = null;
 
+        log.info("Create source type:"+type);
         if(type.equals(GBWHostSource.fileLine)){
 
             source =  new GBWFileLineSource(GsonUtils.loadConfigFromJsonFile(config.getCpath(), GBWFileLineSourceConfig.class));
@@ -34,6 +41,12 @@ public class GBWHostSourceFactory {
         }else if(type.equals(GBWHostSource.shodan)){
 
             source = new GBWShodanSource(GsonUtils.loadConfigFromJsonFile(config.getCpath(), GBWShodanSourceConfig.class));
+        }else if(type.equals(GBWHostSource.ipRange)){
+
+            source = new GBWIPRangeSource(GsonUtils.loadConfigFromJsonFile(config.getCpath(), GBWIPRangeSourceConfig.class));
+        }else{
+
+            log.error("Unkown source type:"+type);
         }
 
         if(source!=null)
@@ -45,7 +58,7 @@ public class GBWHostSourceFactory {
     public static GBWHostSource create(String type,String json) throws Exception {
 
         GBWHostSource source = null;
-
+        log.info("Create source type:"+type);
         if(type.equals(GBWHostSource.fileLine)){
 
             source =  new GBWFileLineSource(GsonUtils.loadConfigFromJson(json,GBWFileLineSourceConfig.class));
@@ -59,6 +72,11 @@ public class GBWHostSourceFactory {
         }else if(type.equals(GBWHostSource.shodan)){
 
             source = new GBWShodanSource(GsonUtils.loadConfigFromJson(json, GBWShodanSourceConfig.class));
+        } else if(type.equals(GBWHostSource.ipRange)){
+
+            source = new GBWIPRangeSource(GsonUtils.loadConfigFromJson(json, GBWIPRangeSourceConfig.class));
+        }else{
+            log.error("Unkown source type:"+type);
         }
 
         if(source!=null)

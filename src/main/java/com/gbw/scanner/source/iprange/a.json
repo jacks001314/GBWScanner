@@ -1,0 +1,97 @@
+{
+  "isRemoveWhenReadEnd":false,
+  "wlistPath":"/opt/scan/GBWScanner/conf/wlist.data",
+  "blistPath":"/opt/scan/GBWScanner/conf/blist.data",
+  "port2ScanTypes":[
+    {
+      "proto":"ssh",
+      "portRange":{"start":-1,"end":-1},
+      "ports":[22],
+      "scanTypes":["bruteForceSSH"]
+    },
+
+    {
+      "proto":"ftp",
+      "portRange":{"start":-1,"end":-1},
+      "ports":[21],
+      "scanTypes":["bruteForceFTP"]
+    },
+
+    {
+      "proto":"redis",
+      "portRange":{"start":-1,"end":-1},
+      "ports":[6379],
+      "scanTypes":["bruteForceRedis"]
+    },
+
+    {
+      "proto":"mysql",
+      "portRange":{"start":-1,"end":-1},
+      "ports":[3306],
+      "scanTypes":["bruteForceMYSQL"]
+    },
+
+    {
+      "proto":"mssql",
+      "portRange":{"start":-1,"end":-1},
+      "ports":[1433],
+      "scanTypes":["bruteForceMSSQL"]
+    },
+
+    {
+      "proto":"ssh",
+      "portRange":{"start":-1,"end":-1},
+      "ports":[22],
+      "scanTypes":["bruteForceSSH"]
+    },
+
+    {
+      "proto":"http",
+      "portRange":{"start":-1,"end":-1},
+      "ports":[8983],
+      "scanTypes":["scanScriptSolrVelocity","scanScriptSolrDataImport"]
+    },
+
+    {
+      "proto":"http",
+      "portRange":{"start":-1,"end":-1},
+      "ports":[8088],
+      "scanTypes":["scanScriptHadoopYarn"]
+    },
+
+    {
+      "proto":"ajp",
+      "portRange":{"start":-1,"end":-1},
+      "ports":[8009],
+      "scanTypes":["scanScriptTomcatAJP"]
+    },
+
+    {
+      "proto":"http",
+      "portRange":{"start":-1,"end":-1},
+      "ports":[8081],
+      "scanTypes":["scanScriptFlink"]
+    },
+
+    {
+      "proto":"smb",
+      "portRange":{"start":-1,"end":-1},
+      "ports":[445],
+      "scanTypes":["scanScriptMS17010"]
+    },
+
+    {
+      "proto":"rdp",
+      "portRange":{"start":-1,"end":-1},
+      "ports":[3389],
+      "scanTypes":["scanScriptBluekeep"]
+    },
+
+    {
+      "proto":"http",
+      "portRange":{"start":-1,"end":-1},
+      "ports":[6066],
+      "scanTypes":["scanScriptSpark"]
+    }
+  ]
+}

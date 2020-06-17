@@ -102,5 +102,16 @@ public class FileUtils {
     }
 
 
+    public static final boolean hasContent(String fpath){
+
+        Path path = Paths.get(fpath);
+        try {
+            return Files.exists(path)&&Files.size(path)>0;
+        } catch (IOException e) {
+
+            return false;
+        }
+    }
+
 
 }

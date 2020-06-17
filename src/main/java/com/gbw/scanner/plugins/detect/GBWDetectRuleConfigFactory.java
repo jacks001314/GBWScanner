@@ -49,14 +49,14 @@ public class GBWDetectRuleConfigFactory {
         for(String dir:dirs){
 
             String fpath = RuleUtils.getRulePath(ruleRootDir,dir);
-            if(FileUtils.isExisted(fpath)){
+            if(FileUtils.hasContent(fpath)){
 
                 try {
                     GBWDetectRuleConfig config = GsonUtils.loadConfigFromJsonFile(fpath,GBWDetectRuleConfig.class);
                     log.info(String.format("Load detect rule file:%s is ok,the rule number:%d",fpath,config.getRules().size()));
                     merge(detectRuleConfig,config);
 
-                } catch (IOException e) {
+                } catch (Exception e) {
                     log.error(String.format("Load detect rule file:%s failed!",fpath));
                 }
             }

@@ -17,7 +17,7 @@
                     "op":"contains",
                     "dataWriter":{
                     "isBin":false,
-                    "data": "{\"id\":3333,\"jsonrpc\":\"2.0\",\"method\":\"keepalived\",\"params\":{\"id\":\"xmrig\"}}\n\0"
+                    "data": "{\"id\":3333,\"jsonrpc\":\"2.0\",\"method\":\"keepalived\",\"params\":{\"id\":\"xmrig\"}}\n"
                     },
                 "dataReader":{
                     "rop":"readString",
@@ -43,7 +43,7 @@
                     "op":"contains",
                     "dataWriter":{
                     "isBin":false,
-                    "data": "{\"id\":3333,\"method\":\"mining.subscribe\",\"params\":[]}\n\0"
+                    "data": "{\"id\":3333,\"method\":\"mining.subscribe\",\"params\":[]}\n"
                     },
                 "dataReader":{
                     "rop":"readString",

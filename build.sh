@@ -14,7 +14,7 @@ mvn clean
 mvn install -Dmaven.test.skip=true
 
 cp $GBWScanner_DIST build/
-
+cp target/classes/com/gbw/scanner/tools/JarMain.class build
 cd build
 tar -zxf $GBWScanner_TAR
 cp ../$GBWScanner_JAR $GBWScanner_SRC/lib
@@ -24,5 +24,7 @@ chmod a+x *.sh
 #rm -rf $GBWScanner_SRC install.sh
 rm -fr $GBWScanner_TAR
 
+cd ../
+rm -rf target
 echo ""
 echo "build done..."

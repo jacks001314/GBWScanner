@@ -3,7 +3,10 @@ package com.gbw.scanner.source.iprange;
 import com.gbw.scanner.Host;
 import com.gbw.scanner.source.GBWHostSource;
 import com.gbw.scanner.source.GBWHostSourcePool;
+import com.gbw.scanner.source.GBWSourceStatus;
+import com.gbw.scanner.utils.AssetsIPS;
 import com.xmap.api.XMapIPIterator;
+import com.xmap.api.utils.DateUtils;
 import com.xmap.api.utils.IPUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,17 +19,25 @@ public class GBWIPRangeSource implements GBWHostSource {
 
     private XMapIPIterator ipIterator;
     private GBWIPRangeSourceConfig config;
+    private GBWSourceStatus sourceStatus;
 
-
-    public GBWIPRangeSource(GBWIPRangeSourceConfig config){
+    public GBWIPRangeSource(GBWIPRangeSourceConfig config) throws Exception {
 
         this.config = config;
         this.ipIterator = new XMapIPIterator();
 
+        this.sourceStatus  = new GBWSourceStatus(config.getStatusFName(),config.getTv());
     }
 
     @Override
     public void open() throws Exception {
+
+        log.info("OPen IPRange to read-----------------------------");
+        if(config.isAssetsFile()){
+
+            AssetsIPS ips = new AssetsIPS(config.getAssetsFile());
+            ips.writeFile(config.getWlistPath());
+        }
 
         ipIterator.prepareIterate(config.getWlistPath(),config.getBlistPath());
     }
@@ -80,7 +91,21 @@ public class GBWIPRangeSource implements GBWHostSource {
 
     @Override
     public boolean isRemove() {
-        return true;
+        return config.isRemoveWhenReadEnd();
+    }
+
+    @Override
+    public boolean isTimeout(long curTime) {
+        return sourceStatus.isTimeout(curTime);
+    }
+
+    @Override
+    public void reopen(long curTime) throws Exception {
+
+        log.info(String.format("Reopen iprange to read,time:%s", DateUtils.format(curTime)));
+        close();
+        open();
+        sourceStatus.updateStatusTime(curTime);
     }
 
 }

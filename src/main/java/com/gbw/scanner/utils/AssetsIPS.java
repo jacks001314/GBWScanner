@@ -5,6 +5,7 @@ import org.dom4j.*;
 import org.dom4j.io.SAXReader;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +40,10 @@ public class AssetsIPS {
 
     }
 
+    public List<AssetsItem> getAssertsList() {
+        return assertsList;
+    }
+
     public String getSearch(String field) {
 
         if(assertsList == null ||assertsList.size()==0)
@@ -69,6 +74,7 @@ public class AssetsIPS {
         private long ipEnd;
         private long netmask;
         private String prefix;
+        private int masknum;
 
         public AssetsItem(String ipStartStr,String ipEndStr){
 
@@ -111,17 +117,20 @@ public class AssetsIPS {
             switch (sameCount){
                 case 1:
                     netmask = IPUtils.ipv4LongLE("255.0.0.0");
+                    masknum = 8;
                     break;
                 case 2:
                     netmask = IPUtils.ipv4LongLE("255.255.0.0");
+                    masknum = 16;
                     break;
                 case 3:
                     netmask = IPUtils.ipv4LongLE("255.255.255.0");
+                    masknum = 24;
                     break;
 
                     default:
                         netmask = IPUtils.ipv4LongLE("255.255.255.255");
-
+                        masknum = 25;
             }
 
             prefix = sb.toString();
@@ -157,6 +166,13 @@ public class AssetsIPS {
         }
 
 
+        public int getMasknum() {
+            return masknum;
+        }
+
+        public void setMasknum(int masknum) {
+            this.masknum = masknum;
+        }
     }
 
     private boolean isContains(AssetsItem item,String ip){
@@ -187,6 +203,23 @@ public class AssetsIPS {
         }
 
         return false;
+    }
+
+    public void writeFile(String fname){
+
+        StringBuffer sb = new StringBuffer();
+        assertsList.forEach(e->{
+            sb.append(IPUtils.ipv4Str(IPUtils.reverse(e.getIpStart()&e.getNetmask())));
+            sb.append("/");
+            sb.append(e.getMasknum());
+            sb.append("\n");
+        });
+
+        try {
+            FileUtils.write(fname,sb.toString().getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

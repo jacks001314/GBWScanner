@@ -89,4 +89,5 @@ public class ESConfigItem {
     public void setQueueLimits(int queueLimits) {
         this.queueLimits = queueLimits;
     }
+
 }

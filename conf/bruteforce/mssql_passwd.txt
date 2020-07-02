@@ -1,1 +1,13 @@
 sa
+root
+123456
+111111
+admin
+root123456
+admin@123
+admin@1234
+root@1234
+root@123
+123#abc
+123_abc
+123abc

@@ -11,13 +11,30 @@ public class GBWHostSourceThread implements Runnable{
 
     private boolean isEmpty(GBWHostSource source,int c){
 
-        return  c == 0&&source.isRemove();
+        return  c == 0;
     }
 
     private void sleep(){
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
+        }
+    }
+
+    private void processReadEnd(GBWHostSource source){
+
+        if(source.isRemove()){
+            sourcePool.removeSource(source);
+        }else{
+
+            long curTime = System.currentTimeMillis();
+            if(source.isTimeout(curTime)){
+                try {
+                    source.reopen(curTime);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -40,7 +57,7 @@ public class GBWHostSourceThread implements Runnable{
             }
             int c = source.read(sourcePool);
             if(isEmpty(source,c)){
-                sourcePool.removeSource(source);
+                processReadEnd(source);
                 curSource = null;
             }else {
                 curSource = source;

@@ -1,6 +1,14 @@
 test
+ftp
+root
+123456
 111111
 admin
-123456
-ftp
-
+root123456
+admin@123
+admin@1234
+root@1234
+root@123
+123#abc
+123_abc
+123abc

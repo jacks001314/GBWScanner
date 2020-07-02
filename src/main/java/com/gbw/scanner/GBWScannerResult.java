@@ -3,8 +3,12 @@ package com.gbw.scanner;
 import com.gbw.scanner.sink.es.ESIndexable;
 import com.xmap.api.utils.TextUtils;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.script.Script;
+import org.elasticsearch.script.ScriptType;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public abstract class GBWScannerResult implements ESIndexable {
@@ -43,6 +47,22 @@ public abstract class GBWScannerResult implements ESIndexable {
         details.endObject();
 
         return cb;
+    }
+
+    public Script getUpdateScript(){
+
+        Map<String,Object> params = new HashMap<>();
+        params.put("time",time);
+
+        StringBuffer sb = new StringBuffer("ctx._source.time=params.time;");
+
+        return new Script(ScriptType.INLINE,"painless",sb.toString(),params);
+    }
+
+    public String getId(){
+
+        return String.format("%s_%d_%s_%s",getIp(),getPort(),scanType,type);
+
     }
 
     public abstract XContentBuilder makeDetails(XContentBuilder cb) throws IOException;

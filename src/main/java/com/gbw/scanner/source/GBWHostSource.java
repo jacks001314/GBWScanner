@@ -15,6 +15,10 @@ public interface GBWHostSource {
     void close();
 
     boolean isRemove();
+
+    boolean isTimeout(long curTime);
+
+    void reopen(long curTime) throws Exception;
 }
 
 

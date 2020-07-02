@@ -80,6 +80,16 @@ public class GBWFoFaSource implements GBWHostSource {
         return true;
     }
 
+    @Override
+    public boolean isTimeout(long curTime) {
+        return true;
+    }
+
+    @Override
+    public void reopen(long curTime) throws Exception {
+
+    }
+
     private class FofaJsonData {
 
         private String id;

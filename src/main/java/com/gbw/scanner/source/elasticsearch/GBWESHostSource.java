@@ -3,6 +3,7 @@ package com.gbw.scanner.source.elasticsearch;
 import com.gbw.scanner.Host;
 import com.gbw.scanner.source.GBWHostSource;
 import com.gbw.scanner.source.GBWHostSourcePool;
+import com.gbw.scanner.source.GBWSourceStatus;
 import com.gbw.scanner.utils.AssetsIPS;
 import com.gbw.scanner.utils.ESUtil;
 import com.xmap.api.utils.TextUtils;
@@ -11,56 +12,17 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
 public class GBWESHostSource implements GBWHostSource {
 
     private GBWESSourceConfig config;
     private Client esClient;
-    private long lastCheckTime;
-    private String statusFPath;
     private AssetsIPS assetsIPS;
+    private GBWSourceStatus sourceStatus;
 
     public GBWESHostSource(GBWESSourceConfig config) throws Exception {
+
         this.config = config;
-    }
-
-    private void initStatusFile(String statusFileName) throws IOException {
-        this.statusFPath = statusFileName;
-
-        Path path = Paths.get(this.statusFPath);
-        if (!Files.exists(path)) {
-            Files.createDirectories(path.getParent());
-            Files.createFile(path);
-            this.lastCheckTime = 0L;
-        } else {
-            List<String> lines = Files.readAllLines(path);
-            if (lines != null && lines.size() != 0) {
-                this.lastCheckTime = Long.parseLong((String) lines.get(0));
-            } else {
-                this.lastCheckTime = 0L;
-            }
-        }
-
-    }
-
-    public void updateCheckTime(long lastCheckTime) {
-        this.lastCheckTime = lastCheckTime;
-
-        try {
-            BufferedWriter writer = Files.newBufferedWriter(Paths.get(this.statusFPath));
-            writer.write(Long.toString(lastCheckTime));
-            writer.flush();
-            writer.close();
-        } catch (IOException var4) {
-            var4.printStackTrace();
-        }
-
+        this.sourceStatus = new GBWSourceStatus(config.getStatusFile(),config.getTv());
     }
 
 
@@ -112,9 +74,6 @@ public class GBWESHostSource implements GBWHostSource {
         else
             assetsIPS = null;
 
-        if(!config.isRemoveWhenReadEnd()&&!TextUtils.isEmpty(config.getStatusFile()))
-            initStatusFile(config.getStatusFile());
-
     }
 
     @Override
@@ -123,19 +82,21 @@ public class GBWESHostSource implements GBWHostSource {
         long curTime = System.currentTimeMillis();
         int count = 0;
 
+        if(!isTimeout(curTime))
+            return 0;
+
         for (GBWESSearchRule rule : config.getRules()) {
 
-            SearchRequestBuilder searchRequestBuilder = ESUtil.makeESSearch(esClient, assetsIPS, rule, lastCheckTime, curTime);
+            SearchRequestBuilder searchRequestBuilder = ESUtil.makeESSearch(esClient, assetsIPS, rule, sourceStatus.getLastCheckTime(), curTime);
             SearchResponse searchResponse = searchRequestBuilder.get();
 
             count += processResponse(sourcePool,searchResponse, rule);
 
         }
 
-        if(!config.isRemoveWhenReadEnd())
-            updateCheckTime(curTime);
-
-        return count;
+        sourceStatus.updateStatusTime(curTime);
+        /*return 0 than can re search*/
+        return 0;
     }
 
     @Override
@@ -148,5 +109,16 @@ public class GBWESHostSource implements GBWHostSource {
     @Override
     public boolean isRemove() {
         return config.isRemoveWhenReadEnd();
+    }
+
+    @Override
+    public boolean isTimeout(long curTime) {
+        return sourceStatus.isTimeout(curTime);
+    }
+
+    @Override
+    public void reopen(long curTime) throws Exception {
+
+        sourceStatus.updateStatusTime(curTime);
     }
 }

@@ -113,7 +113,7 @@ else
     CLASS=$COMMAND
 fi
 
-EXEC_CALL="java --enable-preview -cp $CLASSP $CLASS"
+EXEC_CALL="java -cp $CLASSP $CLASS"
 
 
 # run it

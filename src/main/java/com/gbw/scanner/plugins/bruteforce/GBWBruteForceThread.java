@@ -23,29 +23,24 @@ public class GBWBruteForceThread implements Runnable {
 
         while (true){
 
-            if(splitQueue.isEmpty())
-                break;
+            try{
+                if(splitQueue.isEmpty())
+                    break;
 
-            GBWDictSplit split = splitQueue.take();
-            if(split!=null){
+                GBWDictSplit split = splitQueue.take();
+                if(split!=null){
+                    GBWBruteForce bruteForce = split.getBruteForce();
+                    while(split.hasNext()){
+                        GBWDictEntry entry = split.next();
+                        Host host = split.getHost();
 
-                GBWBruteForce bruteForce = split.getBruteForce();
-
-                while(split.hasNext()){
-
-                    GBWDictEntry entry = split.next();
-
-                    Host host = split.getHost();
-
-
-                    log.info(String.format("Start BruteForce:{proto:%s,host:%s,ip:%s,port:%d,user:%s,passwd:%s}",
+                        log.info(String.format("Start BruteForce:{proto:%s,host:%s,ip:%s,port:%d,user:%s,passwd:%s}",
                             host.getProto(),host.getHost(),host.getIp(),host.getPort(),entry.getUser(),entry.getPasswd()));
 
-                    GBWBruteForceResult bruteForceResult = bruteForce.bruteForce(host,entry);
+                        GBWBruteForceResult bruteForceResult = bruteForce.bruteForce(host,entry);
 
-                    if(bruteForceResult!=null){
-
-                        log.info(String.format("BruteForce ok:{proto:%s,host:%s,ip:%s,port:%d,user:%s,passwd:%s,cmd:%s,cmdResult:%s}",
+                        if(bruteForceResult!=null){
+                            log.info(String.format("BruteForce ok:{proto:%s,host:%s,ip:%s,port:%d,user:%s,passwd:%s,cmd:%s,cmdResult:%s}",
                                 host.getProto(),host.getHost(),host.getIp(),host.getPort(),entry.getUser(),entry.getPasswd(),
                                 bruteForceResult.getCmd(),bruteForceResult.getCmdResult()));
                         if(sinkQueue!=null){
@@ -58,6 +53,9 @@ public class GBWBruteForceThread implements Runnable {
                         }
                     }
                 }
+            }
+        }catch (Exception e){
+                break;
             }
         }
     }

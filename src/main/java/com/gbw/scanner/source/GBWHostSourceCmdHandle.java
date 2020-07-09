@@ -40,12 +40,14 @@ public class GBWHostSourceCmdHandle implements GBWCmdHandle {
 
                 sourcePool.addSource(hostSource);
                 log.info(String.format("Add a Host Source:%s ok!",cmdMesage.getType()));
+
             }else{
 
                 log.info(String.format("Add a Host Source Failed,unkown source:%s!",cmdMesage.getType()));
             }
 
         } catch (Exception e) {
+
             log.error(String.format("Add a Host Source:%s Failed,error:%s!",cmdMesage.getType(),e.getMessage()));
         }
 

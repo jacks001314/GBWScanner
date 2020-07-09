@@ -1,0 +1,11 @@
+{
+    "isRemoveWhenReadEnd":true,
+    "host":"fofa.so",
+    "uri":"/api/v1/search/all",
+    "email":"om2bg0vujgyjoiuy7jnmng5avayc@open_wechat",
+    "key":"ef7686fe6d2a8f2b7e311b6a3cfdafbe",
+    "qbase64":"YXBwPSJBcGFjaGUtRmxpbmsi",
+    "scanType":["scanScriptFlink"],
+    "proto":"http",
+    "port":80
+}

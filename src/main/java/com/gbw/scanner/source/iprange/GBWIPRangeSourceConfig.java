@@ -11,7 +11,6 @@ public class GBWIPRangeSourceConfig  extends GBWHostSourceConfig {
     private String statusFName;
     private String assetsFile;
 
-    private long tv;
     private boolean isAssetsFile;
 
     private List<GBWIPRangePort2ScanType> port2ScanTypes;
@@ -54,14 +53,6 @@ public class GBWIPRangeSourceConfig  extends GBWHostSourceConfig {
 
     public void setStatusFName(String statusFName) {
         this.statusFName = statusFName;
-    }
-
-    public long getTv() {
-        return tv;
-    }
-
-    public void setTv(long tv) {
-        this.tv = tv;
     }
 
     public boolean isAssetsFile() {

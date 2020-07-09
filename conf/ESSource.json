@@ -1,9 +1,135 @@
 {
         "isRemoveWhenReadEnd":false,
-		"tv":60,
-		"statusFile":"GBWScannerES.data",
-		"xmlPath":"/opt/antell/smarteye/conf/assetsDiscoveryConf.xml",
+        "esConfig":{
+            "esHosts":["127.0.0.1"],
+            "esPort":9300,
+            "clusterName":"antell-SmartEye-ES"
+        },
+		"statusFile":"/opt/data/scan/status/es.data",
+		"xmlPath":"",
 		"rules":[
+			{
+				"indices":["log_stream_session_tcp_*"],
+				"type":"esdatabase_doc",
+				"ipField":"dstIP",
+				"hostField":"",
+				"portField":"dstPort",
+				"timeField":"reqStartTime",
+				"search":"(phaseState:4 AND dstPort:445)",
+				"scanType":["scanScriptMS17010"],
+				"proto":"smb"
+			},
+			{
+				"indices":["log_stream_session_tcp_*"],
+				"type":"esdatabase_doc",
+				"ipField":"dstIP",
+				"hostField":"",
+				"portField":"dstPort",
+				"timeField":"reqStartTime",
+				"search":"(phaseState:4 AND dstPort:3389)",
+				"scanType":["scanScriptBluekeep"],
+				"proto":"rdp"
+			},
+			{
+				"indices":["log_stream_session_tcp_*"],
+				"type":"esdatabase_doc",
+				"ipField":"dstIP",
+				"hostField":"",
+				"portField":"dstPort",
+				"timeField":"reqStartTime",
+				"search":"(phaseState:4 AND dstPort:6379)",
+				"scanType":["bruteForceRedis","scanScriptRedis"],
+				"proto":"redis"
+			},
+			{
+				"indices":["log_stream_session_tcp_*"],
+				"type":"esdatabase_doc",
+				"ipField":"dstIP",
+				"hostField":"",
+				"portField":"dstPort",
+				"timeField":"reqStartTime",
+				"search":"(phaseState:4 AND dstPort:8088)",
+				"scanType":["scanScriptHadoopYarn"],
+				"proto":"http"
+			},
+			{
+				"indices":["log_stream_session_tcp_*"],
+				"type":"esdatabase_doc",
+				"ipField":"dstIP",
+				"hostField":"",
+				"portField":"dstPort",
+				"timeField":"reqStartTime",
+				"search":"(phaseState:4 AND dstPort:8081)",
+				"scanType":["scanScriptFlink"],
+				"proto":"http"
+			},
+			{
+				"indices":["log_stream_session_tcp_*"],
+				"type":"esdatabase_doc",
+				"ipField":"dstIP",
+				"hostField":"",
+				"portField":"dstPort",
+				"timeField":"reqStartTime",
+				"search":"(phaseState:4 AND dstPort:8983)",
+				"scanType":["scanScriptSolrVelocity"],
+				"proto":"http"
+			},
+
+			{
+				"indices":["log_stream_session_tcp_*"],
+				"type":"esdatabase_doc",
+				"ipField":"dstIP",
+				"hostField":"",
+				"portField":"dstPort",
+				"timeField":"reqStartTime",
+				"search":"(phaseState:4 AND dstPort:8009)",
+				"scanType":["scanScriptTomcatAJP"],
+				"proto":"ajp"
+			},
+			{
+				"indices":["log_stream_session_tcp_*"],
+				"type":"esdatabase_doc",
+				"ipField":"dstIP",
+				"hostField":"",
+				"portField":"dstPort",
+				"timeField":"reqStartTime",
+				"search":"(phaseState:4 AND dstPort:6066)",
+				"scanType":["scanScriptSpark"],
+				"proto":"http"
+			},
+			{
+				"indices":["log_stream_session_tcp_*"],
+				"type":"esdatabase_doc",
+				"ipField":"dstIP",
+				"hostField":"",
+				"portField":"dstPort",
+				"timeField":"reqStartTime",
+				"search":"(phaseState:4 AND dstPort:1433)",
+				"scanType":["bruteForceMSSQL"],
+				"proto":"mssql"
+			},
+			{
+				"indices":["log_stream_session_tcp_*"],
+				"type":"esdatabase_doc",
+				"ipField":"dstIP",
+				"hostField":"",
+				"portField":"dstPort",
+				"timeField":"reqStartTime",
+				"search":"(phaseState:4 AND dstPort:3306)",
+				"scanType":["bruteForceMYSQL"],
+				"proto":"mysql"
+			},
+			{
+				"indices":["log_stream_session_tcp_*"],
+				"type":"esdatabase_doc",
+				"ipField":"dstIP",
+				"hostField":"",
+				"portField":"dstPort",
+				"timeField":"reqStartTime",
+				"search":"(phaseState:4 AND dstPort:22)",
+				"scanType":["bruteForceSSH"],
+				"proto":"ssh"
+			},
 			{
 				"indices":["log_stream_session_tcp_*"],
 				"type":"esdatabase_doc",

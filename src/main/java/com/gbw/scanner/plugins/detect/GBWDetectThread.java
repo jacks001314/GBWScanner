@@ -23,48 +23,44 @@ public class GBWDetectThread implements Runnable {
 
         while (true){
 
-            if(splitQueue.isEmpty())
-                break;
+            try {
 
-            GBWDetectRuleSplit split = splitQueue.take();
-            if(split!=null){
+                if(splitQueue.isEmpty())
+                    break;
 
-                GBWDetect detect = split.getDetect();
+                GBWDetectRuleSplit split = splitQueue.take();
+                if(split!=null){
+                    GBWDetect detect = split.getDetect();
+                    while(split.hasNext()){
 
-                while(split.hasNext()){
+                        GBWDetectRule entry = split.next();
+                        Host host = split.getHost();
 
-                    GBWDetectRule entry = split.next();
-
-                    Host host = split.getHost();
-
-
-                    log.info(String.format("Start Detect:{host:%s,ip:%s,port:%d,ruleID:%d,ruleType:%s}",
+                        log.info(String.format("Start Detect:{host:%s,ip:%s,port:%d,ruleID:%d,ruleType:%s}",
                             host.getHost(),host.getIp(),host.getPort(),entry.getId(),entry.getType()));
 
+                        try {
+                            GBWDetectResult detectResult = detect.detect(host,entry);
+                            if(detectResult!=null){
 
-                    try {
-                        GBWDetectResult detectResult = detect.detect(host,entry);
-                        if(detectResult!=null){
-
-                            log.info(String.format("Start Detect OK:{host:%s,ip:%s,port:%d,ruleID:%d,ruleType:%s}",
+                                log.info(String.format("Start Detect OK:{host:%s,ip:%s,port:%d,ruleID:%d,ruleType:%s}",
                                     host.getHost(),host.getIp(),host.getPort(),entry.getId(),entry.getType()));
 
-                            if(sinkQueue!=null){
-                                sinkQueue.put(detectResult);
-                            }else{
-                                System.out.println(String.format("Find OK:{host:%s,ip:%s,port:%d,ruleID:%d,ruleType:%s}",
+                                if(sinkQueue!=null){
+                                    sinkQueue.put(detectResult);
+                                }else{
+                                    System.out.println(String.format("Find OK:{host:%s,ip:%s,port:%d,ruleID:%d,ruleType:%s}",
                                         host.getHost(),host.getIp(),host.getPort(),entry.getId(),entry.getType()));
+                                }
                             }
+                        } catch (GBWDetectException e) {
+
                         }
-                    } catch (GBWDetectException e) {
-                       // e.printStackTrace();
-
                     }
-
-
                 }
+            }catch (Exception e){
+
             }
         }
     }
-
 }

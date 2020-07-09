@@ -8,7 +8,6 @@ import java.util.List;
 public class GBWESSourceConfig extends GBWHostSourceConfig {
 
     private ESConfig esConfig;
-    private long tv;
     private String statusFile;
     private String xmlPath;
     private List<GBWESSearchRule> rules;
@@ -30,13 +29,6 @@ public class GBWESSourceConfig extends GBWHostSourceConfig {
         this.esConfig = esConfig;
     }
 
-    public long getTv() {
-        return this.tv;
-    }
-
-    public void setTv(long tv) {
-        this.tv = tv;
-    }
 
     public String getStatusFile() {
         return this.statusFile;

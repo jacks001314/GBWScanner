@@ -1,0 +1,8 @@
+{
+    "isRemoveWhenReadEnd":true,
+    "key":"WMc5E9NbsUk5vz4Y0TmeTdUQfqBr5eEx",
+    "isBase64":false,
+    "search":"Flink",
+    "scanType":["scanScriptFlink"],
+    "proto":"http"
+}

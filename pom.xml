@@ -81,6 +81,11 @@
             <version>8.0.17</version>
         </dependency>
         <dependency>
+            <groupId>com.fooock</groupId>
+            <artifactId>jshodan</artifactId>
+            <version>0.4.9</version>
+        </dependency>
+        <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
             <version>3.1.0</version>

@@ -32,7 +32,9 @@ public class ESIndexBuilder {
 
     private static void createIndex(Client client,String mappingJson,String docType, String indexName) throws IOException {
 
-        Settings settings = Settings.builder().put("index.max_result_window", 1000000000).build();
+        Settings settings = Settings.builder().put("index.max_result_window", 1000000000)
+                .put("number_of_shards", 3).put("number_of_replicas", 0)
+                .put("refresh_interval", "30s").build();
 
         client.admin().indices().create(new CreateIndexRequest(indexName).settings(settings))
                 .actionGet();

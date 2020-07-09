@@ -4,8 +4,6 @@ import com.gbw.scanner.Host;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -16,13 +14,13 @@ public class GBWHostSourcePoolBasic implements GBWHostSourcePool {
     private final LinkedBlockingQueue<Host> hosts = new LinkedBlockingQueue();
 
     private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
-    private List<GBWHostSource> sources;
+    private LinkedBlockingQueue<GBWHostSource> sources;
     private GBWHostSourcePoolConfig config;
 
     public GBWHostSourcePoolBasic(GBWHostSourcePoolConfig config) throws Exception {
 
         this.config = config;
-        this.sources = new ArrayList<>();
+        this.sources = new LinkedBlockingQueue<>();
 
         loadSource();
     }
@@ -89,29 +87,30 @@ public class GBWHostSourcePoolBasic implements GBWHostSourcePool {
     }
 
     @Override
-    public synchronized void addSource(GBWHostSource source) {
+    public  void addSource(GBWHostSource source) {
 
-        sources.add(source);
+        try {
+            sources.put(source);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         log.info("Add a source,the source number:" + sources.size());
     }
 
     @Override
-    public synchronized void removeSource(GBWHostSource source) {
+    public  void removeSource(GBWHostSource source) {
 
         sources.remove(source);
         source.close();
         log.info("Remove a source,the source number:" + sources.size());
     }
 
-    public synchronized GBWHostSource getHostSource(GBWHostSource curSource) {
+    public  GBWHostSource getHostSource(GBWHostSource curSource) {
 
-        if (sources.size() == 0) {
+        if (sources.isEmpty()) {
             /*no sources*/
             return null;
         }
-
-        if (curSource == null)
-            return sources.get(0);
 
         for (GBWHostSource hostSource : sources) {
 

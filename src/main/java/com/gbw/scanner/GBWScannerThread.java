@@ -9,6 +9,8 @@ import com.gbw.scanner.sink.SinkQueue;
 import com.gbw.scanner.source.GBWHostSourceCmdHandle;
 import com.gbw.scanner.source.GBWHostSourcePool;
 import com.gbw.scanner.source.GBWHostSourcePoolBasic;
+import com.gbw.scanner.source.GBWHostSourcePoolConfig;
+import com.gbw.scanner.utils.GsonUtils;
 import com.xmap.api.SourceException;
 
 import java.util.ArrayList;
@@ -50,7 +52,9 @@ public class GBWScannerThread {
             plugins.add(new GBWScanScriptPlugin(sinkQueue,config.getScanScriptConfig()));
         }
 
-        this.sourcePool = new GBWHostSourcePoolBasic(config.getHostSourcePoolConfig());
+
+        this.sourcePool = new GBWHostSourcePoolBasic(GsonUtils.loadConfigFromJsonFile(config.getHostSourcePoolConfigPath(),
+                GBWHostSourcePoolConfig.class));
 
         cmdThread.registerHandle(new GBWHostSourceCmdHandle(sourcePool));
 

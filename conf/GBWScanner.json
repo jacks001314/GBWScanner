@@ -1,16 +1,5 @@
 {
-    "hostSourcePoolConfig":{
-        "sleepTime":60000,
-        "queueLimits":10000,
-        "sourceConfigs":[
-            {"isOn":false,"type":"es","cpath":"/opt/scan/GBWScanner/conf/ESSource.json"},
-            {"isOn":false,"type":"fLine","cpath":"/opt/scan/GBWScanner/conf/FLine.json"},
-            {"isOn":false,"type":"fofa","cpath":"/opt/scan/GBWScanner/conf/FoFa.json"},
-            {"isOn":false,"type":"shodan","cpath":"/opt/scan/GBWScanner/conf/Shodan.json"},
-            {"isOn":true,"type":"ipRange","cpath":"/opt/scan/GBWScanner/conf/IPRange.json"}
-        ]
-    },
-	
+    "hostSourcePoolConfigPath":"/opt/scan/GBWScanner/conf/HostSource.json",	
     "isOnBruteForce":true,
 	"isOnDetect":true,
 	"isOnWebDetect":true,

@@ -27,21 +27,23 @@ public class GBWScanScriptThread implements Runnable {
 
         while(true){
 
-            Host host = scanScriptQueue.take();
-            if(host==null){
-                break;
-            }
-
-            for(String scanType:host.getTypes()){
-
-                GBWScanScript scanScript = scanScriptMap.get(scanType);
-                if(scanScript!=null){
-
-                    log.info(String.format("Start Scan script:%s for host:%s:%d",scanType,host.getIp(),host.getPort()));
-
-                    if(scanScript.isAccept(host))
-                        scanScript.scan(host,sinkQueue);
+            try {
+                Host host = scanScriptQueue.take();
+                if(host==null){
+                    break;
                 }
+                for(String scanType:host.getTypes()){
+                    GBWScanScript scanScript = scanScriptMap.get(scanType);
+                    if(scanScript!=null){
+                        log.info(String.format("Start Scan script:%s for host:%s:%d",scanType,host.getIp(),host.getPort()));
+
+                        if(scanScript.isAccept(host))
+                            scanScript.scan(host,sinkQueue);
+                    }
+                }
+            }catch (Exception e){
+
+                break;
             }
         }
     }

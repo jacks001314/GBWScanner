@@ -5,7 +5,6 @@
     "blistPath":"/opt/scan/GBWScanner/conf/blist.data",
     "statusFName":"/opt/data/scan/status/ipRange.data",
     "assetsFile":"/opt/antell/smarteye/conf/assetsDiscoveryConf.xml",
-    "tv":7200000,
     "isAssetsFile":true,
     "port2ScanTypes":[
         {

@@ -8,6 +8,7 @@ import com.gbw.scanner.utils.AssetsIPS;
 import com.xmap.api.XMapIPIterator;
 import com.xmap.api.utils.DateUtils;
 import com.xmap.api.utils.IPUtils;
+import com.xmap.api.utils.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,12 +22,13 @@ public class GBWIPRangeSource implements GBWHostSource {
     private GBWIPRangeSourceConfig config;
     private GBWSourceStatus sourceStatus;
 
-    public GBWIPRangeSource(GBWIPRangeSourceConfig config) throws Exception {
+    public GBWIPRangeSource(GBWIPRangeSourceConfig config,long tv) throws Exception {
 
         this.config = config;
         this.ipIterator = new XMapIPIterator();
 
-        this.sourceStatus  = new GBWSourceStatus(config.getStatusFName(),config.getTv());
+        if(!TextUtils.isEmpty(config.getStatusFName()))
+            this.sourceStatus  = new GBWSourceStatus(config.getStatusFName(),tv);
     }
 
     @Override

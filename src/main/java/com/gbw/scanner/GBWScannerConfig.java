@@ -9,10 +9,6 @@ import com.gbw.scanner.plugins.webscan.GBWWebScanConfig;
 import com.gbw.scanner.sink.es.ESConfigItem;
 import com.gbw.scanner.sink.file.FileSinkConfig;
 import com.gbw.scanner.source.GBWHostSourcePoolConfig;
-import com.gbw.scanner.source.elasticsearch.GBWESSourceConfig;
-import com.gbw.scanner.source.file.GBWFileLineSourceConfig;
-import com.gbw.scanner.source.fofa.GBWFoFaSourceConfig;
-import com.gbw.scanner.source.shodan.GBWShodanSourceConfig;
 
 public class GBWScannerConfig {
 
@@ -22,7 +18,7 @@ public class GBWScannerConfig {
 
     private String stype;
 
-    private GBWHostSourcePoolConfig hostSourcePoolConfig;
+    private String hostSourcePoolConfigPath;
 
     private boolean isOnBruteForce;
     private boolean isOnDetect;
@@ -148,13 +144,6 @@ public class GBWScannerConfig {
         isOnScanScript = onScanScript;
     }
 
-    public GBWHostSourcePoolConfig getHostSourcePoolConfig() {
-        return hostSourcePoolConfig;
-    }
-
-    public void setHostSourcePoolConfig(GBWHostSourcePoolConfig hostSourcePoolConfig) {
-        this.hostSourcePoolConfig = hostSourcePoolConfig;
-    }
 
     public GBWCmdConfig getCmdConfig() {
         return cmdConfig;
@@ -162,5 +151,13 @@ public class GBWScannerConfig {
 
     public void setCmdConfig(GBWCmdConfig cmdConfig) {
         this.cmdConfig = cmdConfig;
+    }
+
+    public String getHostSourcePoolConfigPath() {
+        return hostSourcePoolConfigPath;
+    }
+
+    public void setHostSourcePoolConfigPath(String hostSourcePoolConfigPath) {
+        this.hostSourcePoolConfigPath = hostSourcePoolConfigPath;
     }
 }

@@ -5,7 +5,10 @@ public interface GBWHostSource {
     public static final String fileLine = "fLine";
     public static final String es = "es";
     public static final String shodan = "shodan";
+    public static final String shodanAPI = "shodanAPI";
     public static final String fofa = "fofa";
+    public static final String fofaAPI= "fofaAPI";
+
     public static final String ipRange = "ipRange";
 
     void open() throws Exception;

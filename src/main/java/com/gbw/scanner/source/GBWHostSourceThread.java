@@ -1,7 +1,11 @@
 package com.gbw.scanner.source;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class GBWHostSourceThread implements Runnable{
 
+    private static final Logger log = LoggerFactory.getLogger(GBWHostSourceThread.class);
     private GBWHostSourcePool sourcePool;
 
     public GBWHostSourceThread(GBWHostSourcePool sourcePool) {
@@ -44,23 +48,35 @@ public class GBWHostSourceThread implements Runnable{
         GBWHostSource curSource = null;
 
         while (true) {
+            try {
 
-            if(sourcePool.isFull()){
-                sleep();
-                continue;
-            }
+                if(sourcePool.isFull()) {
+                    log.info("The host pool is full,will sleep.....");
+                    sleep();
+                    continue;
+                }
 
-            GBWHostSource source = sourcePool.getHostSource(curSource);
-            if (source == null) {
+                GBWHostSource source = sourcePool.getHostSource(curSource);
+                if (source == null) {
+                    break;
+                }
 
-                break;
-            }
-            int c = source.read(sourcePool);
-            if(isEmpty(source,c)){
-                processReadEnd(source);
-                curSource = null;
-            }else {
+                int c = source.read(sourcePool);
+
                 curSource = source;
+
+                if(isEmpty(source,c)){
+                    processReadEnd(source);
+                    if(source.isRemove())
+                        curSource = null;
+                    //sleep();
+                }
+
+            }catch (Exception e){
+
+                log.error("Read source failed:"+e.getMessage());
+                sleep();
+                break;
             }
         }
     }

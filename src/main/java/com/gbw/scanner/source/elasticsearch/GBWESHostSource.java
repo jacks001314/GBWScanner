@@ -11,18 +11,28 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GBWESHostSource implements GBWHostSource {
+
+    private static final Logger log = LoggerFactory.getLogger(GBWESHostSource.class);
 
     private GBWESSourceConfig config;
     private Client esClient;
     private AssetsIPS assetsIPS;
     private GBWSourceStatus sourceStatus;
 
-    public GBWESHostSource(GBWESSourceConfig config) throws Exception {
+    public GBWESHostSource(GBWESSourceConfig config,long tv) throws Exception {
 
         this.config = config;
-        this.sourceStatus = new GBWSourceStatus(config.getStatusFile(),config.getTv());
+
+        if(!TextUtils.isEmpty(config.getStatusFile())){
+
+            this.sourceStatus = new GBWSourceStatus(config.getStatusFile(),tv);
+        }else{
+            this.sourceStatus = null;
+        }
     }
 
 
@@ -82,19 +92,24 @@ public class GBWESHostSource implements GBWHostSource {
         long curTime = System.currentTimeMillis();
         int count = 0;
 
-        if(!isTimeout(curTime))
+        if(!config.isRemoveWhenReadEnd()&&!isTimeout(curTime))
             return 0;
 
         for (GBWESSearchRule rule : config.getRules()) {
 
-            SearchRequestBuilder searchRequestBuilder = ESUtil.makeESSearch(esClient, assetsIPS, rule, sourceStatus.getLastCheckTime(), curTime);
+            SearchRequestBuilder searchRequestBuilder = ESUtil.makeESSearch(esClient, assetsIPS, rule,
+                    sourceStatus==null?0:sourceStatus.getLastCheckTime(), curTime);
+
             SearchResponse searchResponse = searchRequestBuilder.get();
 
             count += processResponse(sourcePool,searchResponse, rule);
 
         }
 
-        sourceStatus.updateStatusTime(curTime);
+        log.info(String.format("Load host to scan queue from es,the number:%d",count));
+
+        if(sourceStatus!=null)
+            sourceStatus.updateStatusTime(curTime);
         /*return 0 than can re search*/
         return 0;
     }
@@ -113,12 +128,13 @@ public class GBWESHostSource implements GBWHostSource {
 
     @Override
     public boolean isTimeout(long curTime) {
-        return sourceStatus.isTimeout(curTime);
+        return sourceStatus == null?true:sourceStatus.isTimeout(curTime);
     }
 
     @Override
     public void reopen(long curTime) throws Exception {
 
-        sourceStatus.updateStatusTime(curTime);
+        if(sourceStatus!=null)
+            sourceStatus.updateStatusTime(curTime);
     }
 }

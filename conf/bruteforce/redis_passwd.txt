@@ -11,3 +11,8 @@ root@123
 123#abc
 123_abc
 123abc
+oracle
+password
+p@aaw0rd
+abc123
+abc123!

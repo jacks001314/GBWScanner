@@ -20,5 +20,7 @@ mv -f JarMain.class /opt/data/script/jclass/
 chmod 755 /opt/scan/GBWScanner
 chmod a+xwr /opt/scan -R
 chown server:server /opt/scan -R
+chown server:server /opt/data/script -R
+chmod a+xrw /opt/data/script -R
 
 echo "Install GBWScanner done..."

@@ -51,10 +51,12 @@ public class GBWScanScriptTool {
     private void init(Options opts,String[] args,int defaultPort) throws Exception{
 
         // Command line options
+        String proto = null;
         int port = defaultPort;
         int timeout = 10000;
         GBWScanScriptCommonConfig config = scanScript.getConfig();
 
+        opts.addOption("proto", true, "protocol");
         opts.addOption("host", true, "address<ip>");
         opts.addOption("port", true, "port");
         opts.addOption("timeout", true, "connect/read timeout in milliseconds");
@@ -69,6 +71,11 @@ public class GBWScanScriptTool {
             System.exit(0);
         }
 
+        if(cliParser.hasOption("proto"))
+        {
+            proto = cliParser.getOptionValue("proto");
+        }
+
         if(cliParser.hasOption("port")){
 
             port = Integer.parseInt(cliParser.getOptionValue("port"));
@@ -78,7 +85,7 @@ public class GBWScanScriptTool {
 
             String h = cliParser.getOptionValue("host");
 
-            Host host = new Host(h,h,port,null,null);
+            Host host = new Host(h,h,port,null,proto);
 
             hosts.put(host);
         }
@@ -95,9 +102,9 @@ public class GBWScanScriptTool {
 
                 if(line.indexOf(":")!=-1){
                     String[] hports = line.split(":");
-                    host = new Host(hports[0],hports[0],Integer.parseInt(hports[1]),null,null);
+                    host = new Host(hports[0],hports[0],Integer.parseInt(hports[1]),null,proto);
                 } else {
-                    host = new Host(line,line,port,null,null);
+                    host = new Host(line,line,port,null,proto);
                 }
 
                 hosts.put(host);

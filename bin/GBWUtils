@@ -25,6 +25,7 @@ if [ $# = 0 ]; then
   echo "solrRCE		 			    run solr rce cmds!"
   echo "flink		 			    run apache fink jar file upload scan!"
   echo "tomcat		 			    run apache tomcat ajp any file download scan!"
+  echo "wlCVE20202555		 	    run weblogic CVE-2020-2555 scan!"
   echo "bruteforce		 			run bruteforce(ftp,ssh,mail,redis,mysql,msssql....)!"
   echo "detect		 			    run detect rules match!"
   echo "webscan		 			    run webscan rules match!"
@@ -76,6 +77,9 @@ elif [ "$COMMAND" = "flink" ] ; then
 
 elif [ "$COMMAND" = "tomcat" ] ; then
     CLASS=com.gbw.scanner.plugins.scripts.web.tomcat.GBWScanAJPScript
+
+elif [ "$COMMAND" = "wlCVE20202555" ] ; then
+    CLASS=com.gbw.scanner.plugins.scripts.weblogic.CVE20202555.GBWScanCVE20202555Script
 
 elif [ "$COMMAND" = "bruteforce" ] ; then
     CLASS=com.gbw.scanner.plugins.bruteforce.GBWBruteForceTool

@@ -278,7 +278,20 @@
             <artifactId>tomcat-coyote</artifactId>
             <version>7.0.39</version>
         </dependency>
-
+        <dependency>
+            <groupId>weblogic</groupId>
+            <artifactId>weblogic</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/wlfullclient.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>weblogic</groupId>
+            <artifactId>coherence</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/coherence.jar</systemPath>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

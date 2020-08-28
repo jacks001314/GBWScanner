@@ -144,6 +144,17 @@
         "mainClass":"com.scan.spark.Spark",
         "args":"whoami,w,cat /proc/version,ifconfig,route,df -h,free -m,netstat -nltp<Plug>PeepOpens auxf",
         "userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+    },
+    "weblogicCVE20202555Config":{
+		"isOn":true,
+		"name":"scanWeblogic",
+		"type":"weblogicCVE20202555",
+		"msg":"Vulnerability in the Oracle Coherence product of Oracle Fusion Middleware (component: Caching,CacheStore,Invocation).Supported versions that are affected are 3.7.1.17, 12.1.3.0.0, 12.2.1.3.0 and 12.2.1.4.0. Easily exploitable vulnerability allows unauthenticated attacker with network access via T3 to compromise Oracle Coherence. Successful attacks of this vulnerability can result in takeover of Oracle Coherence.Affected version: Oracle Coherence 3.7.1.17, 12.1.3.0.0, 12.2.1.3.0, 12.2.1.4.0",
+		"subject":"打相关漏洞补丁,如无必要，禁止使用T3协议",
+		"code":"CVE-2020-2555",
+		"refer":"none",
+		"conTimeout":10000,
+		"readTimeout":10000,
+        "cmds":["/bin/bash","-c","touch /tmp/test.data"]
     }
-
 }

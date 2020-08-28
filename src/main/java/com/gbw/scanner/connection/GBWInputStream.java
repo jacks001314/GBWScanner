@@ -31,30 +31,30 @@ public class GBWInputStream extends FilterInputStream {
 
     public String readLine() throws GBWConnectionException {
         StringBuilder sb = new StringBuilder();
+        this.ensureFill();
 
-        while(true) {
-            while(true) {
-                this.ensureFill();
-                byte b = this.buf[this.count++];
-                if (b == 13) {
-                    this.ensureFill();
-                    byte c = this.buf[this.count++];
-                    if (c == 10) {
-                        String reply = sb.toString();
-                        if (reply.length() == 0) {
-                            return "";
-                        }
+        while(this.count!=this.limit) {
 
-                        return reply;
+            byte b = this.buf[this.count++];
+            if (b == 13) {
+                //this.ensureFill();
+                byte c = this.buf[this.count++];
+                if (c == 10) {
+                    String reply = sb.toString();
+                    if (reply.length() == 0) {
+                        return "";
                     }
-
-                    sb.append((char)b);
-                    sb.append((char)c);
-                } else {
-                    sb.append((char)b);
+                    return reply;
                 }
+                sb.append((char)b);
+                sb.append((char)c);
+            }else if(b == 10){
+                return sb.toString();
+            }else {
+                sb.append((char)b);
             }
         }
+        return sb.toString();
     }
 
     public byte[] readLineBytes() throws GBWConnectionException {

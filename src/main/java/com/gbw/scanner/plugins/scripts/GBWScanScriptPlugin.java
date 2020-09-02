@@ -41,7 +41,7 @@ public class GBWScanScriptPlugin implements GBWScannerPlugin {
     private final SinkQueue sinkQueue;
     private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
 
-    public GBWScanScriptPlugin(SinkQueue sinkQueue,GBWScanScriptConfigItem scanScriptConfigItem) throws IOException {
+    public GBWScanScriptPlugin(SinkQueue sinkQueue,GBWScanScriptConfigItem scanScriptConfigItem) throws Exception {
 
         this.scanScriptQueue = new GBWScanScriptQueue();
         this.scanScriptMap = new HashMap<>();

@@ -27,7 +27,7 @@ public class GBWScanCVE20202555Result extends GBWScanScriptResult {
 
         return cb;
     }
-    
+
     public String[] getCmds() {
         return cmds;
     }

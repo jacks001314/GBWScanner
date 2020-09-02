@@ -285,13 +285,6 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/wlfullclient.jar</systemPath>
         </dependency>
-        <dependency>
-            <groupId>weblogic</groupId>
-            <artifactId>coherence</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/coherence.jar</systemPath>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -317,8 +310,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>13</source>
-                    <target>13</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>

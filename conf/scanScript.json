@@ -156,7 +156,7 @@
 		"conTimeout":10000,
 		"readTimeout":10000,
         "payloadScriptDir":"/opt/scan/GBWScanner/weblogic/",
-        "versions":["12130","12213","12214"],
+        "versions":["1036","12130","12211","12212","12213","12214"],
         "defaultVersion":"12130",
         "cmds":["/bin/bash","-c","touch /tmp/test.data"]
     }

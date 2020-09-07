@@ -279,6 +279,11 @@
             <version>7.0.39</version>
         </dependency>
         <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.51.Final</version>
+        </dependency>
+        <dependency>
             <groupId>weblogic</groupId>
             <artifactId>weblogic</artifactId>
             <version>1.0</version>

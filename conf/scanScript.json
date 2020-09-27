@@ -145,19 +145,37 @@
         "args":"whoami,w,cat /proc/version,ifconfig,route,df -h,free -m,netstat -nltp<Plug>PeepOpens auxf",
         "userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
     },
-    "weblogicCVE20202555Config":{
+    "scanWeblogicConfig":{
 		"isOn":true,
 		"name":"scanWeblogic",
-		"type":"weblogicCVE20202555",
+		"type":"scanWeblogic",
 		"msg":"Vulnerability in the Oracle Coherence product of Oracle Fusion Middleware (component: Caching,CacheStore,Invocation).Supported versions that are affected are 3.7.1.17, 12.1.3.0.0, 12.2.1.3.0 and 12.2.1.4.0. Easily exploitable vulnerability allows unauthenticated attacker with network access via T3 to compromise Oracle Coherence. Successful attacks of this vulnerability can result in takeover of Oracle Coherence.Affected version: Oracle Coherence 3.7.1.17, 12.1.3.0.0, 12.2.1.3.0, 12.2.1.4.0",
 		"subject":"打相关漏洞补丁,如无必要，禁止使用T3协议",
 		"code":"CVE-2020-2555",
 		"refer":"none",
 		"conTimeout":10000,
 		"readTimeout":10000,
-        "payloadScriptDir":"/opt/scan/GBWScanner/weblogic/",
-        "versions":["370","1036","12120","12130","12210","12211","12212","12213","12214"],
-        "defaultVersion":"370",
-        "cmds":["/bin/bash","-c","touch /tmp/test.data"]
+        "payloadScriptDir":"/opt/data/weblogic/CVE_2020_2555",
+        "versions":["1036","12120","12130","12210","12211","12212","12213","12214"],
+        "defaultVersion":"1036",
+        "cmd":"id",
+        "scanSleepTime":10000,
+        "echoShell":"t3IIOP",
+        "httpLogIP":"127.0.0.1
+        "httpLogPort":8080,
+        "coherenceIP":"127.0.0.1",
+        "coherencePort":9030,
+        "httpClientCmd":"curl",
+        "isonCVE_2020_2555":true,
+        "isonCVE_2020_2551":false,
+        "isOnCVE_2018_3245:false,
+        "isOnCVE_2018_3191:false,
+        "isOnCVE_2018_2894:false,
+        "isOnCVE_2018_2893:false,
+        "isOnCVE_2018_2628:false,
+        "isOnCVE_2017_3248:false,
+        "isOnCVE_2016_3510:false,
+        "isOnCVE_2016_0638:false,
+        "isOnCVE_2015_4852:false
     }
 }

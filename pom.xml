@@ -283,12 +283,53 @@
             <artifactId>netty-all</artifactId>
             <version>4.1.51.Final</version>
         </dependency>
+          <dependency>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.12.0.GA</version>
+        </dependency>
+        <dependency>
+            <groupId>com.nqzero</groupId>
+            <artifactId>permit-reflect</artifactId>
+            <version>0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.13.1</version>
+        </dependency> 
         <dependency>
             <groupId>weblogic</groupId>
             <artifactId>weblogic</artifactId>
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/wlfullclient.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>coherence</groupId>
+            <artifactId>coherence</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/coherence.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.bea.core.repackaged.apache.commons.logging</groupId>
+            <artifactId>logging</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/com.bea.core.repackaged.apache.commons.logging_1.2.1.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.bea.core.repackaged.springframework</groupId>
+            <artifactId>spring</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/com.bea.core.repackaged.springframework.spring_1.2.0.0_2-5-3.jar</systemPath>
         </dependency>
     </dependencies>
     <build>

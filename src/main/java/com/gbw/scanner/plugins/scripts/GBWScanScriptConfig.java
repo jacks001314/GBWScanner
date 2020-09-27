@@ -6,7 +6,7 @@ import com.gbw.scanner.plugins.scripts.redis.GBWScanRedisConfig;
 import com.gbw.scanner.plugins.scripts.web.flink.GBWScanFlinkScriptConfig;
 import com.gbw.scanner.plugins.scripts.web.solr.GBWScanSolrScriptConfig;
 import com.gbw.scanner.plugins.scripts.web.tomcat.GBWScanAJPConfig;
-import com.gbw.scanner.plugins.scripts.weblogic.CVE20202555.GBWScanCVE20202555Config;
+import com.gbw.scanner.plugins.scripts.weblogic.GBWScanWeblogicConfig;
 import com.gbw.scanner.plugins.scripts.windows.rdp.bluekeep.GBWScanBluekeepScriptConfig;
 import com.gbw.scanner.plugins.scripts.windows.smb.MS17010.GBWScanSMBMS17010ScriptConfig;
 
@@ -25,7 +25,7 @@ public class GBWScanScriptConfig extends GBWScanScriptCommonConfig {
     private GBWScanYarnConfig scanYarnConfig;
     private GBWScanRedisConfig scanRedisConfig;
     private GBWScanSparkConfig scanSparkConfig;
-    private GBWScanCVE20202555Config weblogicCVE20202555Config;
+    private GBWScanWeblogicConfig scanWeblogicConfig;
 
     public int getThreads() {
         return threads;
@@ -109,11 +109,11 @@ public class GBWScanScriptConfig extends GBWScanScriptCommonConfig {
         this.scanSparkConfig = scanSparkConfig;
     }
 
-    public GBWScanCVE20202555Config getWeblogicCVE20202555Config() {
-        return weblogicCVE20202555Config;
+    public GBWScanWeblogicConfig getScanWeblogicConfig() {
+        return scanWeblogicConfig;
     }
 
-    public void setWeblogicCVE20202555Config(GBWScanCVE20202555Config weblogicCVE20202555Config) {
-        this.weblogicCVE20202555Config = weblogicCVE20202555Config;
+    public void setScanWeblogicConfig(GBWScanWeblogicConfig scanWeblogicConfig) {
+        this.scanWeblogicConfig = scanWeblogicConfig;
     }
 }

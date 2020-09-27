@@ -4,6 +4,8 @@ import com.gbw.scanner.utils.HttpUtils;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 
+import java.util.Map;
+
 public class GBWHttpGetRequestBuilder {
 
     private HttpGet httpGet;
@@ -28,6 +30,12 @@ public class GBWHttpGetRequestBuilder {
     public GBWHttpGetRequestBuilder addHead(String key,String value){
 
         httpGet.addHeader(key,value);
+
+        return this;
+    }
+    public GBWHttpGetRequestBuilder addHeaders(Map<String,String> headers){
+
+        headers.forEach((key,value)->addHead(key,value));
 
         return this;
     }

@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Map;
 
 public class GBWHttpPostRequestBuilder {
 
@@ -41,9 +42,16 @@ public class GBWHttpPostRequestBuilder {
     public GBWHttpPostRequestBuilder addHead(String key,String value){
 
         post.addHeader(key,value);
+        return this;
+    }
+
+    public GBWHttpPostRequestBuilder addHeaders(Map<String,String> headers){
+
+        headers.forEach((key,value)->addHead(key,value));
 
         return this;
     }
+
 
     public GBWHttpPostRequestBuilder postString(String content,boolean isFile) throws IOException {
 

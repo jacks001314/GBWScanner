@@ -9,13 +9,12 @@ import com.gbw.scanner.plugins.scripts.web.flink.GBWScanFlinkScript;
 import com.gbw.scanner.plugins.scripts.web.solr.dataimport.GBWScanSolrDataImportScript;
 import com.gbw.scanner.plugins.scripts.web.solr.velocity.GBWScanSolrVelocityScript;
 import com.gbw.scanner.plugins.scripts.web.tomcat.GBWScanAJPScript;
-import com.gbw.scanner.plugins.scripts.weblogic.CVE20202555.GBWScanCVE20202555Script;
+import com.gbw.scanner.plugins.scripts.weblogic.GBWScanWeblogicScript;
 import com.gbw.scanner.plugins.scripts.windows.rdp.bluekeep.GBWScanBluekeepScript;
 import com.gbw.scanner.plugins.scripts.windows.smb.MS17010.GBWScanSMBMS17010Script;
 import com.gbw.scanner.sink.SinkQueue;
 import com.gbw.scanner.utils.GsonUtils;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,7 @@ public class GBWScanScriptPlugin implements GBWScannerPlugin {
     public static final String hadoopYarnScan = "scanScriptHadoopYarn";
     public static final String redisScan = "scanScriptRedis";
     public static final String sparkScan = "scanScriptSpark";
-    public static final String weblogicCVE20202555 = "weblogicCVE20202555";
+    public static final String weblogicScan = "scanWeblogic";
 
     private final GBWScanScriptConfig scanScriptConfig;
     private final GBWScanScriptQueue scanScriptQueue;
@@ -86,10 +85,11 @@ public class GBWScanScriptPlugin implements GBWScannerPlugin {
 
             scanScriptMap.put(sparkScan,new GBWScanSparkScript(scanScriptConfig.getScanSparkConfig()));
         }
+        if(scanScriptConfig.getScanWeblogicConfig().isOn()){
 
-        if(scanScriptConfig.getWeblogicCVE20202555Config().isOn()){
-            scanScriptMap.put(weblogicCVE20202555,new GBWScanCVE20202555Script(scanScriptConfig.getWeblogicCVE20202555Config()));
+            scanScriptMap.put(weblogicScan,new GBWScanWeblogicScript(scanScriptConfig.getScanWeblogicConfig()));
         }
+
     }
 
     @Override
@@ -134,3 +134,4 @@ public class GBWScanScriptPlugin implements GBWScannerPlugin {
     }
 
 }
+

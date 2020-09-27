@@ -37,7 +37,7 @@ if [ $# = 0 ]; then
   echo "hsource		 			    run add host source cmds!"
   echo "scanCmd		 			    run scanner cmd!"
   echo "tool		 			    run some come cmd,base64....hex.....!"
-  echo "sscan		 			    run http server for scan!"
+  echo "coherence		 			run coherence payload generate!"
   echo "sfile		 			    run http server for file!"
   exit 1
 fi
@@ -116,8 +116,8 @@ elif [ "$COMMAND" = "scanCmd" ] ; then
 elif [ "$COMMAND" = "tool" ] ; then
     CLASS=com.gbw.scanner.utils.UtilsMain
 
-elif [ "$COMMAND" = "sscan" ] ; then
-    CLASS=com.gbw.scanner.server.scan.GBWScanResultServer
+elif [ "$COMMAND" = "coherence" ] ; then
+    CLASS=com.gbw.scanner.plugins.scripts.weblogic.payload.GBWCoherencePayloadMain
 
 elif [ "$COMMAND" = "sfile" ] ; then
     CLASS=com.gbw.scanner.server.file.GBWFileServer

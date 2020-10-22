@@ -44,6 +44,7 @@ public class GBWCVE_2020_2555 extends GBWAbstractEchoVul{
 
                 String result = GBWJNDIShellClient.exec(config,host,config.getCmd());
                 if (result != null) {
+
                     log.warn(String.format("Find a weblogic vul,version:%s,check payload:%s,type:%s,code:%s,cmd:%s,result:%s,url:%s//%s:%d",
                             version,
                             payload.getName(),
@@ -55,17 +56,6 @@ public class GBWCVE_2020_2555 extends GBWAbstractEchoVul{
                             host.getIp(),
                             host.getPort()));
 
-                    /*
-                    System.out.println(String.format("Find a weblogic vul,version:%s,check payload:%s,type:%s,code:%s,cmd:%s,result:%s,url:%s//%s:%d",
-                            version,
-                            payload.getClass().getSimpleName(),
-                            type,
-                            code,
-                            config.getCmd(),
-                            result,
-                            host.getProto(),
-                            host.getIp(),
-                            host.getPort()));*/
 
                     return new GBWVulCheckResult(version,code,type,config.getCmd(),result,payload.getName());
                 }

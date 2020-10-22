@@ -7,13 +7,13 @@ import com.gbw.scanner.http.GBWHttpResponse;
 import com.gbw.scanner.plugins.scripts.weblogic.GBWScanWeblogicConfig;
 import com.gbw.scanner.plugins.scripts.weblogic.GBWWeblogicVersion;
 import com.gbw.scanner.plugins.scripts.weblogic.payload.GBWXmlEchoPayload;
+import com.gbw.scanner.utils.Base64Utils;
 import com.gbw.scanner.utils.HttpUtils;
 import com.xmap.api.utils.TextUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.misc.BASE64Encoder;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -196,7 +196,7 @@ public abstract class GBWXmlDeserailVul implements GBWEchoVul {
         headers.put("path", path);
         String s=null;
         try {
-            s=URLEncoder.encode(new BASE64Encoder().encode(text.getBytes()),"utf-8");
+            s=URLEncoder.encode(Base64Utils.encode(text.getBytes()),"utf-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

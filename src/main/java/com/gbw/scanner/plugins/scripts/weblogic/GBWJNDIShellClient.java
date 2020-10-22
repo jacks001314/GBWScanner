@@ -1,7 +1,7 @@
 package com.gbw.scanner.plugins.scripts.weblogic;
 
 import com.gbw.scanner.Host;
-import sun.misc.BASE64Encoder;
+import com.gbw.scanner.utils.Base64Utils;
 import weblogic.cluster.singleton.ClusterMasterRemote;
 import weblogic.iiop.IOPProfile;
 
@@ -62,7 +62,7 @@ public class GBWJNDIShellClient {
             if(obj instanceof ClusterMasterRemote) {
                 ClusterMasterRemote shell = (ClusterMasterRemote)obj;
                 if (shell != null) {
-                    shell.setServerLocation(path, new BASE64Encoder().encode(text.getBytes()));
+                    shell.setServerLocation(path, Base64Utils.encode(text.getBytes()));
                 }
             }
         } catch (Exception e) {

@@ -10,7 +10,6 @@ import com.gbw.scanner.plugins.scripts.weblogic.shell.GBWT3IIOPShell;
 import com.xmap.api.utils.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 

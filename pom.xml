@@ -331,6 +331,17 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/com.bea.core.repackaged.springframework.spring_1.2.0.0_2-5-3.jar</systemPath>
         </dependency>
+
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

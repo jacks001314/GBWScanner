@@ -2,14 +2,12 @@ package com.gbw.scanner.plugins.scripts.weblogic.payload;
 
 import com.gbw.scanner.utils.Gadgets;
 import com.gbw.scanner.utils.Reflections;
-import com.gbw.scanner.utils.Serializer;
 import com.sun.org.apache.xalan.internal.xsltc.trax.TrAXFilter;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.functors.ChainedTransformer;
 import org.apache.commons.collections.functors.ConstantTransformer;
 import org.apache.commons.collections.functors.InstantiateTransformer;
 import org.apache.commons.collections.map.LazyMap;
-
 
 import javax.xml.transform.Templates;
 import java.lang.reflect.InvocationHandler;

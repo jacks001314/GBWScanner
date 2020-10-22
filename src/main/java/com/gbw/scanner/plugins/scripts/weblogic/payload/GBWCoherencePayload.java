@@ -116,7 +116,6 @@ public class GBWCoherencePayload implements GBWEchoPayload<Object> {
         return null;
     }
 
-
     private class PayloadEntry{
 
         private String version;

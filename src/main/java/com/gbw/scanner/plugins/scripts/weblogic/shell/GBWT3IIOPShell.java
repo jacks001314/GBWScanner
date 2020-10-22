@@ -1,11 +1,11 @@
 package com.gbw.scanner.plugins.scripts.weblogic.shell;
 
+import com.gbw.scanner.utils.Base64Utils;
 import com.sun.org.apache.xalan.internal.xsltc.DOM;
 import com.sun.org.apache.xalan.internal.xsltc.TransletException;
 import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
 import com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;
 import com.sun.org.apache.xml.internal.serializer.SerializationHandler;
-import sun.misc.BASE64Decoder;
 import weblogic.cluster.singleton.ClusterMasterRemote;
 
 import javax.naming.Context;
@@ -30,7 +30,7 @@ public class GBWT3IIOPShell extends AbstractTranslet implements ClusterMasterRem
     public void setServerLocation(String path, String text) throws RemoteException {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(path);
-            fileOutputStream.write(new BASE64Decoder().decodeBuffer(text));
+            fileOutputStream.write(Base64Utils.decode(text).getBytes());
             fileOutputStream.flush();
             fileOutputStream.close();
         }catch (Exception e) {

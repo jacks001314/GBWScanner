@@ -5,12 +5,13 @@ import com.gbw.scanner.http.GBWHttpClientBuilder;
 import com.gbw.scanner.http.GBWHttpGetRequestBuilder;
 import com.gbw.scanner.http.GBWHttpPostRequestBuilder;
 import com.gbw.scanner.http.GBWHttpResponse;
+import com.gbw.scanner.utils.Base64Utils;
 import com.gbw.scanner.utils.HttpUtils;
 import com.xmap.api.utils.TextUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
-import sun.misc.BASE64Encoder;
+
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -73,7 +74,7 @@ public class GBWHttpShellClient {
         headers.put("path", uploadPath);
         String s=null;
         try {
-            s= URLEncoder.encode(new BASE64Encoder().encode(text.getBytes()),"utf-8");
+            s= URLEncoder.encode(Base64Utils.encode(text.getBytes()),"utf-8");
         } catch (UnsupportedEncodingException e) {
             //e.printStackTrace();
         }

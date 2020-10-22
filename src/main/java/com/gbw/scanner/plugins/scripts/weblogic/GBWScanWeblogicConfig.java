@@ -18,18 +18,18 @@ public class GBWScanWeblogicConfig extends GBWScanScriptCommonConfig {
 
     private String httpClientCmd;
 
+    private String dnslogHost;
+    private int dnslogPort;
+    private String dnslogDomain;
+
     private boolean isonCVE_2020_2555;
     private boolean isonCVE_2020_2551;
-    private boolean isonCVE_2019_2729;
-    private boolean isOnCVE_2019_2725;
     private boolean isOnCVE_2018_3245;
     private boolean isOnCVE_2018_3191;
     private boolean isOnCVE_2018_2894;
     private boolean isOnCVE_2018_2893;
     private boolean isOnCVE_2018_2628;
-    private boolean isOnCVE_2017_10271;
     private boolean isOnCVE_2017_3248;
-    private boolean isOnCVE_2016_3510;
     private boolean isOnCVE_2016_0638;
 
     public String getHttpClientCmd() {
@@ -125,12 +125,44 @@ public class GBWScanWeblogicConfig extends GBWScanScriptCommonConfig {
     }
 
 
-    public boolean isOnCVE_2019_2725() {
-        return isOnCVE_2019_2725;
+    public String getDnslogDomain() {
+        return dnslogDomain;
     }
 
-    public void setOnCVE_2019_2725(boolean onCVE_2019_2725) {
-        isOnCVE_2019_2725 = onCVE_2019_2725;
+    public void setDnslogDomain(String dnslogDomain) {
+        this.dnslogDomain = dnslogDomain;
+    }
+
+    public String getDnslogHost() {
+        return dnslogHost;
+    }
+
+    public void setDnslogHost(String dnslogHost) {
+        this.dnslogHost = dnslogHost;
+    }
+
+    public int getDnslogPort() {
+        return dnslogPort;
+    }
+
+    public void setDnslogPort(int dnslogPort) {
+        this.dnslogPort = dnslogPort;
+    }
+
+    public boolean isIsonCVE_2020_2555() {
+        return isonCVE_2020_2555;
+    }
+
+    public void setIsonCVE_2020_2555(boolean isonCVE_2020_2555) {
+        this.isonCVE_2020_2555 = isonCVE_2020_2555;
+    }
+
+    public boolean isIsonCVE_2020_2551() {
+        return isonCVE_2020_2551;
+    }
+
+    public void setIsonCVE_2020_2551(boolean isonCVE_2020_2551) {
+        this.isonCVE_2020_2551 = isonCVE_2020_2551;
     }
 
     public boolean isOnCVE_2018_3245() {
@@ -173,14 +205,6 @@ public class GBWScanWeblogicConfig extends GBWScanScriptCommonConfig {
         isOnCVE_2018_2628 = onCVE_2018_2628;
     }
 
-    public boolean isOnCVE_2017_10271() {
-        return isOnCVE_2017_10271;
-    }
-
-    public void setOnCVE_2017_10271(boolean onCVE_2017_10271) {
-        isOnCVE_2017_10271 = onCVE_2017_10271;
-    }
-
     public boolean isOnCVE_2017_3248() {
         return isOnCVE_2017_3248;
     }
@@ -189,44 +213,11 @@ public class GBWScanWeblogicConfig extends GBWScanScriptCommonConfig {
         isOnCVE_2017_3248 = onCVE_2017_3248;
     }
 
-    public boolean isOnCVE_2016_3510() {
-        return isOnCVE_2016_3510;
-    }
-
-    public void setOnCVE_2016_3510(boolean onCVE_2016_3510) {
-        isOnCVE_2016_3510 = onCVE_2016_3510;
-    }
-
     public boolean isOnCVE_2016_0638() {
         return isOnCVE_2016_0638;
     }
 
     public void setOnCVE_2016_0638(boolean onCVE_2016_0638) {
         isOnCVE_2016_0638 = onCVE_2016_0638;
-    }
-
-
-    public boolean isIsonCVE_2020_2555() {
-        return isonCVE_2020_2555;
-    }
-
-    public void setIsonCVE_2020_2555(boolean isonCVE_2020_2555) {
-        this.isonCVE_2020_2555 = isonCVE_2020_2555;
-    }
-
-    public boolean isIsonCVE_2020_2551() {
-        return isonCVE_2020_2551;
-    }
-
-    public void setIsonCVE_2020_2551(boolean isonCVE_2020_2551) {
-        this.isonCVE_2020_2551 = isonCVE_2020_2551;
-    }
-
-    public boolean isIsonCVE_2019_2729() {
-        return isonCVE_2019_2729;
-    }
-
-    public void setIsonCVE_2019_2729(boolean isonCVE_2019_2729) {
-        this.isonCVE_2019_2729 = isonCVE_2019_2729;
     }
 }

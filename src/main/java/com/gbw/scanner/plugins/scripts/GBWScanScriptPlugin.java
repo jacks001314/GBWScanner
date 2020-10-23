@@ -33,6 +33,7 @@ public class GBWScanScriptPlugin implements GBWScannerPlugin {
     public static final String redisScan = "scanScriptRedis";
     public static final String sparkScan = "scanScriptSpark";
     public static final String weblogicScan = "scanWeblogic";
+    public static final String fastjsonScan = "fastJsonScan";
 
     private final GBWScanScriptConfig scanScriptConfig;
     private final GBWScanScriptQueue scanScriptQueue;

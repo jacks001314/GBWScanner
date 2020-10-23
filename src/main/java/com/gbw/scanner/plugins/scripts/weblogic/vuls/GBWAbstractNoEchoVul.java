@@ -3,6 +3,7 @@ package com.gbw.scanner.plugins.scripts.weblogic.vuls;
 import com.gbw.scanner.Host;
 import com.gbw.scanner.plugins.scripts.weblogic.*;
 import com.gbw.scanner.plugins.scripts.weblogic.payload.GBWNoEchoPayload;
+import com.gbw.scanner.utils.GBWDnslogClient;
 import com.gbw.scanner.utils.Serializer;
 import com.xmap.api.utils.TextUtils;
 import org.slf4j.Logger;
@@ -64,7 +65,7 @@ public abstract class GBWAbstractNoEchoVul implements GBWNoEchoVul {
             GBWDnslogClient dc = null;
 
             try {
-                dc = new GBWDnslogClient(config.getDnslogDomain(),config.getDnslogHost(),config.getHttpLogPort());
+                dc = new GBWDnslogClient(config.getDnslogDomain(),config.getDnslogHost(),config.getDnslogPort());
 
                 String domain = dc.getSubDomain();
 
